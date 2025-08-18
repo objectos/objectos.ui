@@ -60,15 +60,26 @@ include make/common-clean.mk
 # ui@carbon-gen
 #
 
-## carbon working dir
-CARBON_WORK := $(WORK)/carbon
+## carbon-gen target 
+CARBON_GEN_SCRIPT := CarbonGen.java
+
+## carbon-gen src
+CARBON_GEN_JAVA := main/objectos/ui/XCarbonGen.java
 
 ## html page containing main.css
 CARBON_HTML := https://react.carbondesignsystem.com/iframe.html
 
-## html page parsing
-CARBON_HTMLX := $(JAVA)
-CARBON_HTMLX += 
+## carbon gen command
+CARBON_GENX := $(JAVA)
+CARBON_GENX += $(CARBON_GEN_SCRIPT)
+CARBON_GENX += --html $(CARBON_HTML) 
+
+.PHONY: carbon-gen
+carbon-gen: $(CARBON_GEN_SCRIPT)
+	$(CARBON_GENX)
+	
+$(CARBON_GEN_SCRIPT): $(CARBON_GEN_JAVA)
+	sed '/\/\/ SED_REMOVE/d' $< > $@
 
 #
 # ui@compile

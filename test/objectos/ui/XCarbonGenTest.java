@@ -17,14 +17,16 @@
  */
 package objectos.ui;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.testng.annotations.Test;
 
 public class XCarbonGenTest {
 
   @Test
-  public void testCase01() {
+  public void testCase01() throws IOException {
     try (Y.Project proj = Y.project(opts -> {
       opts.webdir(Path.of("test-resources", "carbon"));
     })) {
@@ -32,6 +34,13 @@ public class XCarbonGenTest {
       html = proj.resolveWeb("iframe.html");
 
       proj.carbonGen("--html", html.toString());
+
+      final Path carbonModule;
+      carbonModule = proj.resolve("main/objectos/ui/CarbonModule.java");
+
+      System.out.println(
+          Files.readString(carbonModule)
+      );
     }
   }
 

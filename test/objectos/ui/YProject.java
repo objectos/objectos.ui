@@ -76,6 +76,18 @@ final class YProject implements Y.Project {
   }
 
   @Override
+  public final Path resolve(String relativePath) {
+    final Path path;
+    path = Path.of(relativePath);
+
+    if (path.isAbsolute()) {
+      throw new IllegalArgumentException("Path must not be absolute: " + path);
+    }
+
+    return basedir.resolve(path);
+  }
+
+  @Override
   public final URI resolveWeb(String relativePath) {
     if (baseUrl == null) {
       throw new UnsupportedOperationException("not a web project");

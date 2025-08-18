@@ -168,6 +168,8 @@ public final class Y implements ISuiteListener {
     @Override
     void close();
 
+    Path resolve(String relativePath);
+
     URI resolveWeb(String relativePath);
 
     void carbonGen(String... args);

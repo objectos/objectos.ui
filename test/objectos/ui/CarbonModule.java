@@ -19,13 +19,25 @@ package objectos.ui;
 
 import static objectos.way.Http.Method.GET;
 
+import java.nio.file.Path;
+import objectos.way.App;
+import objectos.way.Css;
 import objectos.way.Http;
+import objectos.way.Note;
 
 final class CarbonModule implements Http.Routing.Module {
+
+  private final App.Injector injector;
+
+  CarbonModule(App.Injector injector) {
+    this.injector = injector;
+  }
 
   @Override
   public final void configure(Http.Routing carbon) {
     carbon.path("/carbon/page/{theme}", GET, this::page);
+
+    carbon.path("/carbon/styles.css", GET, this::styles);
   }
 
   private void page(Http.Exchange http) {
@@ -38,6 +50,22 @@ final class CarbonModule implements Http.Routing.Module {
       });
 
       page.title("Objectos Carbon");
+    }));
+  }
+
+  private void styles(Http.Exchange http) {
+    http.ok(Css.StyleSheet.create(opts -> {
+      final Note.Sink noteSink;
+      noteSink = injector.getInstance(Note.Sink.class);
+
+      opts.noteSink(noteSink);
+
+      final Path classOutput;
+      classOutput = Path.of("work", "dev");
+
+      opts.scanDirectory(classOutput);
+
+      Carbon.configureStyleSheet(opts);
     }));
   }
 

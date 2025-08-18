@@ -19,12 +19,9 @@ package objectos.ui;
 
 import static objectos.way.Http.Method.GET;
 
-import java.nio.file.Path;
 import objectos.way.App;
-import objectos.way.Css;
 import objectos.way.Http;
 import objectos.way.Media;
-import objectos.way.Note;
 import objectos.way.Script;
 
 public class YModule implements Http.Routing.Module {
@@ -45,45 +42,15 @@ public class YModule implements Http.Routing.Module {
 
   @Override
   public final void configure(Http.Routing routing) {
-    routing.install(new CarbonModule());
+    routing.install(new CarbonModule(injector));
 
-    routing.path("/script.js", path -> {
-      path.allow(GET, http -> http.ok(Script.Library.of()));
-    });
-
-    routing.path("/styles.css", path -> {
-      path.allow(GET, this::styles);
-    });
+    routing.path("/script.js", GET, http -> http.ok(Script.Library.of()));
 
     routing.path("/dev-stop", path -> {
       path.allow(Http.Method.GET, http -> http.ok(Media.Bytes.textPlain("ok\n")));
     });
 
     routing.handler(Http.Handler.notFound());
-  }
-
-  private void styles(Http.Exchange http) {
-    http.ok(Css.StyleSheet.create(opts -> {
-      final Note.Sink noteSink;
-      noteSink = injector.getInstance(Note.Sink.class);
-
-      opts.noteSink(noteSink);
-
-      final Path classOutput;
-      classOutput = Path.of("work", "dev");
-
-      opts.scanDirectory(classOutput);
-
-      opts.theme("""
-          --color-bg: var(--color-gray-100);
-          --color-fg: var(--color-gray-900);
-          """);
-
-      opts.theme("@media (prefers-color-scheme: dark)", """
-          --color-bg: var(--color-gray-900);
-          --color-fg: var(--color-gray-100);
-          """);
-    }));
   }
 
 }

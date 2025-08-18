@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
+import objectos.way.Css;
 import objectos.way.Html;
 
 /// The **Objectos Carbon** main class.
@@ -80,5 +81,9 @@ public final class Carbon {
   // ##################################################################
   // # END: Theme
   // ##################################################################
+
+  public static void configureStyleSheet(Css.StyleSheet.Options opts) {
+
+  }
 
 }

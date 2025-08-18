@@ -57,6 +57,10 @@ final class XCarbonGenStateGen {
 
     gen.line();
 
+    gen.value("$MODULE");
+
+    gen.line();
+
     gen.value("$DONE");
   }
 

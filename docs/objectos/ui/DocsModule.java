@@ -76,12 +76,12 @@ public final class DocsModule implements Http.Routing.Module {
 
       opts.scanDirectory(classOutput);
 
-      opts.theme("""
+      opts.theme(":root", """
           --color-bg: var(--color-gray-100);
           --color-fg: var(--color-gray-900);
           """);
 
-      opts.theme("@media (prefers-color-scheme: dark)", """
+      opts.theme("@media (prefers-color-scheme: dark)", ":root", """
           --color-bg: var(--color-gray-900);
           --color-fg: var(--color-gray-100);
           """);
