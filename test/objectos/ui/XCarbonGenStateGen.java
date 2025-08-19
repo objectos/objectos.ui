@@ -52,8 +52,6 @@ final class XCarbonGenStateGen {
     gen.value("$CSS_TARGET");
     gen.value("$CSS_SKIP_RULE");
     gen.value("$CSS_THEME");
-    gen.value("$CSS_THEME_PROPERTY");
-    gen.value("$CSS_THEME_VALUE");
 
     gen.line();
 

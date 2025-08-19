@@ -20,7 +20,7 @@ package objectos.ui;
 import java.util.function.Consumer;
 import objectos.way.Css;
 
-final class CarbonModule implements Consumer<Css.StyleSheet.Options> {
+final class CarbonStyleSheet implements Consumer<Css.StyleSheet.Options> {
 
   @Override
   public final void accept(Css.StyleSheet.Options opts) {
