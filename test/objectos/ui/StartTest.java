@@ -17,30 +17,12 @@
  */
 package objectos.ui;
 
-import static org.testng.Assert.assertEquals;
+import org.testng.TestNG;
 
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.testng.annotations.Test;
+public final class StartTest {
 
-public class XCarbonGenTest {
-
-  @Test
-  public void testCase01() {
-    try (Y.Project proj = Y.project(opts -> {
-      opts.webdir(Path.of("test-resources", "carbon"));
-    })) {
-      final URI html;
-      html = proj.resolveWeb("iframe.html");
-
-      proj.carbonGen("--html", html.toString());
-
-      final Path carbon;
-      carbon = proj.resolve("main/objectos/ui/CarbonStyles.java");
-
-      assertEquals(Files.exists(carbon), true);
-    }
+  public static void main(String[] args) {
+    TestNG.main(new String[] {"-d", "work/test-output", "test/testng.xml"});
   }
 
 }

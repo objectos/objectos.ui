@@ -17,30 +17,20 @@
  */
 package objectos.ui;
 
-import static org.testng.Assert.assertEquals;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.testng.annotations.DataProvider;
 
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.testng.annotations.Test;
+public abstract class CarbonTest {
 
-public class XCarbonGenTest {
+  CarbonTest() {}
 
-  @Test
-  public void testCase01() {
-    try (Y.Project proj = Y.project(opts -> {
-      opts.webdir(Path.of("test-resources", "carbon"));
-    })) {
-      final URI html;
-      html = proj.resolveWeb("iframe.html");
+  private static final Set<CarbonTheme> THEMES = EnumSet.allOf(CarbonTheme.class);
 
-      proj.carbonGen("--html", html.toString());
-
-      final Path carbon;
-      carbon = proj.resolve("main/objectos/ui/CarbonStyles.java");
-
-      assertEquals(Files.exists(carbon), true);
-    }
+  @DataProvider
+  public final Iterator<Carbon.Theme> themes() {
+    return THEMES.stream().map(Carbon.Theme.class::cast).iterator();
   }
 
 }

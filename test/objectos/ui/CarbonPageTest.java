@@ -21,16 +21,14 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(Y.class)
-public class CarbonPageTest {
+public class CarbonPageTest extends CarbonTest {
 
-  @Test
-  public void testCase01() {
+  @Test(dataProvider = "themes")
+  public void testCase01(Carbon.Theme theme) {
     try (Y.Tab tab = Y.newTab()) {
-      tab.navigate("/carbon/page/g10");
+      tab.navigate("/carbon/page", theme);
 
       tab.screenshot();
-
-      tab.dev();
     }
   }
 

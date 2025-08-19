@@ -740,7 +740,7 @@ final class XCarbonGen {
     THEME;
 
     final CssTarget of(CssMatch match, String selector) {
-      return new CssTarget(this, match, selector, selector);
+      return new CssTarget(this, match, selector, null);
     }
 
     final CssTarget of(CssMatch match, String selector, String name) {
@@ -903,9 +903,11 @@ final class XCarbonGen {
       return $CSS_SKIP_RULE;
     }
 
-    ctx.nameRemove();
+    if (result.name != null) {
+      ctx.nameRemove();
 
-    ctx.nameAdd(result.name);
+      ctx.nameAdd(result.name);
+    }
 
     return switch (result.action) {
       case THEME -> $CSS_THEME;

@@ -23,7 +23,7 @@
 ## Coordinates
 GROUP_ID := br.com.objectos
 ARTIFACT_ID := objectos.ui
-VERSION := 0.2.6-SNAPSHOT
+VERSION := 0.2.7-SNAPSHOT
 MODULE := $(ARTIFACT_ID)
 
 ## javac --release option
@@ -89,6 +89,42 @@ $(CARBON_GEN_SCRIPT): $(CARBON_GEN_JAVA)
 COMPILE_DEPS := $(WAY)
 
 include make/java-compile.mk
+
+#
+# ui@test-compile
+#
+
+## test compile deps
+TEST_COMPILE_DEPS := $(TESTNG)
+TEST_COMPILE_DEPS += $(PLAYWRIGHT)
+
+include make/java-test-compile.mk
+
+#
+# ui@test
+#
+
+## test main class
+TEST_MAIN := objectos.ui.StartTest
+
+## www test runtime dependencies
+TEST_RUNTIME_DEPS := $(SLF4J_NOP)
+
+## test JVM opts
+TEST_JVM_OPTS := -Dplaywright.headless=true
+
+## test --add-modules
+TEST_ADD_MODULES := org.testng
+TEST_ADD_MODULES += org.slf4j
+TEST_ADD_MODULES += java.desktop
+TEST_ADD_MODULES += com.google.gson
+TEST_ADD_MODULES += jdk.unsupported
+
+## test --add-reads
+TEST_ADD_READS := objectos.ui=org.testng
+TEST_ADD_READS += objectos.ui=playwright
+
+include make/java-test.mk
 
 #
 # ui@docs-compile

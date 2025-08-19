@@ -17,11 +17,18 @@
  */
 package objectos.ui;
 
+import static org.testng.Assert.assertEquals;
+
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.ScreenshotOptions;
 import com.microsoft.playwright.Page.WaitForURLOptions;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import javax.imageio.ImageIO;
 
 final class YTab implements Y.Tab {
 
@@ -76,6 +83,15 @@ final class YTab implements Y.Tab {
   }
 
   @Override
+  public final void navigate(String path, Carbon.Theme theme) {
+    navigate(path + "/" + theme);
+  }
+
+  private static final Path TMPDIR = Y.nextTempDir();
+
+  private static final Path TESTDIR = Path.of("test-screenshots");
+
+  @Override
   public final void screenshot() {
     final String url;
     url = page.url();
@@ -83,17 +99,64 @@ final class YTab implements Y.Tab {
     final String sub;
     sub = url.substring(baseUrl.length());
 
+    final String rel;
+    rel = sub.substring(1) + ".png";
+
+    final Path relative = Path.of(rel);
+
     final Path path;
     path = Path.of("test-screenshots" + sub + ".png");
 
+    final Path test;
+    test = TESTDIR.resolve(relative);
+
+    if (Files.exists(path)) {
+      final Path shot;
+      shot = TMPDIR.resolve(relative);
+
+      screenshot(shot);
+
+      compare(test, shot);
+    } else {
+      screenshot(test);
+    }
+  }
+
+  private void screenshot(Path file) {
     final ScreenshotOptions options;
     options = new ScreenshotOptions();
 
-    options.setFullPage(true);
-
-    options.setPath(path);
+    options.setPath(file);
 
     page.screenshot(options);
+  }
+
+  private void compare(Path test, Path shot) {
+    try {
+      final BufferedImage img1;
+      img1 = ImageIO.read(test.toFile());
+
+      final BufferedImage img2;
+      img2 = ImageIO.read(shot.toFile());
+
+      assertEquals(img1.getWidth(), img2.getWidth());
+
+      assertEquals(img1.getHeight(), img2.getHeight());
+
+      for (int y = 0; y < img1.getHeight(); y++) {
+        for (int x = 0; x < img1.getWidth(); x++) {
+          final int pixel1;
+          pixel1 = img1.getRGB(x, y);
+
+          final int pixel2;
+          pixel2 = img2.getRGB(x, y);
+
+          assertEquals(pixel1, pixel2);
+        }
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override

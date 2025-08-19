@@ -1627,7 +1627,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --color-layer-selected-inverse: SelectedItem;
     """);
 
-    opts.theme("[data-carbon-theme=", """
+    opts.theme("[data-carbon-theme=g10]", """
     --color-ai-aura-end: rgba(255, 255, 255, 0);
     --color-ai-aura-hover-background: #edf5ff;
     --color-ai-aura-hover-end: rgba(255, 255, 255, 0);
@@ -2131,6 +2131,32 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --color-border-strong: var(--color-border-strong-01, #8d8d8d);
     --color-border-tile: var(--color-border-tile-01, #c6c6c6);
     --color-border-tile: var(--color-border-tile-01, #c6c6c6);
+    """);
+
+    opts.theme("@media screen and (-ms-high-contrast: active),(forced-colors: active)", "[data-carbon-theme=g10]", """
+    --color-icon-primary: ButtonText;
+    --color-icon-secondary: ButtonText;
+    --color-icon-interactive: ButtonText;
+    --color-icon-disabled: GrayText;
+    --color-icon-on-color-disabled: GrayText;
+    --color-icon-inverse: SelectedItemText;
+    --color-icon-on-color: SelectedItemText;
+    --color-button-disabled: GrayText;
+    --color-interactive: ButtonText;
+    --color-link-primary: LinkText;
+    --color-link-primary-hover: LinkText;
+    --color-link-secondary: LinkText;
+    --color-link-inverse: SelectedItemText;
+    --color-link-inverse-hover: SelectedItemText;
+    --color-link-inverse-visited: SelectedItemText;
+    --color-link-visited: VisitedText;
+    --color-background-selected: SelectedItem;
+    --color-background-selected-hover: SelectedItem;
+    --color-background-inverse: SelectedItem;
+    --color-layer-selected-inverse: SelectedItem;
+    """);
+
+    opts.theme("[data-carbon-theme=g90]", """
     --color-ai-aura-end: rgba(0, 0, 0, 0);
     --color-ai-aura-hover-background: #474747;
     --color-ai-aura-hover-end: rgba(0, 0, 0, 0);
@@ -2634,6 +2660,32 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --color-border-strong: var(--color-border-strong-01, #8d8d8d);
     --color-border-tile: var(--color-border-tile-01, #c6c6c6);
     --color-border-tile: var(--color-border-tile-01, #c6c6c6);
+    """);
+
+    opts.theme("@media screen and (-ms-high-contrast: active),(forced-colors: active)", "[data-carbon-theme=g90]", """
+    --color-icon-primary: ButtonText;
+    --color-icon-secondary: ButtonText;
+    --color-icon-interactive: ButtonText;
+    --color-icon-disabled: GrayText;
+    --color-icon-on-color-disabled: GrayText;
+    --color-icon-inverse: SelectedItemText;
+    --color-icon-on-color: SelectedItemText;
+    --color-button-disabled: GrayText;
+    --color-interactive: ButtonText;
+    --color-link-primary: LinkText;
+    --color-link-primary-hover: LinkText;
+    --color-link-secondary: LinkText;
+    --color-link-inverse: SelectedItemText;
+    --color-link-inverse-hover: SelectedItemText;
+    --color-link-inverse-visited: SelectedItemText;
+    --color-link-visited: VisitedText;
+    --color-background-selected: SelectedItem;
+    --color-background-selected-hover: SelectedItem;
+    --color-background-inverse: SelectedItem;
+    --color-layer-selected-inverse: SelectedItem;
+    """);
+
+    opts.theme("[data-carbon-theme=g100]", """
     --color-ai-aura-end: rgba(0, 0, 0, 0);
     --color-ai-aura-hover-background: #333333;
     --color-ai-aura-hover-end: rgba(0, 0, 0, 0);
@@ -3139,47 +3191,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --color-border-tile: var(--color-border-tile-01, #c6c6c6);
     """);
 
-    opts.theme("@media screen and (-ms-high-contrast: active),(forced-colors: active)", "[data-carbon-theme=", """
-    --color-icon-primary: ButtonText;
-    --color-icon-secondary: ButtonText;
-    --color-icon-interactive: ButtonText;
-    --color-icon-disabled: GrayText;
-    --color-icon-on-color-disabled: GrayText;
-    --color-icon-inverse: SelectedItemText;
-    --color-icon-on-color: SelectedItemText;
-    --color-button-disabled: GrayText;
-    --color-interactive: ButtonText;
-    --color-link-primary: LinkText;
-    --color-link-primary-hover: LinkText;
-    --color-link-secondary: LinkText;
-    --color-link-inverse: SelectedItemText;
-    --color-link-inverse-hover: SelectedItemText;
-    --color-link-inverse-visited: SelectedItemText;
-    --color-link-visited: VisitedText;
-    --color-background-selected: SelectedItem;
-    --color-background-selected-hover: SelectedItem;
-    --color-background-inverse: SelectedItem;
-    --color-layer-selected-inverse: SelectedItem;
-    --color-icon-primary: ButtonText;
-    --color-icon-secondary: ButtonText;
-    --color-icon-interactive: ButtonText;
-    --color-icon-disabled: GrayText;
-    --color-icon-on-color-disabled: GrayText;
-    --color-icon-inverse: SelectedItemText;
-    --color-icon-on-color: SelectedItemText;
-    --color-button-disabled: GrayText;
-    --color-interactive: ButtonText;
-    --color-link-primary: LinkText;
-    --color-link-primary-hover: LinkText;
-    --color-link-secondary: LinkText;
-    --color-link-inverse: SelectedItemText;
-    --color-link-inverse-hover: SelectedItemText;
-    --color-link-inverse-visited: SelectedItemText;
-    --color-link-visited: VisitedText;
-    --color-background-selected: SelectedItem;
-    --color-background-selected-hover: SelectedItem;
-    --color-background-inverse: SelectedItem;
-    --color-layer-selected-inverse: SelectedItem;
+    opts.theme("@media screen and (-ms-high-contrast: active),(forced-colors: active)", "[data-carbon-theme=g100]", """
     --color-icon-primary: ButtonText;
     --color-icon-secondary: ButtonText;
     --color-icon-interactive: ButtonText;

@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import objectos.ui.Carbon.Theme;
 import objectos.way.App;
 import objectos.way.Io;
 import objectos.way.Note;
@@ -218,6 +219,8 @@ public final class Y implements ISuiteListener {
 
     void navigate(String path);
 
+    void navigate(String path, Theme theme);
+
     String title();
 
     void dev();
@@ -232,13 +235,6 @@ public final class Y implements ISuiteListener {
 
     Browser.NewPageOptions options;
     options = new Browser.NewPageOptions().setBaseURL(baseUrl);
-
-    final boolean headless;
-    headless = Boolean.getBoolean("playwright.headless");
-
-    if (!headless) {
-      options = options.setViewportSize(null);
-    }
 
     final Page page;
     page = BROWSER.newPage(options);
