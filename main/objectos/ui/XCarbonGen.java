@@ -118,7 +118,7 @@ final class XCarbonGen {
   static final byte $CSS_SKIP_RULE = 13;
   static final byte $CSS_THEME = 14;
 
-  static final byte $MODULE = 15;
+  static final byte $STYLES = 15;
 
   static final byte $DONE = 16;
 
@@ -152,7 +152,7 @@ final class XCarbonGen {
       case $CSS_SKIP_RULE -> executeCssSkipRule();
       case $CSS_THEME -> executeCssTheme();
 
-      case $MODULE -> executeModule();
+      case $STYLES -> executeStyles();
 
       default -> throw new AssertionError("Unexpected state=" + state);
     };
@@ -740,7 +740,11 @@ final class XCarbonGen {
     THEME;
 
     final CssTarget of(CssMatch match, String selector) {
-      return new CssTarget(this, match, selector);
+      return new CssTarget(this, match, selector, selector);
+    }
+
+    final CssTarget of(CssMatch match, String selector, String name) {
+      return new CssTarget(this, match, selector, name);
     }
   }
 
@@ -750,14 +754,12 @@ final class XCarbonGen {
     STARTS_WITH;
   }
 
-  private record CssTarget(CssAction action, CssMatch match, String selector) {}
+  private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
 
   private static final class CssCtx extends Req {
     int start;
 
     List<String> names = new ArrayList<>();
-
-    CssTarget target;
 
     final List<CssTarget> targets;
 
@@ -766,10 +768,10 @@ final class XCarbonGen {
       list = new ArrayList<>();
 
       list.add(CssAction.THEME.of(CssMatch.EXACT, ":root"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--white"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g10"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g90"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g100"));
+      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"));
+      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"));
+      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g90", ".carbon-g90"));
+      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"));
       list.add(CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme="));
 
       targets = list;
@@ -850,7 +852,7 @@ final class XCarbonGen {
 
     if (bracket == ctx.start) {
       // no '{' found, assume we're done
-      return $MODULE;
+      return $STYLES;
     }
 
     final String name;
@@ -871,7 +873,8 @@ final class XCarbonGen {
     final CssCtx ctx;
     ctx = (CssCtx) object;
 
-    ctx.target = null;
+    CssTarget result;
+    result = null;
 
     final String name;
     name = ctx.namePeek();
@@ -890,20 +893,21 @@ final class XCarbonGen {
       };
 
       if (res) {
-        ctx.target = target;
+        result = target;
 
         break;
       }
     }
 
-    final CssTarget t;
-    t = ctx.target;
-
-    if (t == null) {
+    if (result == null) {
       return $CSS_SKIP_RULE;
     }
 
-    return switch (t.action) {
+    ctx.nameRemove();
+
+    ctx.nameAdd(result.name);
+
+    return switch (result.action) {
       case THEME -> $CSS_THEME;
     };
   }
@@ -1264,12 +1268,12 @@ final class XCarbonGen {
   // ##################################################################
 
   // ##################################################################
-  // # BEGIN: Module
+  // # BEGIN: Styles
   // ##################################################################
 
-  private byte executeModule() {
+  private byte executeStyles() {
     final Path path;
-    path = Path.of("main", "objectos", "ui", "CarbonStyleSheet.java");
+    path = Path.of("main", "objectos", "ui", "CarbonStyles.java");
 
     final Path file;
     file = basedir.resolve(path);
@@ -1280,7 +1284,7 @@ final class XCarbonGen {
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      return toError("Failed to create directory for CarbonStyleSheet.java", e);
+      return toError("Failed to create directory for CarbonStyles.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -1309,7 +1313,7 @@ package objectos.ui;
 import java.util.function.Consumer;
 import objectos.way.Css;
 
-final class CarbonStyleSheet implements Consumer<Css.StyleSheet.Options> {
+final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
 
   static final String VERSION = "%s";
 
@@ -1325,7 +1329,7 @@ final class CarbonStyleSheet implements Consumer<Css.StyleSheet.Options> {
           w.newLine();
         }
 
-        executeModule(w, theme);
+        executeStyles(w, theme);
       }
 
       w.write("""
@@ -1340,7 +1344,7 @@ final class CarbonStyleSheet implements Consumer<Css.StyleSheet.Options> {
     }
   }
 
-  private void executeModule(BufferedWriter w, Theme theme) throws IOException {
+  private void executeStyles(BufferedWriter w, Theme theme) throws IOException {
     w.write("    opts.theme(");
 
     for (String name : theme.names) {

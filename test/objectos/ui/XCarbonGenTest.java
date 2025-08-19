@@ -36,7 +36,7 @@ public class XCarbonGenTest {
       proj.carbonGen("--html", html.toString());
 
       final Path carbonModule;
-      carbonModule = proj.resolve("main/objectos/ui/CarbonStyleSheet.java");
+      carbonModule = proj.resolve("main/objectos/ui/CarbonStyles.java");
 
       System.out.println(
           Files.readString(carbonModule)

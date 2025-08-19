@@ -83,7 +83,10 @@ public final class Carbon {
   // ##################################################################
 
   public static void configureStyleSheet(Css.StyleSheet.Options opts) {
+    final CarbonStyles sheet;
+    sheet = new CarbonStyles();
 
+    sheet.accept(opts);
   }
 
 }

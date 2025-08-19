@@ -20,7 +20,6 @@ package objectos.ui;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.ScreenshotOptions;
 import com.microsoft.playwright.Page.WaitForURLOptions;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
@@ -92,13 +91,9 @@ final class YTab implements Y.Tab {
 
     options.setFullPage(true);
 
-    if (Files.exists(path)) {
-      throw new UnsupportedOperationException("Implement me");
-    } else {
-      options.setPath(path);
+    options.setPath(path);
 
-      page.screenshot(options);
-    }
+    page.screenshot(options);
   }
 
   @Override

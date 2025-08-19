@@ -29,6 +29,6 @@ enum CarbonTheme implements Carbon.Theme {
 
   G100;
 
-  final String className = "theme-" + name().toLowerCase(Locale.US);
+  final String className = "carbon-" + name().toLowerCase(Locale.US);
 
 }
