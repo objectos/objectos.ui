@@ -37,6 +37,8 @@ final class CarbonModule implements Http.Routing.Module {
   public final void configure(Http.Routing carbon) {
     carbon.path("/carbon/page/{theme}", GET, this::page);
 
+    CarbonTearsheetTest.module(carbon);
+
     carbon.path("/carbon/styles.css", GET, this::styles);
   }
 

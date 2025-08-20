@@ -153,6 +153,18 @@ public final class Y implements ISuiteListener {
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Page
+  // ##################################################################
+
+  static Page page() {
+    return BROWSER.newPage();
+  }
+
+  // ##################################################################
+  // # END: Page
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: Project
   // ##################################################################
 
@@ -229,7 +241,7 @@ public final class Y implements ISuiteListener {
 
   }
 
-  public static Y.Tab newTab() {
+  public static Y.Tab tabDev() {
     final String baseUrl;
     baseUrl = "http://objectos.ui.localhost:" + YStart.TESTING_HTTP_PORT;
 

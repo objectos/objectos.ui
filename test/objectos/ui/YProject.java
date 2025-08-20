@@ -101,7 +101,7 @@ final class YProject implements Y.Project {
     final XCarbonGen gen;
     gen = new XCarbonGen(basedir);
 
-    gen.start(args);
+    gen.execute(args);
   }
 
 }

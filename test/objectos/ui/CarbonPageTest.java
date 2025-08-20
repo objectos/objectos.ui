@@ -25,7 +25,7 @@ public class CarbonPageTest extends CarbonTest {
 
   @Test(dataProvider = "themes")
   public void testCase01(Carbon.Theme theme) {
-    try (Y.Tab tab = Y.newTab()) {
+    try (Y.Tab tab = Y.tabDev()) {
       tab.navigate("/carbon/page", theme);
 
       tab.screenshot();

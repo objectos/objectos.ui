@@ -20,5 +20,4 @@ module objectos.ui {
   exports objectos.ui;
 
   requires transitive objectos.way;
-  requires java.desktop;
 }

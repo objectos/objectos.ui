@@ -1,0 +1,118 @@
+/*
+ * This file is part of Objectos UI.
+ * Copyright (C) 2025 Objectos Software LTDA.
+ *
+ * Objectos UI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Objectos UI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package objectos.ui;
+
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import objectos.way.Http;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+@Listeners(Y.class)
+public class CarbonTearsheetTest {
+
+  static void module(Http.Routing carbon) {
+  }
+
+  static final String JS = """
+  (el) => {
+    function getSimplifiedDomString(element) {
+      // Get computed styles
+      const styles = window.getComputedStyle(element);
+
+      // Format all styles for data-class attribute
+      const formattedStyles = Array.from(styles)
+        .filter(prop => !prop.startsWith('--') && styles.getPropertyValue(prop))
+        .map(prop => {
+          let value = styles.getPropertyValue(prop).trim();
+          // Replace spaces with underscores in values
+          value = value.replace(/\s+/g, '_');
+          return `${prop}:${value}`;
+        })
+        .join(' ');
+
+      // Get element name and class
+      const tagName = element.tagName.toLowerCase();
+      const classAttr = element.className ? ` class="${element.className}"` : '';
+
+      // Create start tag with data-class
+      const startTag = `<${tagName}${classAttr} data-class="${formattedStyles}">`;
+
+      // Recursively process child elements
+      const children = Array.from(element.children)
+        .map(child => getSimplifiedDomString(child))
+        .join('\\n');
+
+      // Return complete tag
+      return `${startTag}\\n${children}\\n</${tagName}>`;
+    }
+
+    return getSimplifiedDomString(el);
+  }
+  """;
+
+  @Test
+  public void testCase01() {
+    try (Page page = Y.page()) {
+      page.navigate("https://ibm-products.carbondesignsystem.com/iframe.html?globals=viewport.value%3Amobile2&viewMode=story&id=components-tearsheet--tearsheet");
+
+      final Locator root;
+      root = page.locator("#storybook-root");
+
+      root.waitFor();
+
+      final Locator styles;
+      styles = root.locator("style");
+
+      try (BufferedWriter w = Files.newBufferedWriter(Path.of("/tmp/tearsheet.css"))) {
+        for (Locator style : styles.all()) {
+          w.write(style.textContent());
+
+          w.newLine();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  @Test
+  public void testCase02() {
+    try (Page page = Y.page()) {
+      page.navigate("https://ibm-products.carbondesignsystem.com/iframe.html?globals=viewport.value%3Amobile2&viewMode=story&id=components-tearsheet--tearsheet");
+
+      final Locator root;
+      root = page.locator("[data-carbon-devtools-id='c4p--Tearsheet']");
+
+      root.waitFor();
+
+      Object result = root.evaluate(JS);
+
+      try (BufferedWriter w = Files.newBufferedWriter(Path.of("/tmp/tearsheet.html"))) {
+        w.write(result.toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+}

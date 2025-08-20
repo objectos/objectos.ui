@@ -17,14 +17,12 @@
  */
 package objectos.ui; // SED_REMOVE
 
-import static java.lang.System.Logger.Level.ERROR;
 import static java.lang.System.Logger.Level.INFO;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -59,18 +57,6 @@ final class XCarbonGen {
 
   private Appendable logger;
 
-  private Object object;
-
-  private Options options;
-
-  private String pathCss;
-
-  private String pathJs;
-
-  private byte state;
-
-  private String version;
-
   XCarbonGen(Path basedir) {
     this.basedir = basedir.toAbsolutePath();
   }
@@ -85,81 +71,24 @@ final class XCarbonGen {
     final XCarbonGen gen;
     gen = new XCarbonGen(basedir);
 
-    gen.start(args);
-  }
-
-  final void start(String... args) {
-    object = args;
-
-    execute($OPTIONS, $DONE);
+    gen.execute(args);
   }
 
   // ##################################################################
-  // # BEGIN: State Machine
+  // # BEGIN: Main
   // ##################################################################
 
-  static final byte $OPTIONS = 0;
-  static final byte $OPTIONS_PARSE = 1;
+  final void execute(String[] args) {
+    final Options options;
+    options = options(args);
 
-  static final byte $INIT = 2;
+    init(options);
 
-  static final byte $HTML = 3;
-  static final byte $HTML_IMPORT = 4;
-  static final byte $HTML_BRACKET = 5;
-  static final byte $HTML_LINK = 6;
-  static final byte $HTML_HREF = 7;
-
-  static final byte $JS = 8;
-  static final byte $JS_VERSION = 9;
-
-  static final byte $CSS = 10;
-  static final byte $CSS_SEL = 11;
-  static final byte $CSS_TARGET = 12;
-  static final byte $CSS_SKIP_RULE = 13;
-  static final byte $CSS_THEME = 14;
-
-  static final byte $STYLES = 15;
-
-  static final byte $DONE = 16;
-
-  final void execute(byte from, byte to) {
-    state = from;
-
-    while (state < to) {
-      execute();
-    }
-  }
-
-  private void execute() {
-    state = switch (state) {
-      case $OPTIONS -> executeOptions();
-      case $OPTIONS_PARSE -> executeOptionsParse();
-
-      case $INIT -> executeInit();
-
-      case $HTML -> executeHtml();
-      case $HTML_IMPORT -> executeHtmlImport();
-      case $HTML_BRACKET -> executeHtmlBracket();
-      case $HTML_LINK -> executeHtmlLink();
-      case $HTML_HREF -> executeHtmlHref();
-
-      case $JS -> executeJs();
-      case $JS_VERSION -> executeJsVersion();
-
-      case $CSS -> executeCss();
-      case $CSS_SEL -> executeCssSel();
-      case $CSS_TARGET -> executeCssTarget();
-      case $CSS_SKIP_RULE -> executeCssSkipRule();
-      case $CSS_THEME -> executeCssTheme();
-
-      case $STYLES -> executeStyles();
-
-      default -> throw new AssertionError("Unexpected state=" + state);
-    };
+    cds(options);
   }
 
   // ##################################################################
-  // # END: State Machine
+  // # END: Main
   // ##################################################################
 
   // ##################################################################
@@ -169,6 +98,8 @@ final class XCarbonGen {
   private static final class Option {
 
     enum Kind {
+
+      BOOLEAN,
 
       DURATION,
 
@@ -199,6 +130,8 @@ final class XCarbonGen {
 
     final void parse(String source, String rawValue) {
       value = switch (kind) {
+        case BOOLEAN -> Boolean.parseBoolean(rawValue);
+
         case DURATION -> Duration.parse(rawValue);
 
         case PATH -> Path.of(rawValue);
@@ -213,6 +146,10 @@ final class XCarbonGen {
       if (validator != null) {
         validator.accept(this);
       }
+    }
+
+    final boolean bool() {
+      return value(Kind.BOOLEAN);
     }
 
     final Duration duration() {
@@ -256,9 +193,15 @@ final class XCarbonGen {
     int maxLength = 0;
 
     // options: order is significant
-    final Option html = string("--html", opt -> {
+    final Option cdsSkip = bool("--cds-skip", opt -> {
       if (opt.unset()) {
-        throw new IllegalArgumentException("The option --html is required");
+        opt.set(Boolean.FALSE);
+      }
+    });
+
+    final Option cdsHtml = string("--cds-html", opt -> {
+      if (opt.unset() && !cdsSkip.bool()) {
+        throw new IllegalArgumentException("The option --cds-html is required");
       }
     });
 
@@ -286,6 +229,10 @@ final class XCarbonGen {
       return byName.values();
     }
 
+    private Option bool(String name, Consumer<Option> validator) {
+      return opt(Option.Kind.BOOLEAN, name, validator);
+    }
+
     private Option duration(String name, Consumer<Option> validator) {
       return opt(Option.Kind.DURATION, name, validator);
     }
@@ -311,71 +258,42 @@ final class XCarbonGen {
 
   }
 
-  private final class OptionsCtx {
-    private final String[] args;
-
-    private int index;
-
-    OptionsCtx(String[] args) {
-      this.args = args;
-    }
-
-    final boolean hasNext() {
-      return index < args.length;
-    }
-
-    final String next() {
-      return args[index++];
-    }
-  }
-
-  private byte executeOptions() {
+  private Options options(String[] args) {
+    final Options options;
     options = new Options();
 
-    final String[] args;
-    args = (String[]) object;
+    int idx;
+    idx = 0;
 
-    object = new OptionsCtx(args);
+    while (idx < args.length) {
+      final String name;
+      name = args[idx++];
 
-    return $OPTIONS_PARSE;
-  }
+      final Map<String, Option> byName;
+      byName = options.byName;
 
-  private byte executeOptionsParse() {
-    final OptionsCtx ctx;
-    ctx = (OptionsCtx) object;
+      final Option option;
+      option = byName.get(name);
 
-    if (!ctx.hasNext()) {
-      // no more command line args
-      return $INIT;
+      if (option == null) {
+        throw new IllegalArgumentException("Unknown option " + name);
+      }
+
+      if (idx >= args.length) {
+        throw new IllegalArgumentException("No value for option " + name);
+      }
+
+      try {
+        final String rawValue;
+        rawValue = args[idx++];
+
+        option.parse("CLI", rawValue);
+      } catch (RuntimeException parseException) {
+        throw new UnsupportedOperationException("Implement me", parseException);
+      }
     }
 
-    final String arg;
-    arg = ctx.next();
-
-    final Map<String, Option> byName;
-    byName = options.byName;
-
-    final Option option;
-    option = byName.get(arg);
-
-    if (option == null) {
-      throw new IllegalArgumentException("Unknown option " + arg);
-    }
-
-    if (!ctx.hasNext()) {
-      throw new UnsupportedOperationException("Implement me :: no value");
-    }
-
-    try {
-      final String rawValue;
-      rawValue = ctx.next();
-
-      option.parse("CLI", rawValue);
-
-      return $OPTIONS_PARSE;
-    } catch (RuntimeException parseException) {
-      throw new UnsupportedOperationException("Implement me", parseException);
-    }
+    return options;
   }
 
   // ##################################################################
@@ -386,7 +304,7 @@ final class XCarbonGen {
   // # BEGIN: Init
   // ##################################################################
 
-  private byte executeInit() {
+  private void init(Options options) {
     for (Option opt : options.values()) {
       opt.validate();
     }
@@ -409,332 +327,267 @@ final class XCarbonGen {
     for (Option option : options.values()) {
       logInfo(format, option.source, option.name, option.value);
     }
-
-    return $HTML;
   }
 
   // ##################################################################
   // # END: Init
   // ##################################################################
 
-  private static abstract class Req {
-    String text;
+  // ##################################################################
+  // # BEGIN: CDS
+  // ##################################################################
 
-    void set(String text) {
-      this.text = text;
-    }
+  private void cds(Options options) {
+    final String htmlLocation;
+    htmlLocation = options.cdsHtml.string();
+
+    final URI htmlUri;
+    htmlUri = URI.create(htmlLocation);
+
+    final String html;
+    html = read(options, htmlUri, "carbon.html");
+
+    final String cssPath;
+    cssPath = cdsCssPath(html);
+
+    cdsCssParse(options, cssPath);
+
+    final String jsPath;
+    jsPath = cdsJsPath(html);
+
+    final String cdsVersion;
+    cdsVersion = cdsJsVersion(options, jsPath);
+
+    cdsWrite(cdsVersion);
   }
 
   // ##################################################################
-  // # BEGIN: HTML
+  // # BEGIN: CDS: JS
   // ##################################################################
 
-  private static class HtmlCtx extends Req {
-    int start;
+  private String cdsJsPath(String s) {
     int end;
+    end = s.length() - 1;
 
-    @Override
-    final void set(String text) {
-      super.set(text);
+    while (end >= 0) {
+      end = s.lastIndexOf('\'', end);
 
-      end = text.length() - 1;
-    }
-  }
-
-  private byte executeHtml() {
-    try {
-      object = new HtmlCtx();
-
-      final String location;
-      location = options.html.string();
-
-      final URI uri;
-      uri = URI.create(location);
-
-      final URL url;
-      url = uri.toURL();
-
-      final Path html;
-      html = resolveWork("carbon.html");
-
-      return reqDownload(url, html, $HTML_IMPORT);
-    } catch (MalformedURLException e) {
-      return toError("Bad HTML URL?", e);
-    }
-  }
-
-  private byte executeHtmlImport() {
-    final HtmlCtx ctx;
-    ctx = (HtmlCtx) object;
-
-    ctx.end = ctx.text.lastIndexOf('\'', ctx.end);
-
-    if (ctx.end < 0) {
-      return toError("Could not find closing ' character");
-    }
-
-    int strStart;
-    strStart = ctx.text.lastIndexOf('\'', ctx.end - 1);
-
-    if (strStart < 0) {
-      return toError("Could not find opening ' character");
-    }
-
-    String value;
-    value = ctx.text.substring(strStart + 1, ctx.end);
-
-    if (value.startsWith("./main") && value.endsWith(".js")) {
-      // skip './'
-      value = value.substring(2);
-
-      logInfo("Found  JS: %s", value);
-
-      pathJs = value;
-
-      return $HTML_BRACKET;
-    } else {
-      ctx.end = strStart - 1;
-
-      return $HTML_IMPORT;
-    }
-  }
-
-  private byte executeHtmlBracket() {
-    final HtmlCtx ctx;
-    ctx = (HtmlCtx) object;
-
-    ctx.start = ctx.text.indexOf('<', ctx.start);
-
-    if (ctx.start < 0) {
-      return toError("Failed to find CSS link in the HTML file.");
-    }
-
-    final int endIndex;
-    endIndex = ctx.text.indexOf(' ', ctx.start);
-
-    if (endIndex < 0) {
-      return toError("Failed to find CSS link in the HTML file.");
-    }
-
-    // skip '<'
-    ctx.start += 1;
-
-    final String link;
-    link = "link";
-
-    final int len;
-    len = endIndex - ctx.start;
-
-    if (len != link.length()) {
-      // tag length differs
-      return $HTML_BRACKET;
-    }
-
-    final int startIndex;
-    startIndex = ctx.start;
-
-    ctx.start = endIndex;
-
-    if (ctx.text.regionMatches(startIndex, link, 0, link.length())) {
-      ctx.end = ctx.text.indexOf('>', ctx.start);
-
-      if (ctx.end < 0) {
-        return toError("Failed to find end of <link> tag");
+      if (end < 0) {
+        throw error("Could not find closing ' character");
       }
 
-      return $HTML_LINK;
-    } else {
-      return $HTML_BRACKET;
+      final int strStart;
+      strStart = s.lastIndexOf('\'', end - 1);
+
+      if (strStart < 0) {
+        throw error("Could not find opening ' character");
+      }
+
+      String value;
+      value = s.substring(strStart + 1, end);
+
+      if (value.startsWith("./main") && value.endsWith(".js")) {
+        // skip './'
+        value = value.substring(2);
+
+        logInfo("Found  JS: %s", value);
+
+        return value;
+      }
+
+      end = strStart - 1;
     }
+
+    throw error("Could not find path for CDS JS file");
   }
 
-  private byte executeHtmlLink() {
-    final HtmlCtx ctx;
-    ctx = (HtmlCtx) object;
+  private String cdsJsVersion(Options options, String pathJs) {
+    final URI uri;
+    uri = resolveUri(options.cdsHtml, pathJs);
 
-    final int equals;
-    equals = ctx.text.indexOf('=', ctx.start);
+    final String s;
+    s = read(options, uri, "carbon.js");
 
-    if (equals < 0) {
-      return toError("Failed to find the attribute '=' character");
+    int mark;
+    mark = s.length() - 1;
+
+    while (mark >= 0) {
+      final int colon;
+      colon = s.lastIndexOf(':', mark);
+
+      if (colon < 0) {
+        throw error("Could not find JSON ':' character");
+      }
+
+      final int nameEnd;
+      nameEnd = s.lastIndexOf('"', colon);
+
+      if (nameEnd < 0) {
+        throw error("Could not find JSON property name closing '\"' character");
+      }
+
+      int nameStart;
+      nameStart = s.lastIndexOf('"', nameEnd - 1);
+
+      if (nameStart < 0) {
+        throw error("Could not find JSON property name opening '\"' character");
+      }
+
+      nameStart += 1; // skip quote itself
+
+      final String propName;
+      propName = "rE";
+
+      final int len;
+      len = nameEnd - nameStart;
+
+      if (len != propName.length() ||
+          !s.regionMatches(nameStart, propName, 0, len)) {
+        mark = nameStart;
+
+        continue;
+      }
+
+      int valueStart;
+      valueStart = s.indexOf('"', colon);
+
+      if (valueStart < 0) {
+        throw error("Could not find JSON property value opening '\"' character");
+      }
+
+      valueStart += 1; // skip quote itself
+
+      final int valueEnd;
+      valueEnd = s.indexOf('"', valueStart);
+
+      if (valueEnd < 0) {
+        throw error("Could not find JSON property value closing '\"' character");
+      }
+
+      final String value;
+      value = s.substring(valueStart, valueEnd);
+
+      logInfo("Found VER: %s", value);
+
+      return value;
     }
 
-    if (equals > ctx.end) {
-      // equals not of this tag
-      // search next tag
-      ctx.end = ctx.start;
-
-      return $HTML_BRACKET;
-    }
-
-    String attrName;
-    attrName = ctx.text.substring(ctx.start, equals);
-
-    attrName = attrName.trim();
-
-    ctx.start = equals + 1;
-
-    if ("href".equals(attrName)) {
-      return $HTML_HREF;
-    } else {
-      return $HTML_LINK;
-    }
-  }
-
-  private byte executeHtmlHref() {
-    final HtmlCtx ctx;
-    ctx = (HtmlCtx) object;
-
-    final char quote;
-    quote = ctx.text.charAt(ctx.start);
-
-    if (quote != '"') {
-      return toError("href value is not quoted");
-    }
-
-    final int valueStart;
-    valueStart = ctx.start + 1;
-
-    final int valueEnd;
-    valueEnd = ctx.text.indexOf(quote, valueStart);
-
-    if (valueEnd < 0) {
-      return toError("Failed to find the closing '\"' character");
-    }
-
-    if (valueEnd > ctx.end) {
-      return toError("The closing '\"' character seems to be outside the current tag");
-    }
-
-    final String value;
-    value = ctx.text.substring(valueStart, valueEnd);
-
-    if (value.startsWith("main") && value.endsWith(".css")) {
-      logInfo("Found CSS: %s", value);
-
-      pathCss = value;
-
-      return $JS;
-    } else {
-      logInfo("Ignored HREF attribute: %s", value);
-
-      // search next tag?
-      ctx.start = ctx.end;
-
-      return $HTML_BRACKET;
-    }
-  }
-
-  // ##################################################################
-  // # END: HTML
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: JS
-  // ##################################################################
-
-  private static final class JsCtx extends Req {
-    int end;
-
-    @Override
-    final void set(String text) {
-      super.set(text);
-
-      end = text.length() - 1;
-    }
-  }
-
-  private byte executeJs() {
-    try {
-      object = new JsCtx();
-
-      final URI uri;
-      uri = resolveUri(pathJs);
-
-      final URL url;
-      url = uri.toURL();
-
-      final Path target;
-      target = resolveWork("carbon.js");
-
-      return reqDownload(url, target, $JS_VERSION);
-    } catch (MalformedURLException e) {
-      return toError("Bad JS URL?", e);
-    }
-  }
-
-  private byte executeJsVersion() {
-    final JsCtx ctx;
-    ctx = (JsCtx) object;
-
-    ctx.end = ctx.text.lastIndexOf(':', ctx.end);
-
-    if (ctx.end < 0) {
-      return toError("Could not find JSON ':' character");
-    }
-
-    final int nameEnd;
-    nameEnd = ctx.text.lastIndexOf('"', ctx.end);
-
-    if (nameEnd < 0) {
-      return toError("Could not find JSON property name closing '\"' character");
-    }
-
-    int nameStart;
-    nameStart = ctx.text.lastIndexOf('"', nameEnd - 1);
-
-    if (nameStart < 0) {
-      return toError("Could not find JSON property name opening '\"' character");
-    }
-
-    nameStart += 1; // skip quote itself
-
-    final String propName;
-    propName = "rE";
-
-    final int len;
-    len = nameEnd - nameStart;
-
-    if (len != propName.length() ||
-        !ctx.text.regionMatches(nameStart, propName, 0, len)) {
-      ctx.end -= 1;
-
-      return $JS_VERSION;
-    }
-
-    int valueStart;
-    valueStart = ctx.text.indexOf('"', ctx.end);
-
-    if (valueStart < 0) {
-      return toError("Could not find JSON property value opening '\"' character");
-    }
-
-    valueStart += 1; // skip quote itself
-
-    final int valueEnd;
-    valueEnd = ctx.text.indexOf('"', valueStart);
-
-    if (valueEnd < 0) {
-      return toError("Could not find JSON property value closing '\"' character");
-    }
-
-    final String value;
-    value = ctx.text.substring(valueStart, valueEnd);
-
-    logInfo("Found VER: %s", value);
-
-    version = value;
-
-    return $CSS;
+    throw error("Could not find JS version");
   }
 
   // ##################################################################
-  // # END: JS
+  // # END: CDS: JS
   // ##################################################################
 
   // ##################################################################
-  // # BEGIN: CSS
+  // # BEGIN: CDS: CSS
   // ##################################################################
+
+  private static final String LINK = "link";
+
+  private String cdsCssPath(String s) {
+    int mark;
+    mark = 0;
+
+    final int max;
+    max = s.length();
+
+    outer: while (mark < max) {
+      final int left;
+      left = s.indexOf('<', mark);
+
+      if (left < 0) {
+        throw error("Failed to find CSS link in the HTML file.");
+      }
+
+      final int space;
+      space = s.indexOf(' ', mark);
+
+      if (space < 0) {
+        throw error("Failed to find CSS link in the HTML file.");
+      }
+
+      // skip '<'
+      mark += 1;
+
+      final int len;
+      len = space - mark;
+
+      if (len != LINK.length()) {
+        // tag length differs
+        continue;
+      }
+
+      if (!s.regionMatches(mark, LINK, 0, LINK.length())) {
+        // not a <link> tag
+        continue;
+      }
+
+      final int right;
+      right = s.indexOf('>', space);
+
+      if (right < 0) {
+        throw error("Failed to find end of <link> tag");
+      }
+
+      mark = space;
+
+      while (mark < right) {
+        final int equals;
+        equals = s.indexOf('=', mark, right);
+
+        if (equals < 0) {
+          continue outer;
+        }
+
+        String attrName;
+        attrName = s.substring(mark, equals);
+
+        attrName = attrName.trim();
+
+        mark = equals + 1;
+
+        if (!"href".equals(attrName)) {
+          continue;
+        }
+
+        final char leftQuote;
+        leftQuote = s.charAt(mark);
+
+        if (leftQuote != '"') {
+          throw error("href value is not quoted");
+        }
+
+        mark += 1;
+
+        final int rightQuote;
+        rightQuote = s.indexOf(leftQuote, mark, right);
+
+        if (rightQuote < 0) {
+          throw error("Failed to find the closing '\"' character");
+        }
+
+        final String value;
+        value = s.substring(mark, rightQuote);
+
+        if (!value.startsWith("main") || !value.endsWith(".css")) {
+          logInfo("Ignored HREF attribute: %s", value);
+
+          // search next tag?
+          mark = right;
+
+          continue outer;
+        }
+
+        logInfo("Found CSS: %s", value);
+
+        return value;
+      }
+
+    }
+
+    throw error("Failed to find CDS CSS file path");
+  }
 
   private enum CssAction {
     THEME;
@@ -756,199 +609,138 @@ final class XCarbonGen {
 
   private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
 
-  private static final class CssCtx extends Req {
-    int start;
+  private class CssCtx {
+    int cursor;
 
-    List<String> names = new ArrayList<>();
+    int idx;
 
-    final List<CssTarget> targets;
+    int mark;
 
-    CssCtx() {
-      final List<CssTarget> list;
-      list = new ArrayList<>();
+    boolean media;
 
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ":root"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g90", ".carbon-g90"));
-      list.add(CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"));
-      list.add(CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme="));
+    final List<String> names = new ArrayList<>();
 
-      targets = list;
+    final String s;
+
+    final List<CssTarget> targets = List.of(
+        CssAction.THEME.of(CssMatch.EXACT, ":root"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--g90", ".carbon-g90"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"),
+        CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme=")
+    );
+
+    CssCtx(String s) {
+      this.s = s;
+    }
+
+    final boolean charTest() {
+      return cursor < s.length();
+    }
+
+    final char charNext() {
+      idx = cursor++;
+
+      return s.charAt(idx);
+    }
+
+    final void markCursor() {
+      mark = cursor;
+    }
+
+    final void markIdx() {
+      mark = idx;
+    }
+
+    final String name() {
+      return s.substring(mark, idx);
     }
 
     final void nameAdd(String name) {
       names.add(name);
     }
 
-    final String namePeek() {
-      return names.getLast();
-    }
-
     final void nameRemove() {
       names.removeLast();
     }
-  }
 
-  private byte executeCss() {
-    try {
-      object = new CssCtx();
+    final CssTarget target(String name) {
+      for (CssTarget target : targets) {
+        final boolean res;
+        res = switch (target.match) {
+          case EXACT -> name.equals(target.selector);
 
-      final URI uri;
-      uri = resolveUri(pathCss);
+          case STARTS_WITH -> name.startsWith(target.selector);
 
-      final URL url;
-      url = uri.toURL();
+          default -> false;
+        };
 
-      final Path target;
-      target = resolveWork("carbon.css");
+        if (res) {
+          return target;
+        }
+      }
 
-      return reqDownload(url, target, $CSS_SEL);
-    } catch (MalformedURLException e) {
-      return toError("Bad CSS URL?", e);
+      return null;
     }
   }
 
-  private byte executeCssSel() {
-    final CssCtx ctx;
-    ctx = (CssCtx) object;
+  private void cdsCssParse(Options options, String cssPath) {
+    final URI uri;
+    uri = resolveUri(options.cdsHtml, cssPath);
 
     final String s;
-    s = ctx.text;
+    s = read(options, uri, "carbon.css");
 
-    int idx;
-    idx = ctx.start;
+    final CssCtx ctx;
+    ctx = new CssCtx(s);
 
-    int bracket;
-    bracket = idx;
-
-    boolean media;
-    media = false;
-
-    while (idx < s.length()) {
+    while (ctx.charTest()) {
       final char c;
-      c = s.charAt(idx);
+      c = ctx.charNext();
 
       if (c == '@') {
-        media = true;
+        ctx.media = true;
       }
 
       else if (c == '}') {
         ctx.nameRemove();
 
-        ctx.start = idx + 1;
-
-        return $CSS_SEL;
+        ctx.markCursor();
       }
 
       else if (c == '{') {
-        bracket = idx;
+        final String name;
+        name = ctx.name();
 
-        break;
-      }
+        ctx.nameAdd(name);
 
-      idx++;
-    }
+        ctx.markCursor();
 
-    if (bracket == ctx.start) {
-      // no '{' found, assume we're done
-      return $STYLES;
-    }
+        if (ctx.media) {
+          ctx.media = false;
 
-    final String name;
-    name = s.substring(ctx.start, bracket);
+          continue;
+        }
 
-    ctx.nameAdd(name);
+        final CssTarget target;
+        target = ctx.target(name);
 
-    ctx.start = bracket + 1; // skip '{'
+        if (target == null) {
+          continue;
+        }
 
-    if (media) {
-      return $CSS_SEL;
-    } else {
-      return $CSS_TARGET;
-    }
-  }
+        switch (target.action) {
+          case THEME -> {
+            cdsCssParseTheme(ctx);
 
-  private byte executeCssTarget() {
-    final CssCtx ctx;
-    ctx = (CssCtx) object;
+            ctx.nameRemove();
 
-    CssTarget result;
-    result = null;
-
-    final String name;
-    name = ctx.namePeek();
-
-    final List<CssTarget> targets;
-    targets = ctx.targets;
-
-    for (CssTarget target : targets) {
-      final boolean res;
-      res = switch (target.match) {
-        case EXACT -> name.equals(target.selector);
-
-        case STARTS_WITH -> name.startsWith(target.selector);
-
-        default -> false;
-      };
-
-      if (res) {
-        result = target;
-
-        break;
+            ctx.markCursor();
+          }
+        }
       }
     }
-
-    if (result == null) {
-      return $CSS_SKIP_RULE;
-    }
-
-    if (result.name != null) {
-      ctx.nameRemove();
-
-      ctx.nameAdd(result.name);
-    }
-
-    return switch (result.action) {
-      case THEME -> $CSS_THEME;
-    };
-  }
-
-  private byte executeCssSkipRule() {
-    final CssCtx ctx;
-    ctx = (CssCtx) object;
-
-    final String s;
-    s = ctx.text;
-
-    int idx;
-    idx = ctx.start;
-
-    int bracket;
-    bracket = idx;
-
-    while (idx < s.length()) {
-      final char c;
-      c = s.charAt(idx);
-
-      if (c == '}') {
-        ctx.nameRemove();
-
-        bracket = idx;
-
-        break;
-      }
-
-      idx++;
-    }
-
-    if (bracket == ctx.start) {
-      return toError("Could not find rule '}' character");
-    }
-
-    ctx.start = bracket + 1;
-
-    return $CSS_SEL;
   }
 
   private static final class Theme {
@@ -989,10 +781,7 @@ final class XCarbonGen {
 
   private final Map<List<String>, Theme> themes = new LinkedHashMap<>();
 
-  private byte executeCssTheme() {
-    final CssCtx ctx;
-    ctx = (CssCtx) object;
-
+  private void cdsCssParseTheme(CssCtx ctx) {
     final List<String> names;
     names = List.copyOf(ctx.names);
 
@@ -1016,27 +805,17 @@ final class XCarbonGen {
     Parser parser;
     parser = Parser.START;
 
-    final String s;
-    s = ctx.text;
-
-    int cursor = ctx.start;
-
-    final int limit = s.length();
-
     boolean custom = false;
 
-    int dash = 0, start = 0;
+    int dash = 0;
 
     DeclarationKind kind = null;
 
     String name = null, val0 = null, val1 = null;
 
-    loop: while (cursor < limit) {
-      final int idx;
-      idx = cursor++;
-
+    loop: while (ctx.charTest()) {
       final char c;
-      c = s.charAt(idx);
+      c = ctx.charNext();
 
       switch (parser) {
         case START -> {
@@ -1056,7 +835,7 @@ final class XCarbonGen {
 
             custom = false;
 
-            start = idx;
+            ctx.markIdx();
           }
         }
 
@@ -1071,14 +850,14 @@ final class XCarbonGen {
             if (dash == 3) {
               parser = Parser.PROPERTY;
 
-              start = idx + 1;
+              ctx.markCursor();
             } else {
               parser = Parser.PREFIX;
             }
           }
 
           else if (c == ':') {
-            return toError("Unexpected end of custom property name");
+            throw error("Unexpected end of custom property name");
           }
         }
 
@@ -1086,16 +865,16 @@ final class XCarbonGen {
           if (c == ':') {
             parser = Parser.VALUE;
 
-            name = s.substring(start, idx);
+            name = ctx.name();
           }
 
           else if (c == ';') {
-            return toError("Unexpected end of custom property name");
+            throw error("Unexpected end of custom property name");
           }
         }
 
         case VALUE -> {
-          start = idx;
+          ctx.markIdx();
 
           if (c == ' ') {
             parser = Parser.VALUE;
@@ -1103,7 +882,7 @@ final class XCarbonGen {
 
           else if (c == '#' || c == 'r') {
             if (!custom) {
-              return toError("Unexpected value: regular prop + color value");
+              throw error("Unexpected value: regular prop + color value");
             }
 
             colors.add(name);
@@ -1115,7 +894,7 @@ final class XCarbonGen {
 
           else if ('0' <= c && c <= '9') {
             if (!custom) {
-              return toError("Unexpected value: regular prop + dimension value");
+              throw error("Unexpected value: regular prop + dimension value");
             }
 
             parser = Parser.VALUE_END;
@@ -1148,7 +927,7 @@ final class XCarbonGen {
           }
 
           else {
-            return toError("Unexpected char in var() c=" + c);
+            throw error("Unexpected char in var() c=" + c);
           }
         }
 
@@ -1161,7 +940,7 @@ final class XCarbonGen {
             dash += 1;
 
             if (dash == 3) {
-              start = idx + 1;
+              ctx.markCursor();
 
               parser = Parser.VALUE_VAR_VAL0;
             }
@@ -1174,13 +953,13 @@ final class XCarbonGen {
 
             kind = custom ? DeclarationKind.CUSTOM_VAR : DeclarationKind.REGULAR_VAR;
 
-            val0 = s.substring(start, idx);
+            val0 = ctx.name();
           }
 
           else if (c == ',') {
             parser = Parser.VALUE_VAR_VAL1;
 
-            val0 = s.substring(start, idx);
+            val0 = ctx.name();
           }
         }
 
@@ -1194,11 +973,11 @@ final class XCarbonGen {
 
             kind = DeclarationKind.CUSTOM_COLOR_VAR2;
 
-            start = idx;
+            ctx.markIdx();
           }
 
           else {
-            return toError("Unexpected fallback value for var(): only #aabbcc style colors supported");
+            throw error("Unexpected fallback value for var(): only #aabbcc style colors supported");
           }
         }
 
@@ -1214,13 +993,13 @@ final class XCarbonGen {
           else if (c == ')') {
             parser = Parser.VALUE_VAR_END;
 
-            val1 = s.substring(start, idx);
+            val1 = ctx.name();
 
             theme.add(kind, name, val0, val1);
           }
 
           else {
-            return toError("Unexpected char in hex color: c=" + c);
+            throw error("Unexpected char in hex color: c=" + c);
           }
         }
 
@@ -1238,7 +1017,7 @@ final class XCarbonGen {
           }
 
           else {
-            return toError("Unexpected char in var() end: c=" + c);
+            throw error("Unexpected char in var() end: c=" + c);
           }
         }
 
@@ -1246,13 +1025,13 @@ final class XCarbonGen {
           if (c == ';') {
             parser = Parser.START;
 
-            val0 = s.substring(start, idx);
+            val0 = ctx.name();
 
             theme.add(kind, name, val0, val1);
           }
 
           else if (c == '}') {
-            val0 = s.substring(start, idx);
+            val0 = ctx.name();
 
             theme.add(kind, name, val0, val1);
 
@@ -1261,9 +1040,11 @@ final class XCarbonGen {
         }
       }
     }
-
-    return $CSS_SEL;
   }
+
+  // ##################################################################
+  // # END: CDS: CSS
+  // ##################################################################
 
   // ##################################################################
   // # END: CSS
@@ -1273,7 +1054,7 @@ final class XCarbonGen {
   // # BEGIN: Styles
   // ##################################################################
 
-  private byte executeStyles() {
+  private void cdsWrite(String version) {
     final Path path;
     path = Path.of("main", "objectos", "ui", "CarbonStyles.java");
 
@@ -1286,7 +1067,7 @@ final class XCarbonGen {
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      return toError("Failed to create directory for CarbonStyles.java", e);
+      throw error("Failed to create directory for CarbonStyles.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -1340,9 +1121,8 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
 }
       """);
 
-      return $DONE;
     } catch (IOException e) {
-      return toError("Failed to generate CarbonStyleSheet.java", e);
+      throw error("Failed to generate CarbonStyleSheet.java", e);
     }
   }
 
@@ -1426,8 +1206,18 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   // # BEGIN: I/O
   // ##################################################################
 
-  private byte reqDownload(URL url, Path target, byte onSuccess) {
+  private String read(Options options, URI uri, String dest) {
+    final Path target;
+    target = resolveWork(options, dest);
+
+    return read(options, uri, target);
+  }
+
+  private String read(Options options, URI uri, Path target) {
     try {
+      final URL url;
+      url = uri.toURL();
+
       final URLConnection conn;
       conn = url.openConnection();
 
@@ -1452,23 +1242,15 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
         Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
       }
 
-      final Req req;
-      req = (Req) object;
-
-      final String s;
-      s = Files.readString(target, StandardCharsets.UTF_8);
-
-      req.set(s);
-
-      return onSuccess;
+      return Files.readString(target, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      return toError("Failed to download file", e);
+      throw new UncheckedIOException(e);
     }
   }
 
-  private URI resolveUri(String name) {
+  private URI resolveUri(Option option, String name) {
     final String location;
-    location = options.html.string();
+    location = option.string();
 
     final URI uri;
     uri = URI.create(location);
@@ -1476,7 +1258,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     return uri.resolve(name);
   }
 
-  private Path resolveWork(String name) {
+  private Path resolveWork(Options options, String name) {
     final Path workdir;
     workdir = options.workdir.path();
 
@@ -1501,10 +1283,6 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     );
   }
 
-  private void logError(String message) {
-    log0(ERROR, message);
-  }
-
   private void log0(System.Logger.Level level, String message) {
     try {
       final LocalDateTime now;
@@ -1525,18 +1303,12 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     }
   }
 
-  private byte toError(String message) {
-    logError(message);
-
-    return $DONE;
+  private RuntimeException error(String message) {
+    return new RuntimeException(message);
   }
 
-  private byte toError(String message, Throwable t) {
-    logError(message);
-
-    t.printStackTrace();
-
-    return $DONE;
+  private RuntimeException error(String message, IOException e) {
+    return new UncheckedIOException(message, e);
   }
 
   // ##################################################################

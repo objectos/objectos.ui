@@ -19,6 +19,8 @@ package objectos.ui;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,14 +34,20 @@ public class XCarbonGenTest {
       opts.webdir(Path.of("test-resources", "carbon"));
     })) {
       final URI html;
-      html = proj.resolveWeb("iframe.html");
+      html = proj.resolveWeb("cds.html");
 
-      proj.carbonGen("--html", html.toString());
+      proj.carbonGen(
+          "--cds-html", html.toString()
+      );
 
       final Path carbon;
       carbon = proj.resolve("main/objectos/ui/CarbonStyles.java");
 
       assertEquals(Files.exists(carbon), true);
+
+      System.out.println(Files.readString(carbon));
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
