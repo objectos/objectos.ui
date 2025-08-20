@@ -19,8 +19,6 @@ package objectos.ui;
 
 import static org.testng.Assert.assertEquals;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +27,7 @@ import org.testng.annotations.Test;
 public class XCarbonGenTest {
 
   @Test
-  public void testCase01() {
+  public void cds() {
     try (Y.Project proj = Y.project(opts -> {
       opts.webdir(Path.of("test-resources", "cds"));
     })) {
@@ -48,8 +46,8 @@ public class XCarbonGenTest {
     }
   }
 
-  @Test(enabled = false)
-  public void testCase02() {
+  @Test
+  public void c4p() {
     try (Y.Project proj = Y.project(opts -> {
       opts.webdir(Path.of("test-resources", "c4p"));
     })) {
@@ -61,14 +59,10 @@ public class XCarbonGenTest {
           "--cds-skip", "true"
       );
 
-      final Path carbon;
-      carbon = proj.resolve("main/objectos/ui/CarbonStyles.java");
+      final Path tearsheet;
+      tearsheet = proj.resolve("main-carbon/tearsheet.css");
 
-      assertEquals(Files.exists(carbon), true);
-
-      System.out.println(Files.readString(carbon));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      assertEquals(Files.exists(tearsheet), true);
     }
   }
 

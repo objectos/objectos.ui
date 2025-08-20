@@ -62,6 +62,11 @@ include make/common-clean.mk
 
 ## Compile deps
 COMPILE_DEPS := $(WAY)
+COMPILE_DEPS += $(PLAYWRIGHT)
+
+## Compile opts
+COMPILE_OPTS := --add-modules playwright
+COMPILE_OPTS += --add-reads objectos.ui=playwright
 
 include make/java-compile.mk
 

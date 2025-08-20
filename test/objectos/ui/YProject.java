@@ -99,7 +99,7 @@ final class YProject implements Y.Project {
   @Override
   public final void carbonGen(String... args) {
     final XCarbonGen gen;
-    gen = new XCarbonGen(basedir);
+    gen = new XCarbonGen(basedir, Y.BROWSER);
 
     gen.execute(args);
   }

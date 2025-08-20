@@ -59,7 +59,7 @@ final class YProjectBuilder implements Y.Project.Options {
   @Override
   public final void webdir(Path value) {
     if (port == 0) {
-      port = PORTS.get();
+      port = PORTS.getAndIncrement();
 
       baseUrl = URI.create("http://localhost:" + port + "/");
     }
@@ -109,7 +109,11 @@ final class YProjectBuilder implements Y.Project.Options {
 
         opts.handler(Http.Handler.of(routing -> {
           routing.path("/{}", webResources::handlePath);
+
+          routing.handler(Http.Handler.notFound());
         }));
+
+        opts.noteSink(noteSink);
 
         opts.port(port);
       });
