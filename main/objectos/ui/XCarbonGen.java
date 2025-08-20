@@ -19,6 +19,12 @@ package objectos.ui; // SED_REMOVE
 
 import static java.lang.System.Logger.Level.INFO;
 
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.BrowserType.LaunchOptions;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +54,8 @@ import java.util.function.Consumer;
 final class XCarbonGen {
 
   private final Path basedir;
+
+  private Browser browser;
 
   private Clock clock;
 
@@ -377,6 +385,25 @@ final class XCarbonGen {
     for (Option option : options.values()) {
       logInfo(format, option.source, option.name, option.value);
     }
+
+    final Playwright playwright;
+    playwright = Playwright.create();
+
+    final Runtime runtime;
+    runtime = Runtime.getRuntime();
+
+    final Thread thread;
+    thread = Thread.ofPlatform().unstarted(playwright::close);
+
+    runtime.addShutdownHook(thread);
+
+    final BrowserType chromium;
+    chromium = playwright.chromium();
+
+    final LaunchOptions launchOptions;
+    launchOptions = new BrowserType.LaunchOptions().setHeadless(true);
+
+    browser = chromium.launch(launchOptions);
   }
 
   // ##################################################################
@@ -762,6 +789,12 @@ final class XCarbonGen {
 
         if (target == null) {
           continue;
+        }
+
+        if (target.name != null) {
+          ctx.nameRemove();
+
+          ctx.nameAdd(target.name);
         }
 
         switch (target.action) {
@@ -1256,6 +1289,11 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     final String version;
     version = c4pJsVersion(options, jsPath);
 
+    final String css;
+    css = c4pCss(options);
+
+    System.out.println(css);
+
     c4pWrite(version);
   }
 
@@ -1365,6 +1403,34 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     }
 
     throw error("Failed to find C4P JS version");
+  }
+
+  private String c4pCss(Options options) {
+    try (Page page = browser.newPage()) {
+      final Option opt;
+      opt = options.c4pHtml;
+
+      final String base;
+      base = opt.string();
+
+      final String url;
+      url = base + "?id=overview-examples--playground&viewMode=story";
+
+      page.navigate(url);
+
+      final Locator root;
+      root = page.locator("#storybook-root");
+
+      root.waitFor();
+
+      final Locator styles;
+      styles = root.locator("style");
+
+      final Locator style;
+      style = styles.first();
+
+      return style.textContent();
+    }
   }
 
   private void c4pWrite(String version) {

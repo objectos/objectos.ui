@@ -19,10 +19,14 @@ package objectos.ui;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Request;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import objectos.way.Http;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -70,7 +74,7 @@ public class CarbonTearsheetTest {
   }
   """;
 
-  @Test
+  @Test(enabled = false)
   public void testCase01() {
     try (Page page = Y.page()) {
       page.navigate("https://ibm-products.carbondesignsystem.com/iframe.html?globals=viewport.value%3Amobile2&viewMode=story&id=components-tearsheet--tearsheet");
@@ -95,9 +99,11 @@ public class CarbonTearsheetTest {
     }
   }
 
-  @Test
+  @Test(enabled = false)
   public void testCase02() {
     try (Page page = Y.page()) {
+      Consumer<Request> listener = request -> System.out.println("wget " + request.url());
+      page.onRequestFinished(listener);
       page.navigate("https://ibm-products.carbondesignsystem.com/iframe.html?globals=viewport.value%3Amobile2&viewMode=story&id=components-tearsheet--tearsheet");
 
       final Locator root;
@@ -112,6 +118,21 @@ public class CarbonTearsheetTest {
       } catch (IOException e) {
         e.printStackTrace();
       }
+    }
+  }
+
+  @Test(enabled = false)
+  public void testCase03() {
+    try (Page page = Y.page()) {
+      List<String> urls = new ArrayList<>();
+      Consumer<Request> listener = request -> urls.add(request.url());
+      page.onRequestFinished(listener);
+      page.navigate("https://ibm-products.carbondesignsystem.com/iframe.html?id=overview-examples--playground&viewMode=story");
+
+      final Locator root;
+      root = page.locator("#storybook-root");
+
+      root.waitFor();
     }
   }
 

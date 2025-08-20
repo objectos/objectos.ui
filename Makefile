@@ -57,31 +57,6 @@ include make/java-core.mk
 include make/common-clean.mk
 
 #
-# ui@carbon-gen
-#
-
-## carbon-gen target 
-CARBON_GEN_SCRIPT := CarbonGen.java
-
-## carbon-gen src
-CARBON_GEN_JAVA := main/objectos/ui/XCarbonGen.java
-
-## html page containing main.css
-CARBON_HTML := https://react.carbondesignsystem.com/iframe.html
-
-## carbon gen command
-CARBON_GENX := $(JAVA)
-CARBON_GENX += $(CARBON_GEN_SCRIPT)
-CARBON_GENX += --html $(CARBON_HTML) 
-
-.PHONY: carbon-gen
-carbon-gen: $(CARBON_GEN_SCRIPT)
-	$(CARBON_GENX)
-	
-$(CARBON_GEN_SCRIPT): $(CARBON_GEN_JAVA)
-	sed '/\/\/ SED_REMOVE/d' $< > $@
-
-#
 # ui@compile
 #
 
@@ -89,6 +64,53 @@ $(CARBON_GEN_SCRIPT): $(CARBON_GEN_JAVA)
 COMPILE_DEPS := $(WAY)
 
 include make/java-compile.mk
+
+#
+# ui@carbon-gen
+#
+
+## carbon-gen dependencies
+CARBON_GEN_DEPS := $(PLAYWRIGHT)
+
+## carbon-gen resolution files
+CARBON_GEN_RESOLUTION_FILES := $(call to-resolution-files,$(CARBON_GEN_DEPS))
+
+## carbon-gen path
+CARBON_GEN_PATH := $(WORK)/carbon-gen-path
+
+## carbon-gen target 
+CARBON_GEN_SCRIPT := CarbonGen.java
+
+## carbon-gen src
+CARBON_GEN_JAVA := main/objectos/ui/XCarbonGen.java
+
+## html page (cds)
+CARBON_CDS := https://react.carbondesignsystem.com/iframe.html
+
+## html page (c4p)
+CARBON_C4P := https://ibm-products.carbondesignsystem.com/iframe.html
+
+## carbon gen command
+CARBON_GENX := $(JAVA)
+CARBON_GENX += -cp @$(CARBON_GEN_PATH)
+CARBON_GENX += $(CARBON_GEN_SCRIPT)
+CARBON_GENX += --cds-html $(CARBON_CDS) 
+CARBON_GENX += --c4p-html $(CARBON_C4P) 
+
+.PHONY: carbon-gen
+carbon-gen: $(CARBON_GEN_SCRIPT) $(CARBON_GEN_PATH)
+	$(CARBON_GENX)
+
+.PHONY: carbon-gen-clean
+carbon-gen-clean:
+	rm -f $(CARBON_GEN_SCRIPT) $(CARBON_GEN_PATH)
+	
+$(CARBON_GEN_SCRIPT): $(CARBON_GEN_JAVA)
+	sed '/\/\/ SED_REMOVE/d' $< > $@
+
+$(CARBON_GEN_PATH): $(CARBON_GEN_RESOLUTION_FILES) | $(WORK)
+	$(call uniq-resolution-files,$(CARBON_GEN_RESOLUTION_FILES)) > $@.tmp
+	cat $@.tmp | paste --delimiter='$(CLASS_PATH_SEPARATOR)' --serial > $@
 
 #
 # ui@test-compile

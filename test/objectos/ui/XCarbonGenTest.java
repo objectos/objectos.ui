@@ -31,7 +31,7 @@ public class XCarbonGenTest {
   @Test
   public void testCase01() {
     try (Y.Project proj = Y.project(opts -> {
-      opts.webdir(Path.of("test-resources", "carbon"));
+      opts.webdir(Path.of("test-resources", "cds"));
     })) {
       final URI html;
       html = proj.resolveWeb("cds.html");
@@ -51,10 +51,10 @@ public class XCarbonGenTest {
   @Test(enabled = false)
   public void testCase02() {
     try (Y.Project proj = Y.project(opts -> {
-      opts.webdir(Path.of("test-resources", "carbon"));
+      opts.webdir(Path.of("test-resources", "c4p"));
     })) {
       final URI html;
-      html = proj.resolveWeb("c4p.html");
+      html = proj.resolveWeb("iframe.html");
 
       proj.carbonGen(
           "--c4p-html", html.toString(),

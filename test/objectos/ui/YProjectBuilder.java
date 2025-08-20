@@ -96,6 +96,8 @@ final class YProjectBuilder implements Y.Project.Options {
         opts.contentTypes("""
         .css: text/css; charset=utf-8
         .html: text/html; charset=utf-8
+        .js: text/javascript
+        .json: application/json
         """);
 
         opts.noteSink(noteSink);
