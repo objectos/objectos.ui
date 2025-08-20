@@ -1259,11 +1259,11 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     c4pWrite(version);
   }
 
-  /// We're looking for:
-  ///
-  /// ```html
-  /// <script type="module" crossorigin src="./assets/iframe-CnhrW--F.js"></script>
-  /// ```
+  // We're looking for:
+  //
+  // ```html
+  // <script type="module" crossorigin src="./assets/iframe-CnhrW--F.js"></script>
+  // ```
   private String c4pJsPath(String s) {
     for (int idx = 0, len = s.length(); idx < len; idx++) {
       final char c;
@@ -1313,17 +1313,63 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     throw error("Failed to find path for C4P JS file");
   }
 
+  // We're looking for:
+  //
+  // const y$e="Carbon for IBM Products",w$e="2.73.0-rc.0",x$e={description:y$e,version:w$e}
   private String c4pJsVersion(Options options, String jsPath) {
-    throw new UnsupportedOperationException("Implement me");
+    final URI uri;
+    uri = resolveUri(options.c4pHtml, jsPath);
+
+    final String s;
+    s = read(options, uri, "c4p.js");
+
+    for (int idx = 0, len = s.length(); idx < len; idx++) {
+      final char c;
+      c = s.charAt(idx);
+
+      if (c != '=') {
+        continue;
+      }
+
+      // ensure we're in a 'w$e' identifier
+      final int iden;
+      iden = idx - 3;
+
+      if (!s.regionMatches(iden, "w$e", 0, 3)) {
+        continue;
+      }
+
+      final int left;
+      left = idx + 1;
+
+      if (s.charAt(left) != '"') {
+        continue;
+      }
+
+      final int start;
+      start = left + 1;
+
+      final int end;
+      end = s.indexOf('"', start);
+
+      if (end < 0) {
+        throw error("Failed to find string ending quote");
+      }
+
+      final String version;
+      version = s.substring(start, end);
+
+      logInfo("Found VER: %s", version);
+
+      return version;
+    }
+
+    throw error("Failed to find C4P JS version");
   }
 
   private void c4pWrite(String version) {
 
   }
-
-  //
-  // const y$e="Carbon for IBM Products",w$e="2.73.0-rc.0",x$e={description:y$e,version:w$e}
-  //
 
   // ##################################################################
   // # END: C4P
