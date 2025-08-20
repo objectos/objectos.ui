@@ -66,6 +66,8 @@ final class XCarbonGen {
 
   private Appendable logger;
 
+  private boolean browserClose;
+
   XCarbonGen(Path basedir) {
     this.basedir = basedir.toAbsolutePath();
   }
@@ -105,6 +107,10 @@ final class XCarbonGen {
 
     if (!options.c4pSkip.bool()) {
       c4p(options);
+    }
+
+    if (browser != null && browserClose) {
+      browser.close();
     }
   }
 
@@ -373,14 +379,6 @@ final class XCarbonGen {
       final Playwright playwright;
       playwright = Playwright.create();
 
-      final Runtime runtime;
-      runtime = Runtime.getRuntime();
-
-      final Thread thread;
-      thread = Thread.ofPlatform().unstarted(playwright::close);
-
-      runtime.addShutdownHook(thread);
-
       final BrowserType chromium;
       chromium = playwright.chromium();
 
@@ -388,6 +386,8 @@ final class XCarbonGen {
       launchOptions = new BrowserType.LaunchOptions().setHeadless(true);
 
       browser = chromium.launch(launchOptions);
+
+      browserClose = true;
     }
   }
 
@@ -406,36 +406,22 @@ final class XCarbonGen {
     final URI htmlUri;
     htmlUri = URI.create(htmlLocation);
 
-    logInfo("read::before");
-
     final String html;
     html = read(options, htmlUri, "carbon.html");
-
-    logInfo("read");
 
     final String cssPath;
     cssPath = cdsCssPath(html);
 
-    logInfo("cdsCssPath");
-
     final CssResult cssResult;
     cssResult = cdsCssParse(options, cssPath);
-
-    logInfo("cdsCssParse");
 
     final String jsPath;
     jsPath = cdsJsPath(html);
 
-    logInfo("cdsJsPath");
-
     final String cdsVersion;
     cdsVersion = cdsJsVersion(options, jsPath);
 
-    logInfo("cdsJsVersion");
-
     cdsWrite(cdsVersion, cssResult);
-
-    logInfo("cdsWrite");
   }
 
   // ##################################################################

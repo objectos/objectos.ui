@@ -46,6 +46,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 /// This class is not part of the Objectos UI JAR file.
@@ -68,6 +69,12 @@ final class XCarbonGen {
     this.basedir = basedir.toAbsolutePath();
   }
 
+  XCarbonGen(Path basedir, Browser browser) {
+    this.basedir = basedir.toAbsolutePath();
+
+    this.browser = browser;
+  }
+
   public static void main(String[] args) {
     final String userDir;
     userDir = System.getProperty("user.dir", "");
@@ -84,30 +91,6 @@ final class XCarbonGen {
   // ##################################################################
   // # BEGIN: Main
   // ##################################################################
-
-  static abstract class Ctx {
-
-    int cursor;
-
-    int idx;
-
-    final String s;
-
-    Ctx(String s) {
-      this.s = s;
-    }
-
-    final char charNext() {
-      idx = cursor++;
-
-      return s.charAt(idx);
-    }
-
-    final boolean charTest() {
-      return cursor < s.length();
-    }
-
-  }
 
   final void execute(String[] args) {
     final Options options;
@@ -385,24 +368,26 @@ final class XCarbonGen {
       logInfo(format, option.source, option.name, option.value);
     }
 
-    final Playwright playwright;
-    playwright = Playwright.create();
+    if (browser == null) {
+      final Playwright playwright;
+      playwright = Playwright.create();
 
-    final Runtime runtime;
-    runtime = Runtime.getRuntime();
+      final Runtime runtime;
+      runtime = Runtime.getRuntime();
 
-    final Thread thread;
-    thread = Thread.ofPlatform().unstarted(playwright::close);
+      final Thread thread;
+      thread = Thread.ofPlatform().unstarted(playwright::close);
 
-    runtime.addShutdownHook(thread);
+      runtime.addShutdownHook(thread);
 
-    final BrowserType chromium;
-    chromium = playwright.chromium();
+      final BrowserType chromium;
+      chromium = playwright.chromium();
 
-    final LaunchOptions launchOptions;
-    launchOptions = new BrowserType.LaunchOptions().setHeadless(true);
+      final LaunchOptions launchOptions;
+      launchOptions = new BrowserType.LaunchOptions().setHeadless(true);
 
-    browser = chromium.launch(launchOptions);
+      browser = chromium.launch(launchOptions);
+    }
   }
 
   // ##################################################################
@@ -420,21 +405,36 @@ final class XCarbonGen {
     final URI htmlUri;
     htmlUri = URI.create(htmlLocation);
 
+    logInfo("read::before");
+
     final String html;
     html = read(options, htmlUri, "carbon.html");
+
+    logInfo("read");
 
     final String cssPath;
     cssPath = cdsCssPath(html);
 
-    cdsCssParse(options, cssPath);
+    logInfo("cdsCssPath");
+
+    final CssResult cssResult;
+    cssResult = cdsCssParse(options, cssPath);
+
+    logInfo("cdsCssParse");
 
     final String jsPath;
     jsPath = cdsJsPath(html);
 
+    logInfo("cdsJsPath");
+
     final String cdsVersion;
     cdsVersion = cdsJsVersion(options, jsPath);
 
-    cdsWrite(cdsVersion);
+    logInfo("cdsJsVersion");
+
+    cdsWrite(cdsVersion, cssResult);
+
+    logInfo("cdsWrite");
   }
 
   // ##################################################################
@@ -665,34 +665,14 @@ final class XCarbonGen {
     throw error("Failed to find CDS CSS file path");
   }
 
-  private enum CssAction {
-    THEME;
+  private CssResult cdsCssParse(Options options, String cssPath) {
+    final URI uri;
+    uri = resolveUri(options.cdsHtml, cssPath);
 
-    final CssTarget of(CssMatch match, String selector) {
-      return new CssTarget(this, match, selector, null);
-    }
+    final String s;
+    s = read(options, uri, "carbon.css");
 
-    final CssTarget of(CssMatch match, String selector, String name) {
-      return new CssTarget(this, match, selector, name);
-    }
-  }
-
-  private enum CssMatch {
-    EXACT,
-
-    STARTS_WITH;
-  }
-
-  private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
-
-  private class CssCtx extends Ctx {
-    int mark;
-
-    boolean media;
-
-    final List<String> names = new ArrayList<>();
-
-    final List<CssTarget> targets = List.of(
+    return css(s,
         CssAction.THEME.of(CssMatch.EXACT, ":root"),
         CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"),
         CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"),
@@ -700,412 +680,6 @@ final class XCarbonGen {
         CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"),
         CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme=")
     );
-
-    CssCtx(String s) {
-      super(s);
-    }
-
-    final void markCursor() {
-      mark = cursor;
-    }
-
-    final void markIdx() {
-      mark = idx;
-    }
-
-    final String name() {
-      return s.substring(mark, idx);
-    }
-
-    final void nameAdd(String name) {
-      names.add(name);
-    }
-
-    final void nameRemove() {
-      names.removeLast();
-    }
-
-    final CssTarget target(String name) {
-      for (CssTarget target : targets) {
-        final boolean res;
-        res = switch (target.match) {
-          case EXACT -> name.equals(target.selector);
-
-          case STARTS_WITH -> name.startsWith(target.selector);
-
-          default -> false;
-        };
-
-        if (res) {
-          return target;
-        }
-      }
-
-      return null;
-    }
-  }
-
-  private void cdsCssParse(Options options, String cssPath) {
-    final URI uri;
-    uri = resolveUri(options.cdsHtml, cssPath);
-
-    final String s;
-    s = read(options, uri, "carbon.css");
-
-    final CssCtx ctx;
-    ctx = new CssCtx(s);
-
-    while (ctx.charTest()) {
-      final char c;
-      c = ctx.charNext();
-
-      if (c == '@') {
-        ctx.media = true;
-      }
-
-      else if (c == '}') {
-        ctx.nameRemove();
-
-        ctx.markCursor();
-      }
-
-      else if (c == '{') {
-        final String name;
-        name = ctx.name();
-
-        ctx.nameAdd(name);
-
-        ctx.markCursor();
-
-        if (ctx.media) {
-          ctx.media = false;
-
-          continue;
-        }
-
-        final CssTarget target;
-        target = ctx.target(name);
-
-        if (target == null) {
-          continue;
-        }
-
-        if (target.name != null) {
-          ctx.nameRemove();
-
-          ctx.nameAdd(target.name);
-        }
-
-        switch (target.action) {
-          case THEME -> {
-            cdsCssParseTheme(ctx);
-
-            ctx.nameRemove();
-
-            ctx.markCursor();
-          }
-        }
-      }
-    }
-  }
-
-  private static final class Theme {
-
-    final List<String> names;
-
-    final List<Declaration> declarations = new ArrayList<>();
-
-    Theme(List<String> names) {
-      this.names = names;
-    }
-
-    final void add(DeclarationKind kind, String name, String val0, String val1) {
-      declarations.add(
-          new Declaration(kind, name, val0, val1)
-      );
-    }
-
-  }
-
-  private enum DeclarationKind {
-    CUSTOM,
-
-    CUSTOM_COLOR_VALUE,
-
-    CUSTOM_COLOR_VAR2,
-
-    CUSTOM_DIMENSION,
-
-    CUSTOM_VAR,
-
-    REGULAR,
-
-    REGULAR_VAR;
-  }
-
-  private record Declaration(DeclarationKind kind, String name, String val0, String val1) {}
-
-  private final Map<List<String>, Theme> themes = new LinkedHashMap<>();
-
-  private void cdsCssParseTheme(CssCtx ctx) {
-    final List<String> names;
-    names = List.copyOf(ctx.names);
-
-    final Theme theme;
-    theme = themes.computeIfAbsent(names, Theme::new);
-
-    enum Parser {
-      START,
-      PREFIX,
-      PROPERTY,
-      VALUE,
-      VALUE_VAR,
-      VALUE_VAR_PREFIX,
-      VALUE_VAR_VAL0,
-      VALUE_VAR_VAL1,
-      VALUE_VAR_VAL1_COLOR,
-      VALUE_VAR_END,
-      VALUE_END;
-    }
-
-    Parser parser;
-    parser = Parser.START;
-
-    boolean custom = false;
-
-    int dash = 0;
-
-    DeclarationKind kind = null;
-
-    String name = null, val0 = null, val1 = null;
-
-    loop: while (ctx.charTest()) {
-      final char c;
-      c = ctx.charNext();
-
-      switch (parser) {
-        case START -> {
-          name = val0 = val1 = null;
-
-          if (c == '-') {
-            // assume custom property
-            parser = Parser.PREFIX;
-
-            custom = true;
-
-            dash = 1;
-          }
-
-          else {
-            parser = Parser.PROPERTY;
-
-            custom = false;
-
-            ctx.markIdx();
-          }
-        }
-
-        case PREFIX -> {
-          if (c == 'c' || c == 'd' || c == 's') {
-            parser = Parser.PREFIX;
-          }
-
-          else if (c == '-') {
-            dash += 1;
-
-            if (dash == 3) {
-              parser = Parser.PROPERTY;
-
-              ctx.markCursor();
-            } else {
-              parser = Parser.PREFIX;
-            }
-          }
-
-          else if (c == ':') {
-            throw error("Unexpected end of custom property name");
-          }
-        }
-
-        case PROPERTY -> {
-          if (c == ':') {
-            parser = Parser.VALUE;
-
-            name = ctx.name();
-          }
-
-          else if (c == ';') {
-            throw error("Unexpected end of custom property name");
-          }
-        }
-
-        case VALUE -> {
-          ctx.markIdx();
-
-          if (c == ' ') {
-            parser = Parser.VALUE;
-          }
-
-          else if (c == '#' || c == 'r') {
-            if (!custom) {
-              throw error("Unexpected value: regular prop + color value");
-            }
-
-            colors.add(name);
-
-            parser = Parser.VALUE_END;
-
-            kind = DeclarationKind.CUSTOM_COLOR_VALUE;
-          }
-
-          else if ('0' <= c && c <= '9') {
-            if (!custom) {
-              throw error("Unexpected value: regular prop + dimension value");
-            }
-
-            parser = Parser.VALUE_END;
-
-            kind = DeclarationKind.CUSTOM_DIMENSION;
-          }
-
-          else if (c == 'v') {
-            parser = Parser.VALUE_VAR;
-
-            dash = 0;
-          }
-
-          else {
-            parser = Parser.VALUE_END;
-
-            kind = custom ? DeclarationKind.CUSTOM : DeclarationKind.REGULAR;
-          }
-        }
-
-        case VALUE_VAR -> {
-          if (c == 'a' || c == 'r' || c == '(') {
-            parser = Parser.VALUE_VAR;
-          }
-
-          else if (c == '-') {
-            parser = Parser.VALUE_VAR_PREFIX;
-
-            dash = 1;
-          }
-
-          else {
-            throw error("Unexpected char in var() c=" + c);
-          }
-        }
-
-        case VALUE_VAR_PREFIX -> {
-          if (c == 'c' || c == 'd' || c == 's') {
-            parser = Parser.VALUE_VAR_PREFIX;
-          }
-
-          else if (c == '-') {
-            dash += 1;
-
-            if (dash == 3) {
-              ctx.markCursor();
-
-              parser = Parser.VALUE_VAR_VAL0;
-            }
-          }
-        }
-
-        case VALUE_VAR_VAL0 -> {
-          if (c == ')') {
-            parser = Parser.VALUE_VAR_END;
-
-            kind = custom ? DeclarationKind.CUSTOM_VAR : DeclarationKind.REGULAR_VAR;
-
-            val0 = ctx.name();
-          }
-
-          else if (c == ',') {
-            parser = Parser.VALUE_VAR_VAL1;
-
-            val0 = ctx.name();
-          }
-        }
-
-        case VALUE_VAR_VAL1 -> {
-          if (c == ' ') {
-            parser = Parser.VALUE_VAR_VAL1;
-          }
-
-          else if (c == '#') {
-            parser = Parser.VALUE_VAR_VAL1_COLOR;
-
-            kind = DeclarationKind.CUSTOM_COLOR_VAR2;
-
-            ctx.markIdx();
-          }
-
-          else {
-            throw error("Unexpected fallback value for var(): only #aabbcc style colors supported");
-          }
-        }
-
-        case VALUE_VAR_VAL1_COLOR -> {
-          if ('0' <= c && c <= '9') {
-            parser = Parser.VALUE_VAR_VAL1_COLOR;
-          }
-
-          else if ('a' <= c && c <= 'f') {
-            parser = Parser.VALUE_VAR_VAL1_COLOR;
-          }
-
-          else if (c == ')') {
-            parser = Parser.VALUE_VAR_END;
-
-            val1 = ctx.name();
-
-            theme.add(kind, name, val0, val1);
-          }
-
-          else {
-            throw error("Unexpected char in hex color: c=" + c);
-          }
-        }
-
-        case VALUE_VAR_END -> {
-          if (c == ';') {
-            parser = Parser.START;
-
-            theme.add(kind, name, val0, val1);
-          }
-
-          else if (c == '}') {
-            theme.add(kind, name, val0, val1);
-
-            break loop;
-          }
-
-          else {
-            throw error("Unexpected char in var() end: c=" + c);
-          }
-        }
-
-        case VALUE_END -> {
-          if (c == ';') {
-            parser = Parser.START;
-
-            val0 = ctx.name();
-
-            theme.add(kind, name, val0, val1);
-          }
-
-          else if (c == '}') {
-            val0 = ctx.name();
-
-            theme.add(kind, name, val0, val1);
-
-            break loop;
-          }
-        }
-      }
-    }
   }
 
   // ##################################################################
@@ -1116,7 +690,7 @@ final class XCarbonGen {
   // # BEGIN: CDS: Write
   // ##################################################################
 
-  private void cdsWrite(String version) {
+  private void cdsWrite(String version, CssResult css) {
     final Path path;
     path = Path.of("main", "objectos", "ui", "CarbonStyles.java");
 
@@ -1169,7 +743,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
       int idx;
       idx = 0;
 
-      for (Theme theme : themes.values()) {
+      for (Theme theme : css.themes) {
         if (idx++ != 0) {
           w.newLine();
         }
@@ -1201,7 +775,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
 
     w.write("\"\"\"\n");
 
-    for (Declaration decl : theme.declarations) {
+    for (ThemeDeclaration decl : theme.declarations) {
       w.write("    ");
 
       String n = null, v = null;
@@ -1288,12 +862,16 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     final String version;
     version = c4pJsVersion(options, jsPath);
 
-    final String css;
-    css = c4pCss(options);
+    final String cssSource;
+    cssSource = c4pCssSource(options);
 
-    System.out.println(css);
+    final CssResult cssResult;
+    cssResult = css(
+        cssSource,
+        CssAction.COMPONENT.of(CssMatch.CONTAINS, ".c4p--tearsheet", "tearsheet")
+    );
 
-    c4pWrite(version);
+    c4pWrite(version, cssResult);
   }
 
   // We're looking for:
@@ -1404,7 +982,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     throw error("Failed to find C4P JS version");
   }
 
-  private String c4pCss(Options options) {
+  private String c4pCssSource(Options options) {
     try (Page page = browser.newPage()) {
       final Option opt;
       opt = options.c4pHtml;
@@ -1432,12 +1010,647 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     }
   }
 
-  private void c4pWrite(String version) {
+  private void c4pWrite(String version, CssResult css) {
+    for (Component c : css.components) {
+      c4pWriteComponent(version, c);
+    }
+  }
+
+  @SuppressWarnings("unused")
+  private void c4pWriteComponent(String version, Component c) {
+    final Path path;
+    path = Path.of("main-carbon", c.name + ".css");
+
+    final Path file;
+    file = basedir.resolve(path);
+
+    final Path parent;
+    parent = file.getParent();
+
+    try {
+      Files.createDirectories(parent);
+    } catch (IOException e) {
+      throw error("Failed to create directory for CarbonStyles.java", e);
+    }
+
+    try (BufferedWriter w = Files.newBufferedWriter(
+        file, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+    )) {
+      w.write("""
+/* c4p version=%s */
+""".formatted(version));
+
+      int idx;
+      idx = 0;
+
+      for (Rule rule : c.rules) {
+        if (idx++ != 0) {
+          w.newLine();
+        }
+
+        String ind = "";
+
+        for (String name : rule.names) {
+          w.write(ind);
+          w.write(name);
+          w.write(' ');
+          w.write('{');
+          w.write('\n');
+
+          ind = ind + "  ";
+        }
+
+        for (RuleDeclaration decl : rule.declarations) {
+          w.write(ind);
+          w.write(decl.property);
+          w.write(':');
+          w.write(' ');
+          w.write(decl.value.trim());
+          w.write(';');
+          w.write('\n');
+        }
+
+        ind = ind.substring(0, ind.length() - 2);
+
+        for (String name : rule.names) {
+          w.write(ind);
+          w.write('}');
+          w.write('\n');
+
+          if (!ind.isEmpty()) {
+            ind = ind.substring(0, ind.length() - 2);
+          }
+        }
+      }
+    } catch (IOException e) {
+      throw error("Failed to generate CarbonStyleSheet.java", e);
+    }
 
   }
 
   // ##################################################################
   // # END: C4P
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: CSS
+  // ##################################################################
+
+  private enum CssAction {
+    COMPONENT,
+
+    THEME;
+
+    final CssTarget of(CssMatch match, String selector) {
+      return new CssTarget(this, match, selector, null);
+    }
+
+    final CssTarget of(CssMatch match, String selector, String name) {
+      return new CssTarget(this, match, selector, name);
+    }
+  }
+
+  private enum CssMatch {
+    CONTAINS,
+
+    EXACT,
+
+    STARTS_WITH;
+  }
+
+  private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
+
+  private record CssResult(List<Component> components, List<Theme> themes) {}
+
+  private class CssCtx {
+    final Map<String, Component> components = new TreeMap<>();
+
+    int cursor;
+
+    int idx;
+
+    int mark;
+
+    boolean media;
+
+    final List<String> names = new ArrayList<>();
+
+    final String s;
+
+    final List<CssTarget> targets;
+
+    final Map<List<String>, Theme> themes = new LinkedHashMap<>();
+
+    CssCtx(String s, List<CssTarget> targets) {
+      this.s = s;
+
+      this.targets = targets;
+    }
+
+    final char charNext() {
+      idx = cursor++;
+
+      return s.charAt(idx);
+    }
+
+    final boolean charTest() {
+      return cursor < s.length();
+    }
+
+    final void markCursor() {
+      mark = cursor;
+    }
+
+    final void markIdx() {
+      mark = idx;
+    }
+
+    final String name() {
+      return s.substring(mark, idx);
+    }
+
+    final void nameAdd(String name) {
+      names.add(name);
+    }
+
+    final void nameRemove() {
+      names.removeLast();
+    }
+
+    final CssTarget target(String name) {
+      for (CssTarget target : targets) {
+        final boolean res;
+        res = switch (target.match) {
+          case CONTAINS -> name.contains(target.selector);
+
+          case EXACT -> name.equals(target.selector);
+
+          case STARTS_WITH -> name.startsWith(target.selector);
+
+          default -> false;
+        };
+
+        if (res) {
+          return target;
+        }
+      }
+
+      return null;
+    }
+
+    final CssResult toResult() {
+      return new CssResult(
+          List.copyOf(components.values()),
+          List.copyOf(themes.values())
+      );
+    }
+  }
+
+  private CssResult css(String css, CssTarget... targets) {
+    final List<CssTarget> t;
+    t = List.of(targets);
+
+    final CssCtx ctx;
+    ctx = new CssCtx(css, t);
+
+    while (ctx.charTest()) {
+      final char c;
+      c = ctx.charNext();
+
+      if (c == '@') {
+        ctx.media = true;
+      }
+
+      else if (c == '}') {
+        ctx.nameRemove();
+
+        ctx.markCursor();
+      }
+
+      else if (c == '{') {
+        final String name;
+        name = ctx.name();
+
+        ctx.nameAdd(name);
+
+        ctx.markCursor();
+
+        if (ctx.media) {
+          ctx.media = false;
+
+          continue;
+        }
+
+        final CssTarget target;
+        target = ctx.target(name);
+
+        if (target == null) {
+          continue;
+        }
+
+        switch (target.action) {
+          case COMPONENT -> {
+            cssComponent(ctx, target.name);
+
+            ctx.nameRemove();
+
+            ctx.markCursor();
+          }
+
+          case THEME -> {
+            if (target.name != null) {
+              ctx.nameRemove();
+
+              ctx.nameAdd(target.name);
+            }
+
+            cssTheme(ctx);
+
+            ctx.nameRemove();
+
+            ctx.markCursor();
+          }
+        }
+      }
+    }
+
+    return ctx.toResult();
+  }
+
+  private static final class Component {
+
+    final String name;
+
+    final List<Rule> rules = new ArrayList<>();
+
+    Component(String name) {
+      this.name = name;
+    }
+
+    final Rule rule(CssCtx ctx) {
+      Rule rule = new Rule(ctx);
+      rules.add(rule);
+      return rule;
+    }
+
+  }
+
+  private static final class Rule {
+    final List<String> names;
+
+    final List<RuleDeclaration> declarations = new ArrayList<>();
+
+    Rule(CssCtx ctx) {
+      this.names = List.copyOf(ctx.names);
+    }
+
+    @Override
+    public final String toString() {
+      return "Rule[names=%s, declarations=%s]".formatted(names, declarations);
+    }
+
+    final void add(String name, String value) {
+      final RuleDeclaration decl;
+      decl = new RuleDeclaration(name, value);
+
+      declarations.add(decl);
+    }
+  }
+
+  private record RuleDeclaration(String property, String value) {}
+
+  private void cssComponent(CssCtx ctx, String componentName) {
+    final Component comp;
+    comp = ctx.components.computeIfAbsent(componentName, Component::new);
+
+    final Rule rule;
+    rule = comp.rule(ctx);
+
+    String name = null, value = null;
+
+    while (ctx.charTest()) {
+      final char c;
+      c = ctx.charNext();
+
+      if (c == ':') {
+        name = ctx.name();
+
+        ctx.markCursor();
+      }
+
+      else if (c == ';' || c == '}') {
+        value = ctx.name();
+
+        ctx.markCursor();
+
+        rule.add(name, value);
+
+        if (c == '}') {
+          break;
+        }
+      }
+    }
+  }
+
+  private static final class Theme {
+
+    final List<String> names;
+
+    final List<ThemeDeclaration> declarations = new ArrayList<>();
+
+    Theme(List<String> names) {
+      this.names = names;
+    }
+
+    final void add(ThemeDeclarationKind kind, String name, String val0, String val1) {
+      declarations.add(
+          new ThemeDeclaration(kind, name, val0, val1)
+      );
+    }
+
+  }
+
+  private enum ThemeDeclarationKind {
+    CUSTOM,
+
+    CUSTOM_COLOR_VALUE,
+
+    CUSTOM_COLOR_VAR2,
+
+    CUSTOM_DIMENSION,
+
+    CUSTOM_VAR,
+
+    REGULAR,
+
+    REGULAR_VAR;
+  }
+
+  private record ThemeDeclaration(ThemeDeclarationKind kind, String name, String val0, String val1) {}
+
+  private void cssTheme(CssCtx ctx) {
+    final List<String> names;
+    names = List.copyOf(ctx.names);
+
+    final Theme theme;
+    theme = ctx.themes.computeIfAbsent(names, Theme::new);
+
+    enum Parser {
+      START,
+      PREFIX,
+      PROPERTY,
+      VALUE,
+      VALUE_VAR,
+      VALUE_VAR_PREFIX,
+      VALUE_VAR_VAL0,
+      VALUE_VAR_VAL1,
+      VALUE_VAR_VAL1_COLOR,
+      VALUE_VAR_END,
+      VALUE_END;
+    }
+
+    Parser parser;
+    parser = Parser.START;
+
+    boolean custom = false;
+
+    int dash = 0;
+
+    ThemeDeclarationKind kind = null;
+
+    String name = null, val0 = null, val1 = null;
+
+    loop: while (ctx.charTest()) {
+      final char c;
+      c = ctx.charNext();
+
+      switch (parser) {
+        case START -> {
+          name = val0 = val1 = null;
+
+          if (c == '-') {
+            // assume custom property
+            parser = Parser.PREFIX;
+
+            custom = true;
+
+            dash = 1;
+          }
+
+          else {
+            parser = Parser.PROPERTY;
+
+            custom = false;
+
+            ctx.markIdx();
+          }
+        }
+
+        case PREFIX -> {
+          if (c == 'c' || c == 'd' || c == 's') {
+            parser = Parser.PREFIX;
+          }
+
+          else if (c == '-') {
+            dash += 1;
+
+            if (dash == 3) {
+              parser = Parser.PROPERTY;
+
+              ctx.markCursor();
+            } else {
+              parser = Parser.PREFIX;
+            }
+          }
+
+          else if (c == ':') {
+            throw error("Unexpected end of custom property name");
+          }
+        }
+
+        case PROPERTY -> {
+          if (c == ':') {
+            parser = Parser.VALUE;
+
+            name = ctx.name();
+          }
+
+          else if (c == ';') {
+            throw error("Unexpected end of custom property name");
+          }
+        }
+
+        case VALUE -> {
+          ctx.markIdx();
+
+          if (c == ' ') {
+            parser = Parser.VALUE;
+          }
+
+          else if (c == '#' || c == 'r') {
+            if (!custom) {
+              throw error("Unexpected value: regular prop + color value");
+            }
+
+            colors.add(name);
+
+            parser = Parser.VALUE_END;
+
+            kind = ThemeDeclarationKind.CUSTOM_COLOR_VALUE;
+          }
+
+          else if ('0' <= c && c <= '9') {
+            if (!custom) {
+              throw error("Unexpected value: regular prop + dimension value");
+            }
+
+            parser = Parser.VALUE_END;
+
+            kind = ThemeDeclarationKind.CUSTOM_DIMENSION;
+          }
+
+          else if (c == 'v') {
+            parser = Parser.VALUE_VAR;
+
+            dash = 0;
+          }
+
+          else {
+            parser = Parser.VALUE_END;
+
+            kind = custom ? ThemeDeclarationKind.CUSTOM : ThemeDeclarationKind.REGULAR;
+          }
+        }
+
+        case VALUE_VAR -> {
+          if (c == 'a' || c == 'r' || c == '(') {
+            parser = Parser.VALUE_VAR;
+          }
+
+          else if (c == '-') {
+            parser = Parser.VALUE_VAR_PREFIX;
+
+            dash = 1;
+          }
+
+          else {
+            throw error("Unexpected char in var() c=" + c);
+          }
+        }
+
+        case VALUE_VAR_PREFIX -> {
+          if (c == 'c' || c == 'd' || c == 's') {
+            parser = Parser.VALUE_VAR_PREFIX;
+          }
+
+          else if (c == '-') {
+            dash += 1;
+
+            if (dash == 3) {
+              ctx.markCursor();
+
+              parser = Parser.VALUE_VAR_VAL0;
+            }
+          }
+        }
+
+        case VALUE_VAR_VAL0 -> {
+          if (c == ')') {
+            parser = Parser.VALUE_VAR_END;
+
+            kind = custom ? ThemeDeclarationKind.CUSTOM_VAR : ThemeDeclarationKind.REGULAR_VAR;
+
+            val0 = ctx.name();
+          }
+
+          else if (c == ',') {
+            parser = Parser.VALUE_VAR_VAL1;
+
+            val0 = ctx.name();
+          }
+        }
+
+        case VALUE_VAR_VAL1 -> {
+          if (c == ' ') {
+            parser = Parser.VALUE_VAR_VAL1;
+          }
+
+          else if (c == '#') {
+            parser = Parser.VALUE_VAR_VAL1_COLOR;
+
+            kind = ThemeDeclarationKind.CUSTOM_COLOR_VAR2;
+
+            ctx.markIdx();
+          }
+
+          else {
+            throw error("Unexpected fallback value for var(): only #aabbcc style colors supported");
+          }
+        }
+
+        case VALUE_VAR_VAL1_COLOR -> {
+          if ('0' <= c && c <= '9') {
+            parser = Parser.VALUE_VAR_VAL1_COLOR;
+          }
+
+          else if ('a' <= c && c <= 'f') {
+            parser = Parser.VALUE_VAR_VAL1_COLOR;
+          }
+
+          else if (c == ')') {
+            parser = Parser.VALUE_VAR_END;
+
+            val1 = ctx.name();
+
+            theme.add(kind, name, val0, val1);
+          }
+
+          else {
+            throw error("Unexpected char in hex color: c=" + c);
+          }
+        }
+
+        case VALUE_VAR_END -> {
+          if (c == ';') {
+            parser = Parser.START;
+
+            theme.add(kind, name, val0, val1);
+          }
+
+          else if (c == '}') {
+            theme.add(kind, name, val0, val1);
+
+            break loop;
+          }
+
+          else {
+            throw error("Unexpected char in var() end: c=" + c);
+          }
+        }
+
+        case VALUE_END -> {
+          if (c == ';') {
+            parser = Parser.START;
+
+            val0 = ctx.name();
+
+            theme.add(kind, name, val0, val1);
+          }
+
+          else if (c == '}') {
+            val0 = ctx.name();
+
+            theme.add(kind, name, val0, val1);
+
+            break loop;
+          }
+        }
+      }
+    }
+  }
+
+  // ##################################################################
+  // # END: CSS
   // ##################################################################
 
   // ##################################################################
