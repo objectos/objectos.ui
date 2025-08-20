@@ -78,13 +78,43 @@ final class XCarbonGen {
   // # BEGIN: Main
   // ##################################################################
 
+  static abstract class Ctx {
+
+    int cursor;
+
+    int idx;
+
+    final String s;
+
+    Ctx(String s) {
+      this.s = s;
+    }
+
+    final char charNext() {
+      idx = cursor++;
+
+      return s.charAt(idx);
+    }
+
+    final boolean charTest() {
+      return cursor < s.length();
+    }
+
+  }
+
   final void execute(String[] args) {
     final Options options;
     options = options(args);
 
     init(options);
 
-    cds(options);
+    if (!options.cdsSkip.bool()) {
+      cds(options);
+    }
+
+    if (!options.c4pSkip.bool()) {
+      c4p(options);
+    }
   }
 
   // ##################################################################
@@ -200,8 +230,28 @@ final class XCarbonGen {
     });
 
     final Option cdsHtml = string("--cds-html", opt -> {
-      if (opt.unset() && !cdsSkip.bool()) {
-        throw new IllegalArgumentException("The option --cds-html is required");
+      if (opt.unset()) {
+        if (!cdsSkip.bool()) {
+          throw new IllegalArgumentException("The option --cds-html is required");
+        } else {
+          opt.set("");
+        }
+      }
+    });
+
+    final Option c4pSkip = bool("--c4p-skip", opt -> {
+      if (opt.unset()) {
+        opt.set(Boolean.FALSE);
+      }
+    });
+
+    final Option c4pHtml = string("--c4p-html", opt -> {
+      if (opt.unset()) {
+        if (!c4pSkip.bool()) {
+          throw new IllegalArgumentException("The option --c4p-html is required");
+        } else {
+          opt.set("");
+        }
       }
     });
 
@@ -609,18 +659,12 @@ final class XCarbonGen {
 
   private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
 
-  private class CssCtx {
-    int cursor;
-
-    int idx;
-
+  private class CssCtx extends Ctx {
     int mark;
 
     boolean media;
 
     final List<String> names = new ArrayList<>();
-
-    final String s;
 
     final List<CssTarget> targets = List.of(
         CssAction.THEME.of(CssMatch.EXACT, ":root"),
@@ -632,17 +676,7 @@ final class XCarbonGen {
     );
 
     CssCtx(String s) {
-      this.s = s;
-    }
-
-    final boolean charTest() {
-      return cursor < s.length();
-    }
-
-    final char charNext() {
-      idx = cursor++;
-
-      return s.charAt(idx);
+      super(s);
     }
 
     final void markCursor() {
@@ -1047,11 +1081,7 @@ final class XCarbonGen {
   // ##################################################################
 
   // ##################################################################
-  // # END: CSS
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Styles
+  // # BEGIN: CDS: Write
   // ##################################################################
 
   private void cdsWrite(String version) {
@@ -1199,7 +1229,104 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   }
 
   // ##################################################################
-  // # END: Module
+  // # END: CDS: Write
+  // ##################################################################
+
+  // ##################################################################
+  // # END: CDS
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: C4P
+  // ##################################################################
+
+  private void c4p(Options options) {
+    final String htmlLocation;
+    htmlLocation = options.c4pHtml.string();
+
+    final URI htmlUri;
+    htmlUri = URI.create(htmlLocation);
+
+    final String html;
+    html = read(options, htmlUri, "c4p.html");
+
+    final String jsPath;
+    jsPath = c4pJsPath(html);
+
+    final String version;
+    version = c4pJsVersion(options, jsPath);
+
+    c4pWrite(version);
+  }
+
+  /// We're looking for:
+  ///
+  /// ```html
+  /// <script type="module" crossorigin src="./assets/iframe-CnhrW--F.js"></script>
+  /// ```
+  private String c4pJsPath(String s) {
+    for (int idx = 0, len = s.length(); idx < len; idx++) {
+      final char c;
+      c = s.charAt(idx);
+
+      if (c != '=') {
+        continue;
+      }
+
+      // ensure we're in a 'src' attribute
+      final int src;
+      src = idx - 3;
+
+      if (!s.regionMatches(src, "src", 0, 3)) {
+        continue;
+      }
+
+      final int left;
+      left = idx + 1;
+
+      if (s.charAt(left) != '"') {
+        continue;
+      }
+
+      final int start;
+      start = left + 1;
+
+      final int end;
+      end = s.indexOf('"', start);
+
+      if (end < 0) {
+        throw error("Failed to find string ending quote");
+      }
+
+      final String path;
+      path = s.substring(start, end);
+
+      if (!path.contains("ifram") && !path.endsWith(".js")) {
+        continue;
+      }
+
+      logInfo("Found  JS: %s", path);
+
+      return path;
+    }
+
+    throw error("Failed to find path for C4P JS file");
+  }
+
+  private String c4pJsVersion(Options options, String jsPath) {
+    throw new UnsupportedOperationException("Implement me");
+  }
+
+  private void c4pWrite(String version) {
+
+  }
+
+  //
+  // const y$e="Carbon for IBM Products",w$e="2.73.0-rc.0",x$e={description:y$e,version:w$e}
+  //
+
+  // ##################################################################
+  // # END: C4P
   // ##################################################################
 
   // ##################################################################

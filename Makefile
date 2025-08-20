@@ -123,6 +123,7 @@ TEST_ADD_MODULES += jdk.unsupported
 ## test --add-reads
 TEST_ADD_READS := objectos.ui=org.testng
 TEST_ADD_READS += objectos.ui=playwright
+TEST_ADD_READS += objectos.ui=java.desktop
 
 include make/java-test.mk
 

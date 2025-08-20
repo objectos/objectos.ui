@@ -37,7 +37,28 @@ public class XCarbonGenTest {
       html = proj.resolveWeb("cds.html");
 
       proj.carbonGen(
-          "--cds-html", html.toString()
+          "--cds-html", html.toString(),
+          "--c4p-skip", "true"
+      );
+
+      final Path carbon;
+      carbon = proj.resolve("main/objectos/ui/CarbonStyles.java");
+
+      assertEquals(Files.exists(carbon), true);
+    }
+  }
+
+  @Test(enabled = false)
+  public void testCase02() {
+    try (Y.Project proj = Y.project(opts -> {
+      opts.webdir(Path.of("test-resources", "carbon"));
+    })) {
+      final URI html;
+      html = proj.resolveWeb("c4p.html");
+
+      proj.carbonGen(
+          "--c4p-html", html.toString(),
+          "--cds-skip", "true"
       );
 
       final Path carbon;
