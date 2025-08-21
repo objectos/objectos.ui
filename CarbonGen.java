@@ -245,6 +245,12 @@ final class XCarbonGen {
       }
     });
 
+    final Option cdsHtmlFilter = string("--cds-html-filter", opt -> {
+      if (opt.unset()) {
+        opt.set("");
+      }
+    });
+
     final Option c4pSkip = bool("--c4p-skip", opt -> {
       if (opt.unset()) {
         opt.set(Boolean.FALSE);
@@ -412,14 +418,17 @@ final class XCarbonGen {
   // ##################################################################
 
   private void cds(Options options) {
-    final String htmlLocation;
-    htmlLocation = options.cdsIframe.string();
+    final Option iframe;
+    iframe = options.cdsIframe;
 
-    final URI htmlUri;
-    htmlUri = URI.create(htmlLocation);
+    final String iframeLocation;
+    iframeLocation = iframe.string();
+
+    final URI iframeUri;
+    iframeUri = URI.create(iframeLocation);
 
     final String html;
-    html = read(options, htmlUri, "carbon.html");
+    html = read(options, iframeUri, "carbon.html");
 
     final String cssPath;
     cssPath = cdsCssPath(html);
@@ -434,12 +443,22 @@ final class XCarbonGen {
     cssResult = css(
         cssSource,
 
-        CssAction.THEME.of(CssMatch.EXACT, ":root"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--g90", ".carbon-g90"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"),
-        CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme=")
+        css(THEME, EXACT, ":root", null),
+        css(THEME, EXACT, ".cds--white", ".carbon-white"),
+        css(THEME, EXACT, ".cds--g10", ".carbon-g10"),
+        css(THEME, EXACT, ".cds--g90", ".carbon-g90"),
+        css(THEME, EXACT, ".cds--g100", ".carbon-g100"),
+        css(THEME, STARTS_WITH, "[data-carbon-theme=", null),
+
+        css(COMPONENT, STARTS_WITH, ".cds--btn", "button"),
+        css(COMPONENT, STARTS_WITH, ".cds--fieldset", "formgroup"),
+        css(COMPONENT, STARTS_WITH, ".cds--form", "form"),
+        css(COMPONENT, STARTS_WITH, ".cds--label", "label"),
+        css(COMPONENT, STARTS_WITH, ".cds--layer", "layer"),
+        css(COMPONENT, STARTS_WITH, ".cds--modal", "modal"),
+        css(COMPONENT, STARTS_WITH, ".cds--popover", "popover"),
+        css(COMPONENT, STARTS_WITH, ".cds--text-input", "textinput"),
+        css(COMPONENT, STARTS_WITH, ".cds--tooltip", "tooltip")
     );
 
     final String jsPath;
@@ -449,6 +468,23 @@ final class XCarbonGen {
     cdsVersion = cdsJsVersion(options, jsPath);
 
     cdsWrite(cdsVersion, cssResult);
+
+    for (Component c : cssResult.components) {
+      cssComponentWrite(cdsVersion, c);
+    }
+
+    html(
+        iframe,
+        options.cdsHtmlFilter,
+        html("components-button--default", "#storybook-root"),
+        html("components-form--default", "#storybook-root"),
+        html("components-formgroup--default", "#storybook-root"),
+        html("components-layer--default", "#storybook-root"),
+        html("components-modal--default", "#storybook-root"),
+        html("components-popover--default", "#storybook-root"),
+        html("components-textinput--default", "#storybook-root"),
+        html("components-tooltip--default", "#storybook-root")
+    );
   }
 
   // ##################################################################
@@ -868,7 +904,8 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     final CssResult cssResult;
     cssResult = css(
         cssSource,
-        CssAction.COMPONENT.of(CssMatch.CONTAINS, ".c4p--tearsheet", "tearsheet")
+        css(COMPONENT, STARTS_WITH, ".c4p--action", "action"),
+        css(COMPONENT, STARTS_WITH, ".c4p--tearsheet", "tearsheet")
     );
 
     c4pWrite(version, cssResult);
@@ -1018,80 +1055,8 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
 
   private void c4pWrite(String version, CssResult css) {
     for (Component c : css.components) {
-      c4pWriteComponent(version, c);
+      cssComponentWrite(version, c);
     }
-  }
-
-  @SuppressWarnings("unused")
-  private void c4pWriteComponent(String version, Component c) {
-    final Path path;
-    path = Path.of("main-carbon", c.name + ".css");
-
-    final Path file;
-    file = basedir.resolve(path);
-
-    final Path parent;
-    parent = file.getParent();
-
-    try {
-      Files.createDirectories(parent);
-    } catch (IOException e) {
-      throw error("Failed to create directory for CarbonStyles.java", e);
-    }
-
-    try (BufferedWriter w = Files.newBufferedWriter(
-        file, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
-    )) {
-      w.write("""
-/* c4p version=%s */
-""".formatted(version));
-
-      int idx;
-      idx = 0;
-
-      for (Rule rule : c.rules) {
-        if (idx++ != 0) {
-          w.newLine();
-        }
-
-        String ind = "";
-
-        for (String name : rule.names) {
-          w.write(ind);
-          w.write(name);
-          w.write(' ');
-          w.write('{');
-          w.write('\n');
-
-          ind = ind + "  ";
-        }
-
-        for (RuleDeclaration decl : rule.declarations) {
-          w.write(ind);
-          w.write(decl.property);
-          w.write(':');
-          w.write(' ');
-          w.write(decl.value.trim());
-          w.write(';');
-          w.write('\n');
-        }
-
-        ind = ind.substring(0, ind.length() - 2);
-
-        for (String name : rule.names) {
-          w.write(ind);
-          w.write('}');
-          w.write('\n');
-
-          if (!ind.isEmpty()) {
-            ind = ind.substring(0, ind.length() - 2);
-          }
-        }
-      }
-    } catch (IOException e) {
-      throw error("Failed to generate CarbonStyleSheet.java", e);
-    }
-
   }
 
   // ##################################################################
@@ -1102,23 +1067,19 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   // # BEGIN: CSS
   // ##################################################################
 
+  private static final CssAction COMPONENT = CssAction.COMPONENT;
+  private static final CssAction THEME = CssAction.THEME;
+
   private enum CssAction {
     COMPONENT,
 
     THEME;
-
-    final CssTarget of(CssMatch match, String selector) {
-      return new CssTarget(this, match, selector, null);
-    }
-
-    final CssTarget of(CssMatch match, String selector, String name) {
-      return new CssTarget(this, match, selector, name);
-    }
   }
 
-  private enum CssMatch {
-    CONTAINS,
+  private static final CssMatch EXACT = CssMatch.EXACT;
+  private static final CssMatch STARTS_WITH = CssMatch.STARTS_WITH;
 
+  private enum CssMatch {
     EXACT,
 
     STARTS_WITH;
@@ -1187,8 +1148,6 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
       for (CssTarget target : targets) {
         final boolean res;
         res = switch (target.match) {
-          case CONTAINS -> name.contains(target.selector);
-
           case EXACT -> name.equals(target.selector);
 
           case STARTS_WITH -> name.startsWith(target.selector);
@@ -1210,6 +1169,10 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
           List.copyOf(themes.values())
       );
     }
+  }
+
+  private CssTarget css(CssAction action, CssMatch match, String selector, String name) {
+    return new CssTarget(action, match, selector, name);
   }
 
   private CssResult css(String css, CssTarget... targets) {
@@ -1356,6 +1319,78 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
         }
       }
     }
+  }
+
+  @SuppressWarnings("unused")
+  private void cssComponentWrite(String version, Component c) {
+    final Path path;
+    path = Path.of("main-carbon", c.name + ".css");
+
+    final Path file;
+    file = basedir.resolve(path);
+
+    final Path parent;
+    parent = file.getParent();
+
+    try {
+      Files.createDirectories(parent);
+    } catch (IOException e) {
+      throw error("Failed to create directory for CarbonStyles.java", e);
+    }
+
+    try (BufferedWriter w = Files.newBufferedWriter(
+        file, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+    )) {
+      w.write("""
+/* version=%s */
+""".formatted(version));
+
+      int idx;
+      idx = 0;
+
+      for (Rule rule : c.rules) {
+        if (idx++ != 0) {
+          w.newLine();
+        }
+
+        String ind = "";
+
+        for (String name : rule.names) {
+          w.write(ind);
+          w.write(name);
+          w.write(' ');
+          w.write('{');
+          w.write('\n');
+
+          ind = ind + "  ";
+        }
+
+        for (RuleDeclaration decl : rule.declarations) {
+          w.write(ind);
+          w.write(decl.property);
+          w.write(':');
+          w.write(' ');
+          w.write(decl.value.trim());
+          w.write(';');
+          w.write('\n');
+        }
+
+        ind = ind.substring(0, ind.length() - 2);
+
+        for (String name : rule.names) {
+          w.write(ind);
+          w.write('}');
+          w.write('\n');
+
+          if (!ind.isEmpty()) {
+            ind = ind.substring(0, ind.length() - 2);
+          }
+        }
+      }
+    } catch (IOException e) {
+      throw error("Failed to generate CarbonStyleSheet.java", e);
+    }
+
   }
 
   private static final class Theme {

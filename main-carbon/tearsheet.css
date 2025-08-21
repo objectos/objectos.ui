@@ -1,4 +1,4 @@
-/* c4p version=2.73.0-rc.0 */
+/* version=2.73.0-rc.0 */
 .c4p--tearsheet.c4p--tearsheet {
   --overlay-color: var(--cds-overlay, rgba(22, 22, 22, .5));
   --overlay-opacity: 1;
@@ -435,46 +435,6 @@
 
 .c4p--tearsheet-create .c4p--tearsheet-create__step--fieldset>* {
   margin-block-end: 1rem;
-}
-
-.c4p--create-tearsheet-narrow .cds--modal-header__heading,.c4p--create-tearsheet-narrow .cds--modal-header__label,.c4p--create-tearsheet-narrow .c4p--tearsheet__header-description {
-  max-inline-size: 100%;
-  padding-inline-end: calc(20% - 1rem);
-}
-
-.c4p--create-tearsheet-narrow .c4p--tearsheet__header-description {
-  margin-block-start: .25rem;
-}
-
-.c4p--create-tearsheet-narrow .c4p--tearsheet__header {
-  border-block-end: 1px solid var(--cds-border-subtle-02, #e0e0e0);
-}
-
-.c4p--create-tearsheet-narrow .c4p--tearsheet__content {
-  padding: 1rem;
-}
-
-.c4p--add-select.c4p--tearsheet .c4p--tearsheet__influencer {
-  flex-basis: 22.5rem;
-  background: var(--cds-layer-01, #f4f4f4);
-}
-
-.c4p--add-select.c4p--tearsheet.c4p--tearsheet--wide .c4p--tearsheet__content .cds--dropdown {
-  background-color: transparent;
-}
-
-.c4p--add-select.c4p--tearsheet .c4p--tearsheet__header-description {
-  color: var(--cds-text-secondary, #525252);
-}
-
-.c4p--add-select.c4p--tearsheet .c4p--tearsheet__content {
-  display: flex;
-  flex-direction: column;
-}
-
-.c4p--datagrid__customize-columns-tearsheet .c4p--tearsheet__content {
-  display: flex;
-  flex-flow: column;
 }
 
 .c4p--tearsheet-edit {

@@ -20,10 +20,11 @@ package objectos.ui;
 import static org.testng.Assert.assertEquals;
 
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners(Y.class)
 public class XCarbonGenTest {
 
   @Test
@@ -36,13 +37,13 @@ public class XCarbonGenTest {
 
       proj.carbonGen(
           "--cds-iframe", iframe.toString(),
+          "--cds-html-filter", "button--default",
           "--c4p-skip", "true"
       );
 
-      final Path carbon;
-      carbon = proj.resolve("main/objectos/ui/CarbonStyles.java");
-
-      assertEquals(Files.exists(carbon), true);
+      assertEquals(proj.exists("main/objectos/ui/CarbonStyles.java"), true);
+      assertEquals(proj.exists("main-carbon/button.css"), true);
+      assertEquals(proj.exists("main-carbon/button--default.html"), true);
     }
   }
 

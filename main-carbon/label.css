@@ -1,0 +1,204 @@
+/* version=1.89.0 */
+.cds--label {
+  font-size: var(--cds-label-01-font-size, 0.75rem);
+  font-weight: var(--cds-label-01-font-weight, 400);
+  line-height: var(--cds-label-01-line-height, 1.33333);
+  letter-spacing: var(--cds-label-01-letter-spacing, 0.32px);
+  display: inline-block;
+  color: var(--cds-text-secondary, #525252);
+  font-weight: 400;
+  line-height: 1rem;
+  -webkit-margin-after: .5rem;
+  margin-block-end: .5rem;
+  vertical-align: baseline;
+}
+
+.cds--label html {
+  font-size: 100%;
+}
+
+.cds--label body {
+  font-weight: 400;
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.cds--label code {
+  font-family: 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace;
+}
+
+.cds--label strong {
+  font-weight: 600;
+}
+
+.cds--label .cds--toggletip-label {
+  font-size: var(--cds-label-01-font-size, 0.75rem);
+  font-weight: var(--cds-label-01-font-weight, 400);
+  line-height: var(--cds-label-01-line-height, 1.33333);
+  letter-spacing: var(--cds-label-01-letter-spacing, 0.32px);
+}
+
+.cds--label--no-margin {
+  -webkit-margin-after: 0;
+  margin-block-end: 0;
+}
+
+.cds--label+.cds--tooltip {
+  position: relative;
+  inset-block-start: .2rem;
+  inset-inline-start: .5rem;
+}
+
+.cds--label+.cds--tooltip .cds--tooltip__trigger {
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+  text-align: start;
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--cds-label-01-font-size, 0.75rem);
+  font-weight: var(--cds-label-01-font-weight, 400);
+  line-height: var(--cds-label-01-line-height, 1.33333);
+  letter-spacing: var(--cds-label-01-letter-spacing, 0.32px);
+}
+
+.cds--label+.cds--tooltip .cds--tooltip__trigger *,.cds--label+.cds--tooltip .cds--tooltip__trigger *::before,.cds--label+.cds--tooltip .cds--tooltip__trigger *::after {
+  box-sizing: inherit;
+}
+
+.cds--label+.cds--tooltip .cds--tooltip__trigger::-moz-focus-inner {
+  border: 0;
+}
+
+.cds--label+.cds--tooltip .cds--tooltip__trigger:focus {
+  outline: 1px solid var(--cds-focus, #0f62fe);
+}
+
+.cds--label+.cds--tooltip .cds--tooltip__trigger svg {
+  fill: var(--cds-icon-secondary, #525252);
+}
+
+.cds--label+.cds--tooltip .cds--tooltip__trigger svg :hover {
+  fill: var(--cds-icon-primary, #161616);
+}
+
+.cds--label+.cds--toggletip {
+  inset-block-start: .2rem;
+  inset-inline-start: .5rem;
+}
+
+.cds--label.cds--skeleton {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: var(--cds-skeleton-background, #e8e8e8);
+  box-shadow: none;
+  pointer-events: none;
+  block-size: .875rem;
+  inline-size: 4.6875rem;
+}
+
+.cds--label.cds--skeleton:hover,.cds--label.cds--skeleton:focus,.cds--label.cds--skeleton:active {
+  border: none;
+  cursor: default;
+  outline: none;
+}
+
+.cds--label.cds--skeleton::before {
+  position: absolute;
+  -webkit-animation: 3000ms ease-in-out cds--skeleton infinite;
+  animation: 3000ms ease-in-out cds--skeleton infinite;
+  background: var(--cds-skeleton-element, #c6c6c6);
+  block-size: 100%;
+  content: "";
+  inline-size: 100%;
+  inset-inline-start: 0;
+  will-change: transform-origin,transform,opacity;
+}
+
+@media(prefers-reduced-motion: reduce) {
+  .cds--label.cds--skeleton::before {
+    -webkit-animation: none;
+    animation: none;
+  }
+}
+
+@media screen and (-ms-high-contrast: active),(forced-colors: active) {
+  .cds--label.cds--skeleton {
+    background: CanvasText;
+  }
+}
+
+@media screen and (-ms-high-contrast: active),(forced-colors: active) {
+  .cds--label.cds--skeleton::before {
+    background: Canvas;
+    forced-color-adjust: none;
+  }
+}
+
+.cds--label--disabled,.cds--form__helper-text--disabled {
+  color: var(--cds-text-disabled, rgba(22, 22, 22, 0.25));
+}
+
+.cds--label+.cds--form-item.cds--checkbox-wrapper {
+  -webkit-margin-before: -0.125rem;
+  margin-block-start: -0.125rem;
+}
+
+.cds--label+.cds--form-item .cds--radio-button-group {
+  -webkit-margin-before: 0;
+  margin-block-start: 0;
+}
+
+.cds--label-description {
+  font-size: var(--cds-body-compact-01-font-size, 0.875rem);
+  font-weight: var(--cds-body-compact-01-font-weight, 400);
+  line-height: var(--cds-body-compact-01-line-height, 1.28572);
+  letter-spacing: var(--cds-body-compact-01-letter-spacing, 0.16px);
+  color: var(--cds-text-secondary, #525252);
+  -webkit-margin-after: 1rem;
+  margin-block-end: 1rem;
+}
+
+.cds--label-description html {
+  font-size: 100%;
+}
+
+.cds--label-description body {
+  font-weight: 400;
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.cds--label-description code {
+  font-family: 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace;
+}
+
+.cds--label-description strong {
+  font-weight: 600;
+}
+
+.cds--label-description--disabled {
+  color: var(--cds-text-disabled, rgba(22, 22, 22, 0.25));
+}
+
+.cds--label--disabled~.cds--slider-container>.cds--slider__range-label {
+  color: var(--cds-text-disabled, rgba(22, 22, 22, 0.25));
+}
