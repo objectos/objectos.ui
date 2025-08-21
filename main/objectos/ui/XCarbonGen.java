@@ -1035,7 +1035,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
       base = opt.string();
 
       final String url;
-      url = base + "?id=overview-examples--playground&viewMode=story";
+      url = base + "?id=components-tearsheet--tearsheet";
 
       page.navigate(url);
 

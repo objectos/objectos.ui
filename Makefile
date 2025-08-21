@@ -118,6 +118,32 @@ $(CARBON_GEN_PATH): $(CARBON_GEN_RESOLUTION_FILES) | $(WORK)
 	cat $@.tmp | paste --delimiter='$(CLASS_PATH_SEPARATOR)' --serial > $@
 
 #
+# ui@carbon-gen-test
+#
+
+## carbon-gen-test script
+CARBON_GEN_TEST_SCRIPT := CarbonGenTest.java
+
+## carbon-gen-test src
+CARBON_GEN_TEST_JAVA := main/objectos/ui/XCarbonGenTest.java
+
+## carbon-gen-test command
+CARBON_GEN_TESTX := $(JAVA)
+CARBON_GEN_TESTX += -cp @$(CARBON_GEN_PATH)
+CARBON_GEN_TESTX += $(CARBON_GEN_TEST_SCRIPT)
+
+.PHONY: carbon-gen-test
+carbon-gen-test: $(CARBON_GEN_TEST_SCRIPT) $(CARBON_GEN_PATH)
+	$(CARBON_GEN_TESTX)
+
+.PHONY: carbon-gen-test-clean
+carbon-gen-test-clean:
+	rm -f $(CARBON_GEN_SCRIPT)
+	
+$(CARBON_GEN_TEST_SCRIPT): $(CARBON_GEN_TEST_JAVA)
+	sed '/\/\/ SED_REMOVE/d' $< > $@
+
+#
 # ui@test-compile
 #
 
