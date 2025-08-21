@@ -99,8 +99,8 @@ CARBON_C4P := https://ibm-products.carbondesignsystem.com/iframe.html
 CARBON_GENX := $(JAVA)
 CARBON_GENX += -cp @$(CARBON_GEN_PATH)
 CARBON_GENX += $(CARBON_GEN_SCRIPT)
-CARBON_GENX += --cds-html $(CARBON_CDS) 
-CARBON_GENX += --c4p-html $(CARBON_C4P) 
+CARBON_GENX += --cds-iframe $(CARBON_CDS) 
+CARBON_GENX += --c4p-iframe $(CARBON_C4P) 
 
 .PHONY: carbon-gen
 carbon-gen: $(CARBON_GEN_SCRIPT) $(CARBON_GEN_PATH)

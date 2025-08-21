@@ -38,39 +38,30 @@ public class CarbonTearsheetTest {
   }
 
   static final String JS = """
-  (el) => {
-    function getSimplifiedDomString(element) {
-      // Get computed styles
-      const styles = window.getComputedStyle(element);
-
-      // Format all styles for data-class attribute
-      const formattedStyles = Array.from(styles)
-        .filter(prop => !prop.startsWith('--') && styles.getPropertyValue(prop))
-        .map(prop => {
-          let value = styles.getPropertyValue(prop).trim();
-          // Replace spaces with underscores in values
-          value = value.replace(/\s+/g, '_');
-          return `${prop}:${value}`;
-        })
-        .join(' ');
-
-      // Get element name and class
+  (_el, _level) => {
+    function dom(element, level) {
       const tagName = element.tagName.toLowerCase();
+
       const classAttr = element.className ? ` class="${element.className}"` : '';
 
-      // Create start tag with data-class
-      const startTag = `<${tagName}${classAttr} data-class="${formattedStyles}">`;
+      const startTag = `<${tagName}${classAttr}>`;
 
-      // Recursively process child elements
-      const children = Array.from(element.children)
-        .map(child => getSimplifiedDomString(child))
-        .join('\\n');
+      const children = element.children;
 
-      // Return complete tag
-      return `${startTag}\\n${children}\\n</${tagName}>`;
+      const ind = " ".repeat(level * 2);
+
+      if (children.length === 0) {
+        return `${ind}${startTag}\\n${ind}</${tagName}>\\n`;
+      } else {
+        const nested = Array.from(children)
+          .map(child => dom(child, level + 1))
+          .join("");
+
+        return `${ind}${startTag}\\n${nested}${ind}</${tagName}>\\n`;
+      }
     }
 
-    return getSimplifiedDomString(el);
+    return dom(_el, _level);
   }
   """;
 
@@ -99,10 +90,10 @@ public class CarbonTearsheetTest {
     }
   }
 
-  @Test(enabled = false)
+  @Test
   public void testCase02() {
     try (Page page = Y.page()) {
-      Consumer<Request> listener = request -> System.out.println("wget " + request.url());
+      Consumer<Request> listener = request -> System.out.println("curl -O " + request.url());
       page.onRequestFinished(listener);
       page.navigate("https://ibm-products.carbondesignsystem.com/iframe.html?globals=viewport.value%3Amobile2&viewMode=story&id=components-tearsheet--tearsheet");
 
@@ -111,7 +102,7 @@ public class CarbonTearsheetTest {
 
       root.waitFor();
 
-      Object result = root.evaluate(JS);
+      Object result = root.evaluate(JS, 0);
 
       try (BufferedWriter w = Files.newBufferedWriter(Path.of("/tmp/tearsheet.html"))) {
         w.write(result.toString());

@@ -21,7 +21,6 @@ import static java.lang.System.Logger.Level.INFO;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.BrowserType.LaunchOptions;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
@@ -48,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /// This class is not part of the Objectos UI JAR file.
@@ -66,7 +66,7 @@ final class XCarbonGen {
 
   private Appendable logger;
 
-  private boolean browserClose;
+  private Playwright playwright;
 
   XCarbonGen(Path basedir) {
     this.basedir = basedir.toAbsolutePath();
@@ -96,21 +96,31 @@ final class XCarbonGen {
   // ##################################################################
 
   final void execute(String[] args) {
-    final Options options;
-    options = options(args);
+    final long startTime;
+    startTime = System.currentTimeMillis();
 
-    init(options);
+    try {
+      final Options options;
+      options = options(args);
 
-    if (!options.cdsSkip.bool()) {
-      cds(options);
-    }
+      init(options);
 
-    if (!options.c4pSkip.bool()) {
-      c4p(options);
-    }
+      if (!options.cdsSkip.bool()) {
+        cds(options);
+      }
 
-    if (browser != null && browserClose) {
-      browser.close();
+      if (!options.c4pSkip.bool()) {
+        c4p(options);
+      }
+    } finally {
+      if (playwright != null) {
+        playwright.close();
+      }
+
+      final long elapsed;
+      elapsed = System.currentTimeMillis() - startTime;
+
+      logInfo("Done in %ds".formatted(TimeUnit.MILLISECONDS.toSeconds(elapsed)));
     }
   }
 
@@ -226,10 +236,10 @@ final class XCarbonGen {
       }
     });
 
-    final Option cdsHtml = string("--cds-html", opt -> {
+    final Option cdsIframe = string("--cds-iframe", opt -> {
       if (opt.unset()) {
         if (!cdsSkip.bool()) {
-          throw new IllegalArgumentException("The option --cds-html is required");
+          throw new IllegalArgumentException("The option --cds-iframe is required");
         } else {
           opt.set("");
         }
@@ -242,13 +252,19 @@ final class XCarbonGen {
       }
     });
 
-    final Option c4pHtml = string("--c4p-html", opt -> {
+    final Option c4pIframe = string("--c4p-iframe", opt -> {
       if (opt.unset()) {
         if (!c4pSkip.bool()) {
-          throw new IllegalArgumentException("The option --c4p-html is required");
+          throw new IllegalArgumentException("The option --c4p-iframe is required");
         } else {
           opt.set("");
         }
+      }
+    });
+
+    final Option c4pHtmlFilter = string("--c4p-html-filter", opt -> {
+      if (opt.unset()) {
+        opt.set("");
       }
     });
 
@@ -376,18 +392,15 @@ final class XCarbonGen {
     }
 
     if (browser == null) {
-      final Playwright playwright;
       playwright = Playwright.create();
 
       final BrowserType chromium;
       chromium = playwright.chromium();
 
-      final LaunchOptions launchOptions;
+      final BrowserType.LaunchOptions launchOptions;
       launchOptions = new BrowserType.LaunchOptions().setHeadless(true);
 
       browser = chromium.launch(launchOptions);
-
-      browserClose = true;
     }
   }
 
@@ -401,7 +414,7 @@ final class XCarbonGen {
 
   private void cds(Options options) {
     final String htmlLocation;
-    htmlLocation = options.cdsHtml.string();
+    htmlLocation = options.cdsIframe.string();
 
     final URI htmlUri;
     htmlUri = URI.create(htmlLocation);
@@ -412,8 +425,23 @@ final class XCarbonGen {
     final String cssPath;
     cssPath = cdsCssPath(html);
 
+    final URI cssUri;
+    cssUri = resolveUri(options.cdsIframe, cssPath);
+
+    final String cssSource;
+    cssSource = read(options, cssUri, "carbon.css");
+
     final CssResult cssResult;
-    cssResult = cdsCssParse(options, cssPath);
+    cssResult = css(
+        cssSource,
+
+        CssAction.THEME.of(CssMatch.EXACT, ":root"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--g90", ".carbon-g90"),
+        CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"),
+        CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme=")
+    );
 
     final String jsPath;
     jsPath = cdsJsPath(html);
@@ -466,7 +494,7 @@ final class XCarbonGen {
 
   private String cdsJsVersion(Options options, String pathJs) {
     final URI uri;
-    uri = resolveUri(options.cdsHtml, pathJs);
+    uri = resolveUri(options.cdsIframe, pathJs);
 
     final String s;
     s = read(options, uri, "carbon.js");
@@ -652,23 +680,6 @@ final class XCarbonGen {
     throw error("Failed to find CDS CSS file path");
   }
 
-  private CssResult cdsCssParse(Options options, String cssPath) {
-    final URI uri;
-    uri = resolveUri(options.cdsHtml, cssPath);
-
-    final String s;
-    s = read(options, uri, "carbon.css");
-
-    return css(s,
-        CssAction.THEME.of(CssMatch.EXACT, ":root"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--white", ".carbon-white"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--g10", ".carbon-g10"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--g90", ".carbon-g90"),
-        CssAction.THEME.of(CssMatch.EXACT, ".cds--g100", ".carbon-g100"),
-        CssAction.THEME.of(CssMatch.STARTS_WITH, "[data-carbon-theme=")
-    );
-  }
-
   // ##################################################################
   // # END: CDS: CSS
   // ##################################################################
@@ -834,14 +845,17 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   // ##################################################################
 
   private void c4p(Options options) {
-    final String htmlLocation;
-    htmlLocation = options.c4pHtml.string();
+    final Option iframe;
+    iframe = options.c4pIframe;
 
-    final URI htmlUri;
-    htmlUri = URI.create(htmlLocation);
+    final String iframeLocation;
+    iframeLocation = iframe.string();
+
+    final URI iframeUri;
+    iframeUri = URI.create(iframeLocation);
 
     final String html;
-    html = read(options, htmlUri, "c4p.html");
+    html = read(options, iframeUri, "c4p.html");
 
     final String jsPath;
     jsPath = c4pJsPath(html);
@@ -859,6 +873,12 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     );
 
     c4pWrite(version, cssResult);
+
+    html(
+        iframe,
+        options.c4pHtmlFilter,
+        html("components-tearsheet--tearsheet", "[data-carbon-devtools-id='c4p--Tearsheet']")
+    );
   }
 
   // We're looking for:
@@ -920,7 +940,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   // const y$e="Carbon for IBM Products",w$e="2.73.0-rc.0",x$e={description:y$e,version:w$e}
   private String c4pJsVersion(Options options, String jsPath) {
     final URI uri;
-    uri = resolveUri(options.c4pHtml, jsPath);
+    uri = resolveUri(options.c4pIframe, jsPath);
 
     final String s;
     s = read(options, uri, "c4p.js");
@@ -970,9 +990,9 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   }
 
   private String c4pCssSource(Options options) {
-    try (Page page = browser.newPage()) {
+    try (Page page = newPage()) {
       final Option opt;
-      opt = options.c4pHtml;
+      opt = options.c4pIframe;
 
       final String base;
       base = opt.string();
@@ -1641,8 +1661,132 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: HTML
+  // ##################################################################
+
+  private record HtmlAction(String name, String id, List<String> selectors) {}
+
+  private static final String HTML_EVAL = """
+  (_el, _level) => {
+    function dom(element, level) {
+      const tagName = element.tagName.toLowerCase();
+
+      const classAttr = element.className ? ` class="${element.className}"` : '';
+
+      const startTag = `<${tagName}${classAttr}>`;
+
+      const children = element.children;
+
+      const ind = " ".repeat(level * 2);
+
+      if (children.length === 0) {
+        return `${ind}${startTag}\\n${ind}</${tagName}>\\n`;
+      } else {
+        const nested = Array.from(children)
+          .map(child => dom(child, level + 1))
+          .join("");
+
+        return `${ind}${startTag}\\n${nested}${ind}</${tagName}>\\n`;
+      }
+    }
+
+    return dom(_el, _level);
+  }
+  """;
+
+  private HtmlAction html(String id, String... selectors) {
+    final int dash;
+    dash = id.indexOf('-');
+
+    if (dash < 0) {
+      throw error("Failed to find '-' in id=" + id);
+    }
+
+    final String name;
+    name = id.substring(dash + 1);
+
+    return new HtmlAction(name, id, List.of(selectors));
+  }
+
+  private void html(Option iframe, Option filter, HtmlAction... actions) {
+    final String base;
+    base = iframe.string();
+
+    final String filterRaw;
+    filterRaw = filter.string();
+
+    final Set<String> filterSet;
+
+    if (!filterRaw.isBlank()) {
+      final String[] filterParts;
+      filterParts = filterRaw.split(",");
+
+      filterSet = Set.of(filterParts);
+    } else {
+      filterSet = Set.of();
+    }
+
+    for (HtmlAction action : actions) {
+      final String name;
+      name = action.name;
+
+      logInfo("Starting: " + name);
+
+      if (!filterSet.isEmpty() && !filterSet.contains(name)) {
+        continue;
+      }
+
+      final Path path;
+      path = Path.of("main-carbon", name + ".html");
+
+      final Path target;
+      target = basedir.resolve(path);
+
+      try (
+          Page page = newPage();
+          BufferedWriter w = Files.newBufferedWriter(target, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+      ) {
+        final String url;
+        url = base + "?id=" + action.id;
+
+        page.navigate(url);
+
+        for (String selector : action.selectors) {
+          final Locator locator;
+          locator = page.locator(selector);
+
+          locator.waitFor();
+
+          final Object eval;
+          eval = locator.evaluate(HTML_EVAL, 0);
+
+          final String s;
+          s = String.valueOf(eval);
+
+          w.write(s);
+        }
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    }
+  }
+
+  // ##################################################################
+  // # END: HTML
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: I/O
   // ##################################################################
+
+  private Page newPage() {
+    final Page page;
+    page = browser.newPage();
+
+    page.setDefaultTimeout(TimeUnit.SECONDS.toMillis(5));
+
+    return page;
+  }
 
   private String read(Options options, URI uri, String dest) {
     final Path target;

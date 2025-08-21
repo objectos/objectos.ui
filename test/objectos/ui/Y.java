@@ -181,6 +181,13 @@ public final class Y implements ISuiteListener {
     @Override
     void close();
 
+    default boolean exists(String relativePath) {
+      final Path maybe;
+      maybe = resolve(relativePath);
+
+      return Files.exists(maybe);
+    }
+
     Path resolve(String relativePath);
 
     URI resolveWeb(String relativePath);

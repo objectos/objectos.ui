@@ -31,11 +31,11 @@ public class XCarbonGenTest {
     try (Y.Project proj = Y.project(opts -> {
       opts.webdir(Path.of("test-resources", "cds"));
     })) {
-      final URI html;
-      html = proj.resolveWeb("cds.html");
+      final URI iframe;
+      iframe = proj.resolveWeb("iframe.html");
 
       proj.carbonGen(
-          "--cds-html", html.toString(),
+          "--cds-iframe", iframe.toString(),
           "--c4p-skip", "true"
       );
 
@@ -51,18 +51,17 @@ public class XCarbonGenTest {
     try (Y.Project proj = Y.project(opts -> {
       opts.webdir(Path.of("test-resources", "c4p"));
     })) {
-      final URI html;
-      html = proj.resolveWeb("iframe.html");
+      final URI iframe;
+      iframe = proj.resolveWeb("iframe.html");
 
       proj.carbonGen(
-          "--c4p-html", html.toString(),
+          "--c4p-iframe", iframe.toString(),
+          "--c4p-html-filter", "tearsheet--tearsheet",
           "--cds-skip", "true"
       );
 
-      final Path tearsheet;
-      tearsheet = proj.resolve("main-carbon/tearsheet.css");
-
-      assertEquals(Files.exists(tearsheet), true);
+      assertEquals(proj.exists("main-carbon/tearsheet.css"), true);
+      assertEquals(proj.exists("main-carbon/tearsheet--tearsheet.html"), true);
     }
   }
 
