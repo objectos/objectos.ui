@@ -17,9 +17,6 @@
  */
 package objectos.ui;
 
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.BrowserType.LaunchOptions;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import objectos.way.App;
@@ -29,6 +26,13 @@ import objectos.way.Note;
 public class YStart extends App.Bootstrap {
 
   public static final int TESTING_HTTP_PORT = 9007;
+
+  public static void main(String[] args) {
+    final YStart start;
+    start = new YStart();
+
+    start.start(args);
+  }
 
   @Override
   protected final void bootstrap() {
@@ -70,23 +74,6 @@ public class YStart extends App.Bootstrap {
       throw App.serviceFailed("Http.Server", e);
     }
 
-    // Playwright
-    final Playwright playwright;
-    playwright = Playwright.create();
-
-    shutdownHook.register(playwright);
-
-    final BrowserType chromium;
-    chromium = playwright.chromium();
-
-    final boolean headless;
-    headless = Boolean.getBoolean("playwright.headless");
-
-    final LaunchOptions launchOptions;
-    launchOptions = new BrowserType.LaunchOptions().setHeadless(headless);
-
-    Y.BROWSER = chromium.launch(launchOptions);
-
     // bootstrap end event
     final Note.Long1 totalTimeNote;
     totalTimeNote = Note.Long1.create(getClass(), "BT1", Note.INFO);
@@ -100,7 +87,7 @@ public class YStart extends App.Bootstrap {
   private void injector(App.Injector.Options ctx) {
     // Note.Sink
     final Note.Sink noteSink;
-    noteSink = App.NoteSink.sysout();
+    noteSink = Y.noteSink();
 
     ctx.putInstance(Note.Sink.class, noteSink);
 
@@ -112,9 +99,7 @@ public class YStart extends App.Bootstrap {
 
     // App.ShutdownHook
     final App.ShutdownHook shutdownHook;
-    shutdownHook = App.ShutdownHook.create(opts -> {
-      opts.noteSink(noteSink);
-    });
+    shutdownHook = Y.shutdownHook();
 
     shutdownHook.registerIfPossible(noteSink);
 

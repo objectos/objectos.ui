@@ -21,10 +21,8 @@ import static org.testng.Assert.assertEquals;
 
 import java.net.URI;
 import java.nio.file.Path;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners(Y.class)
 public class XCarbonGenTest {
 
   @Test

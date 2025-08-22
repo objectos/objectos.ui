@@ -26,10 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 import objectos.way.Http;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners(Y.class)
 public class CarbonButtonTest {
 
   static void module(Http.Routing carbon) {

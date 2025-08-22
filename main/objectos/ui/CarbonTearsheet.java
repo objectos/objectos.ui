@@ -23,10 +23,34 @@ import objectos.way.Html;
 @Css.Source
 final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
 
+  static final String CONTAINER = """
+  block-size:100%
+  inset-block-start:auto
+  max-block-size:calc(100%-3rem)
+
+  transform:translate3d(0,min(95vh,500px),0)
+  """;
+
+  private boolean visible;
+
+  @Override
+  public final void visible(boolean value) {
+    visible = value;
+  }
+
   @Override
   public final void renderHtml(Html.Markup m) {
     m.div(
-        m.css(CarbonModal.MODAL)
+        m.css(CarbonModal.MODAL),
+        visible ? m.css(CarbonModal.IS_VISIBLE) : m.noop(),
+
+        m.div(
+            m.css(CarbonModal.CONTAINER),
+            m.css(CONTAINER),
+
+            m.div(
+            )
+        )
     );
   }
 

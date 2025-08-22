@@ -181,6 +181,41 @@ TEST_ADD_READS += objectos.ui=java.desktop
 include make/java-test.mk
 
 #
+# ui@dev
+#
+
+## dev deps
+DEV_DEPS := $(WAY)
+DEV_DEPS += $(TESTNG)
+
+## dev resolution files
+DEV_RESOLUTION_FILES := $(call to-resolution-files,$(DEV_DEPS))
+
+## dev module-path
+DEV_MODULE_PATH := $(WORK)/dev-module-path
+
+## dev command
+DEV_JAVAX := $(JAVA)
+DEV_JAVAX += --module-path @$(DEV_MODULE_PATH)
+DEV_JAVAX += --patch-module $(MODULE)=$(TEST_CLASS_OUTPUT)
+DEV_JAVAX += --add-modules org.testng
+DEV_JAVAX += --add-reads objectos.ui=org.testng
+DEV_JAVAX += --module objectos.ui/objectos.ui.YStart
+
+.PHONY: dev
+dev: $(TEST_COMPILE_MARKER) $(DEV_MODULE_PATH)
+	$(DEV_JAVAX)
+
+.PHONY: dev-clean
+dev-clean:
+	rm -f $(DEV_MODULE_PATH)
+	
+$(DEV_MODULE_PATH): Makefile
+	echo $(CLASS_OUTPUT) > $@.tmp
+	$(call uniq-resolution-files,$(DEV_RESOLUTION_FILES)) >> $@.tmp
+	cat $@.tmp | paste --delimiter='$(MODULE_PATH_SEPARATOR)' --serial > $@
+
+#
 # ui@docs-compile
 #
 

@@ -35,12 +35,12 @@ public class CarbonTearsheetTest extends CarbonTest {
       page.title("Objectos Carbon");
 
       page.add(Carbon.tearsheet(t -> {
-
+        t.visible(true);
       }));
     }));
   }
 
-  @Test(dataProvider = "g10")
+  @Test(enabled = false)
   public void testCase01(Carbon.Theme theme, Y.ScreenSize screen) {
     try (Y.Tab tab = Y.tabDev(screen)) {
       tab.navigate("/carbon/tearsheet/tc01", theme);

@@ -25,15 +25,15 @@ final class CarbonModal {
   static final String MODAL = """
   position:fixed
   visibility:hidden
+  z-index:9000
+
+  background-color:overlay
+  opacity:0
 
   block-size:100vh
   inline-size:100vw
   inset-block-start:0
   inset-inline-start:0
-  z-index:9000
-
-  background-color:overlay
-  opacity:0
 
   display:flex
   align-items:center
@@ -41,6 +41,35 @@ final class CarbonModal {
 
   content:''
   transition:opacity_240ms_cubic-bezier(0.4,0.14,1,1),visibility_0ms_linear_240ms
+  """;
+
+  static final String IS_VISIBLE = """
+  visibility:inherit
+
+  opacity:1
+
+  transition:opacity_240ms_cubic-bezier(0,0,0.3,1),visibility_0ms_linear
+  """;
+
+  static final String CONTAINER = """
+  background-color: var(--cds-layer);
+  position:fixed
+
+  block-size:100%
+  inline-size:100%
+  inset-block-start:0
+  max-block-size:100%
+
+  outline:3px_solid_rgba(0,0,0,0)
+  outline-offset:-3px
+
+  display:grid
+  grid-template-columns:100%
+  grid-template-rows:auto_1fr_auto
+
+  transform:translate3d(0,-24px,0)
+  transform-origin:top_center
+  transition:transform_240ms_cubic-bezier(0.4, 0.14, 1, 1)
   """;
 
 }

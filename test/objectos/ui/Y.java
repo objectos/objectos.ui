@@ -18,7 +18,10 @@
 package objectos.ui;
 
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.BrowserType.LaunchOptions;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -38,9 +41,6 @@ import org.testng.ISuite;
 import org.testng.ISuiteListener;
 
 public final class Y implements ISuiteListener {
-
-  @SuppressWarnings("exports")
-  public static Browser BROWSER;
 
   /// Sole constructor. Required by TestNG.
   public Y() {}
@@ -144,7 +144,18 @@ public final class Y implements ISuiteListener {
   // # BEGIN: Note.Sink
   // ##################################################################
 
-  private static final App.NoteSink INSTANCE = App.NoteSink.sysout();
+  private static final App.NoteSink INSTANCE = App.NoteSink.ofAppendable(System.out, opts -> {
+    opts.filter(note -> {
+      final String source;
+      source = note.source();
+
+      if (source.startsWith("objectos.ui")) {
+        return true;
+      }
+
+      return note.hasAny(Note.ERROR, Note.WARN, Note.INFO);
+    });
+  });
 
   public static Note.Sink noteSink() {
     return INSTANCE;
@@ -155,15 +166,95 @@ public final class Y implements ISuiteListener {
   // ##################################################################
 
   // ##################################################################
-  // # BEGIN: Page
+  // # BEGIN: Playwright
   // ##################################################################
 
+  static final class BrowserHolder {
+    static final Browser BROWSER = init();
+
+    private static Browser init() {
+      final Playwright playwright;
+      playwright = Playwright.create();
+
+      shutdownHook(playwright);
+
+      final BrowserType chromium;
+      chromium = playwright.chromium();
+
+      final boolean headless;
+      headless = Boolean.getBoolean("playwright.headless");
+
+      final LaunchOptions launchOptions;
+      launchOptions = new BrowserType.LaunchOptions().setHeadless(headless);
+
+      return chromium.launch(launchOptions);
+    }
+  }
+
+  public enum ScreenSize {
+    XS(360, 640),
+
+    SM(640, 1136),
+
+    MD(768, 1024),
+
+    LG(1024, 768),
+
+    XL(1280, 720),
+
+    X2(1536, 864);
+
+    final int width;
+    final int height;
+
+    private ScreenSize(int width, int height) {
+      this.width = width;
+      this.height = height;
+    }
+  }
+
+  public static final Set<ScreenSize> SCREEN_SIZES = EnumSet.allOf(ScreenSize.class);
+
   static Page page() {
-    return BROWSER.newPage();
+    return BrowserHolder.BROWSER.newPage();
+  }
+
+  public sealed interface Tab extends AutoCloseable permits YTab {
+
+    @Override
+    void close();
+
+    void dev();
+
+    void navigate(String path);
+
+    void navigate(String path, Theme theme);
+
+    void screenshot();
+
+    String title();
+
+  }
+
+  public static Y.Tab tabDev() {
+    return tabDev(ScreenSize.XL);
+  }
+
+  public static Y.Tab tabDev(ScreenSize size) {
+    final String baseUrl;
+    baseUrl = "http://objectos.ui.localhost:" + YStart.TESTING_HTTP_PORT;
+
+    Browser.NewPageOptions options;
+    options = new Browser.NewPageOptions().setBaseURL(baseUrl).setViewportSize(size.width, size.height);
+
+    final Page page;
+    page = BrowserHolder.BROWSER.newPage(options);
+
+    return new YTab(baseUrl, page);
   }
 
   // ##################################################################
-  // # END: Page
+  // # END: Playwright
   // ##################################################################
 
   // ##################################################################
@@ -212,38 +303,6 @@ public final class Y implements ISuiteListener {
   // ##################################################################
 
   // ##################################################################
-  // # BEGIN: Screen
-  // ##################################################################
-
-  public enum ScreenSize {
-    XS(360, 640),
-
-    SM(640, 1136),
-
-    MD(768, 1024),
-
-    LG(1024, 768),
-
-    XL(1280, 720),
-
-    X2(1536, 864);
-
-    final int width;
-    final int height;
-
-    private ScreenSize(int width, int height) {
-      this.width = width;
-      this.height = height;
-    }
-  }
-
-  public static final Set<ScreenSize> SCREEN_SIZES = EnumSet.allOf(ScreenSize.class);
-
-  // ##################################################################
-  // # END: Screen
-  // ##################################################################
-
-  // ##################################################################
   // # BEGIN: ShutdownHook
   // ##################################################################
 
@@ -251,6 +310,10 @@ public final class Y implements ISuiteListener {
 
     static final App.ShutdownHook INSTANCE = App.ShutdownHook.create(config -> config.noteSink(noteSink()));
 
+  }
+
+  public static App.ShutdownHook shutdownHook() {
+    return ShutdownHookHolder.INSTANCE;
   }
 
   public static void shutdownHook(AutoCloseable closeable) {
@@ -264,40 +327,6 @@ public final class Y implements ISuiteListener {
   // ##################################################################
   // # BEGIN: Tab
   // ##################################################################
-
-  public sealed interface Tab extends AutoCloseable permits YTab {
-
-    @Override
-    void close();
-
-    void dev();
-
-    void navigate(String path);
-
-    void navigate(String path, Theme theme);
-
-    void screenshot();
-
-    String title();
-
-  }
-
-  public static Y.Tab tabDev() {
-    return tabDev(ScreenSize.XL);
-  }
-
-  public static Y.Tab tabDev(ScreenSize size) {
-    final String baseUrl;
-    baseUrl = "http://objectos.ui.localhost:" + YStart.TESTING_HTTP_PORT;
-
-    Browser.NewPageOptions options;
-    options = new Browser.NewPageOptions().setBaseURL(baseUrl).setViewportSize(size.width, size.height);
-
-    final Page page;
-    page = BROWSER.newPage(options);
-
-    return new YTab(baseUrl, page);
-  }
 
   // ##################################################################
   // # END: Tab

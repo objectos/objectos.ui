@@ -63,6 +63,8 @@ public final class Carbon {
 
   public sealed interface Tearsheet permits CarbonTearsheet {
 
+    void visible(boolean value);
+
   }
 
   public static Html.Component tearsheet(Consumer<? super Tearsheet> tearsheet) {

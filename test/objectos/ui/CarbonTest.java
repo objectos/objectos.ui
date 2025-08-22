@@ -34,11 +34,6 @@ public abstract class CarbonTest {
     return THEMES.stream().flatMap(t -> Y.SCREEN_SIZES.stream().map(s -> new Object[] {t, s})).iterator();
   }
 
-  @DataProvider
-  public final Iterator<Object[]> g10() {
-    return Y.SCREEN_SIZES.stream().map(s -> new Object[] {CarbonTheme.G10, s}).iterator();
-  }
-
   private static final Set<CarbonTheme> THEMES = EnumSet.allOf(CarbonTheme.class);
 
   @DataProvider
