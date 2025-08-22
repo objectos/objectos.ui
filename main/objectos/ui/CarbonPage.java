@@ -17,6 +17,8 @@
  */
 package objectos.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -24,11 +26,24 @@ import objectos.way.Html;
 @Css.Source
 final class CarbonPage implements Carbon.Page, Html.Component {
 
+  private List<Html.Component> components;
+
   private Html.Component head;
 
   private CarbonTheme theme;
 
   private String title = "";
+
+  @Override
+  public final void add(Html.Component value) {
+    if (components == null) {
+      components = new ArrayList<>();
+    }
+
+    components.add(
+        Objects.requireNonNull(value, "value == null")
+    );
+  }
 
   @Override
   public final void headEnd(Html.Component value) {
@@ -63,6 +78,7 @@ final class CarbonPage implements Carbon.Page, Html.Component {
         ),
 
         m.body(
+            components != null ? m.f(this::renderBody, m) : m.noop()
         )
     );
   }
@@ -72,6 +88,12 @@ final class CarbonPage implements Carbon.Page, Html.Component {
     m.meta(m.httpEquiv("content-type"), m.content("text/html; charset=utf-8"));
     m.meta(m.name("viewport"), m.content("width=device-width, initial-scale=1"));
     m.title(title);
+  }
+
+  private void renderBody(Html.Markup m) {
+    for (Html.Component c : components) {
+      m.renderComponent(c);
+    }
   }
 
 }

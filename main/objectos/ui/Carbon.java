@@ -40,6 +40,8 @@ public final class Carbon {
 
     void title(String value);
 
+    void add(Html.Component value);
+
   }
 
   public static Html.Component page(Consumer<? super Page> page) {
@@ -53,6 +55,27 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Page
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: Tearsheet
+  // ##################################################################
+
+  public sealed interface Tearsheet permits CarbonTearsheet {
+
+  }
+
+  public static Html.Component tearsheet(Consumer<? super Tearsheet> tearsheet) {
+    final CarbonTearsheet pojo;
+    pojo = new CarbonTearsheet();
+
+    tearsheet.accept(pojo);
+
+    return pojo;
+  }
+
+  // ##################################################################
+  // # END: Tearsheet
   // ##################################################################
 
   // ##################################################################

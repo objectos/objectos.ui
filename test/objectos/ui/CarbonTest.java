@@ -20,17 +20,50 @@ package objectos.ui;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Consumer;
+import objectos.way.Html;
+import objectos.way.Http;
 import org.testng.annotations.DataProvider;
 
 public abstract class CarbonTest {
 
   CarbonTest() {}
 
+  @DataProvider
+  public final Iterator<Object[]> all() {
+    return THEMES.stream().flatMap(t -> Y.SCREEN_SIZES.stream().map(s -> new Object[] {t, s})).iterator();
+  }
+
+  @DataProvider
+  public final Iterator<Object[]> g10() {
+    return Y.SCREEN_SIZES.stream().map(s -> new Object[] {CarbonTheme.G10, s}).iterator();
+  }
+
   private static final Set<CarbonTheme> THEMES = EnumSet.allOf(CarbonTheme.class);
 
   @DataProvider
   public final Iterator<Carbon.Theme> themes() {
     return THEMES.stream().map(Carbon.Theme.class::cast).iterator();
+  }
+
+  static Html.Component page(Http.Exchange http, Consumer<? super Carbon.Page> more) {
+    return Carbon.page(page -> {
+      page.theme(theme(http));
+
+      page.headEnd(m -> {
+        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
+        m.script(m.src("/script.js"));
+      });
+
+      more.accept(page);
+    });
+  }
+
+  private static Carbon.Theme theme(Http.Exchange http) {
+    final String themeName;
+    themeName = http.pathParam("theme");
+
+    return Carbon.Theme.of(themeName);
   }
 
 }

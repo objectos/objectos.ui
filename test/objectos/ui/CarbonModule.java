@@ -63,7 +63,7 @@ final class CarbonModule implements Http.Routing.Module {
       opts.noteSink(noteSink);
 
       final Path classOutput;
-      classOutput = Path.of("work", "dev");
+      classOutput = Path.of("work", "main");
 
       opts.scanDirectory(classOutput);
 

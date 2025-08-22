@@ -17,36 +17,17 @@
  */
 package objectos.ui;
 
-import static objectos.way.Http.Method.GET;
+import objectos.way.Css;
+import objectos.way.Html;
 
-import objectos.way.Http;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+@Css.Source
+final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
 
-@Listeners(Y.class)
-public class CarbonTearsheetTest extends CarbonTest {
-
-  static void module(Http.Routing carbon) {
-    carbon.path("/carbon/tearsheet/tc01/{theme}", GET, CarbonTearsheetTest::testCase01);
-  }
-
-  static void testCase01(Http.Exchange http) {
-    http.ok(page(http, page -> {
-      page.title("Objectos Carbon");
-
-      page.add(Carbon.tearsheet(t -> {
-
-      }));
-    }));
-  }
-
-  @Test(dataProvider = "g10")
-  public void testCase01(Carbon.Theme theme, Y.ScreenSize screen) {
-    try (Y.Tab tab = Y.tabDev(screen)) {
-      tab.navigate("/carbon/tearsheet/tc01", theme);
-
-      tab.dev();
-    }
+  @Override
+  public final void renderHtml(Html.Markup m) {
+    m.div(
+        m.css(CarbonModal.MODAL)
+    );
   }
 
 }

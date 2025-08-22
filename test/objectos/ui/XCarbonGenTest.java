@@ -49,9 +49,7 @@ public class XCarbonGenTest {
 
   @Test
   public void c4p() {
-    try (Y.Project proj = Y.project(opts -> {
-      opts.webdir(Path.of("test-resources", "c4p"));
-    })) {
+    try (Y.Project proj = Y.project(opts -> { opts.webdir(Path.of("test-resources", "c4p")); })) {
       final URI iframe;
       iframe = proj.resolveWeb("iframe.html");
 

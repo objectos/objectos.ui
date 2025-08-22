@@ -27,6 +27,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import objectos.ui.Carbon.Theme;
 import objectos.way.App;
@@ -210,6 +212,38 @@ public final class Y implements ISuiteListener {
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Screen
+  // ##################################################################
+
+  public enum ScreenSize {
+    XS(360, 640),
+
+    SM(640, 1136),
+
+    MD(768, 1024),
+
+    LG(1024, 768),
+
+    XL(1280, 720),
+
+    X2(1536, 864);
+
+    final int width;
+    final int height;
+
+    private ScreenSize(int width, int height) {
+      this.width = width;
+      this.height = height;
+    }
+  }
+
+  public static final Set<ScreenSize> SCREEN_SIZES = EnumSet.allOf(ScreenSize.class);
+
+  // ##################################################################
+  // # END: Screen
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: ShutdownHook
   // ##################################################################
 
@@ -236,24 +270,28 @@ public final class Y implements ISuiteListener {
     @Override
     void close();
 
+    void dev();
+
     void navigate(String path);
 
     void navigate(String path, Theme theme);
 
-    String title();
-
-    void dev();
-
     void screenshot();
+
+    String title();
 
   }
 
   public static Y.Tab tabDev() {
+    return tabDev(ScreenSize.XL);
+  }
+
+  public static Y.Tab tabDev(ScreenSize size) {
     final String baseUrl;
     baseUrl = "http://objectos.ui.localhost:" + YStart.TESTING_HTTP_PORT;
 
     Browser.NewPageOptions options;
-    options = new Browser.NewPageOptions().setBaseURL(baseUrl);
+    options = new Browser.NewPageOptions().setBaseURL(baseUrl).setViewportSize(size.width, size.height);
 
     final Page page;
     page = BROWSER.newPage(options);

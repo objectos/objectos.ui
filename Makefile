@@ -122,10 +122,10 @@ $(CARBON_GEN_PATH): $(CARBON_GEN_RESOLUTION_FILES) | $(WORK)
 #
 
 ## carbon-gen-test script
-CARBON_GEN_TEST_SCRIPT := CarbonGenTest.java
+CARBON_GEN_TEST_SCRIPT := CarbonGenRes.java
 
 ## carbon-gen-test src
-CARBON_GEN_TEST_JAVA := main/objectos/ui/XCarbonGenTest.java
+CARBON_GEN_TEST_JAVA := main/objectos/ui/XCarbonGenRes.java
 
 ## carbon-gen-test command
 CARBON_GEN_TESTX := $(JAVA)
