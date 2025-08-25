@@ -180,111 +180,23 @@ TEST_ADD_READS += objectos.ui=java.desktop
 
 include make/java-test.mk
 
+
 #
 # ui@dev
 #
 
-## dev deps
-DEV_DEPS := $(WAY)
-DEV_DEPS += $(TESTNG)
+include make/java-patched.mk
 
-## dev resolution files
-DEV_RESOLUTION_FILES := $(call to-resolution-files,$(DEV_DEPS))
+## dev main class
+DEV_MAIN := objectos.ui.StartDev
 
-## dev module-path
-DEV_MODULE_PATH := $(WORK)/dev-module-path
+## dev add-modules
+DEV_COMPILE_ADD_MODULES := playwright 
 
-## dev command
-DEV_JAVAX := $(JAVA)
-DEV_JAVAX += --module-path @$(DEV_MODULE_PATH)
-DEV_JAVAX += --patch-module $(MODULE)=$(TEST_CLASS_OUTPUT)
-DEV_JAVAX += --add-modules org.testng
-DEV_JAVAX += --add-reads objectos.ui=org.testng
-DEV_JAVAX += --module objectos.ui/objectos.ui.YStart
+## dev add-reads
+DEV_COMPILE_ADD_READS := objectos.ui=playwright 
 
-.PHONY: dev
-dev: $(TEST_COMPILE_MARKER) $(DEV_MODULE_PATH)
-	$(DEV_JAVAX)
-
-.PHONY: dev-clean
-dev-clean:
-	rm -f $(DEV_MODULE_PATH)
-	
-$(DEV_MODULE_PATH): Makefile
-	echo $(CLASS_OUTPUT) > $@.tmp
-	$(call uniq-resolution-files,$(DEV_RESOLUTION_FILES)) >> $@.tmp
-	cat $@.tmp | paste --delimiter='$(MODULE_PATH_SEPARATOR)' --serial > $@
-
-#
-# ui@docs-compile
-#
-
-## docs source directory
-DOCS := docs
-
-## docs source files
-DOCS_SOURCES0 := $(SOURCES)
-DOCS_SOURCES1 := $(shell find ${DOCS} -type f -name '*.java' -print)
-
-## docs source files modified since last compilation (dynamically evaluated)
-DOCS_DIRTY0 :=
-DOCS_DIRTY1 :=
-
-## docs holds the list of files to be compiled 
-DOCS_COMPILE_SOURCES := $(WORK)/docs-compile-sources
-
-## docs class output path
-DOCS_CLASS_OUTPUT := $(WORK)/docs
-
-## docs compiled classes
-DOCS_CLASSES0 := $(SOURCES:$(MAIN)/%.java=$(DOCS_CLASS_OUTPUT)/%.class)
-DOCS_CLASSES1 := $(DOCS_SOURCES:$(DOCS)/%.java=$(DOCS_CLASS_OUTPUT)/%.class)
-
-## docs javac options
-DOCS_JAVACX  = $(JAVAC)
-DOCS_JAVACX += -d $(DOCS_CLASS_OUTPUT)
-DOCS_JAVACX += -Xlint:none
-DOCS_JAVACX += -Xpkginfo:always
-DOCS_JAVACX += --module-path @$(COMPILE_PATH)
-DOCS_JAVACX += --module-version $(VERSION)
-DOCS_JAVACX += --release $(JAVA_RELEASE)
-DOCS_JAVACX += --source-path $(MAIN):$(DOCS)
-DOCS_JAVACX += @$(COMPILE_SOURCES)
-
-## docs compilation marker
-DOCS_COMPILE_MARKER := $(WORK)/docs-compile-marker
-
-## compilation requirements
-DOCS_COMPILE_REQS := $(DOCS_CLASSES0)
-DOCS_COMPILE_REQS += $(DOCS_CLASSES1)
-DOCS_COMPILE_REQS += $(COMPILE_PATH)
-
-#
-# docs compilation targets
-#
-
-.PHONY: docs-compile
-docs-compile: $(DOCS_COMPILE_MARKER)
-
-.PHONY: docs-compile-clean
-docs-compile-clean:
-	rm -rf $(DOCS_CLASS_OUTPUT) $(DOCS_COMPILE_MARKER) $(COMPILE_PATH)
-
-$(DOCS_CLASSES0): $(DOCS_CLASS_OUTPUT)/%.class: $(MAIN)/%.java
-	$(eval DOCS_DIRTY0 += $$<)
-
-$(DOCS_CLASSES1): $(DOCS_CLASS_OUTPUT)/%.class: $(DOCS)/%.java
-	$(eval DOCS_DIRTY1 += $$<)
-
-$(DOCS_COMPILE_MARKER): $(DOCS_COMPILE_REQS) | $(WORK)
-	$(file > $(DOCS_COMPILE_SOURCES).tmp,$(strip $(DOCS_DIRTY0)))
-	$(file >> $(DOCS_COMPILE_SOURCES).tmp,$(strip $(DOCS_DIRTY1)))
-	cat $(DOCS_COMPILE_SOURCES).tmp | tr -d '\n' > $(DOCS_COMPILE_SOURCES)
-	if [ -s $(DOCS_COMPILE_SOURCES) ]; then \
-		$(DOCS_JAVACX); \
-	fi
-	echo "$(DOCS_CLASS_OUTPUT)" > $@
-	$(call uniq-resolution-files,$(COMPILE_RESOLUTION_FILES)) >> $@
+$(eval $(call java_patched,DEV,dev))
 
 #
 # ui@docs
@@ -293,26 +205,13 @@ $(DOCS_COMPILE_MARKER): $(DOCS_COMPILE_REQS) | $(WORK)
 ## docs main class
 DOCS_MAIN := objectos.ui.Docs
 
-## docs module-path
-DOCS_MODULE_PATH := $(WORK)/docs-module-path
+## docs add-modules
+DOCS_COMPILE_ADD_MODULES := playwright 
 
-## docs java command
-DOCS_JAVAX := $(JAVA)
-DOCS_JAVAX += --module-path @$(DOCS_MODULE_PATH)
-DOCS_JAVAX += --module $(MODULE)/$(DOCS_MAIN)
+## docs add-reads
+DOCS_COMPILE_ADD_READS := objectos.ui=playwright 
 
-.PHONY: docs
-docs: $(DOCS_MODULE_PATH)
-	$(DOCS_JAVAX)
-
-.PHONY: docs-clean
-docs-clean:
-	rm -f $(DOCS_MODULE_PATH)
-
-$(DOCS_MODULE_PATH): $(DOCS_COMPILE_MARKER)
-	echo $(DOCS_CLASS_OUTPUT) > $@.tmp
-	cat $(COMPILE_RESOLUTION_FILES) >> $@.tmp
-	cat $@.tmp | paste --delimiter='$(MODULE_PATH_SEPARATOR)' --serial > $@
+$(eval $(call java_patched,DOCS,docs))
 
 #
 # ui@javadoc

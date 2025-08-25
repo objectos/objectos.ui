@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.carbon;
 
+import objectos.ui.Carbon;
 import objectos.way.Css;
+import objectos.way.Html;
 
 @Css.Source
-final class CarbonModal {
+public final class CarbonModal implements Carbon.Modal, Html.Component {
 
   static final String MODAL = """
   position:fixed
@@ -71,5 +73,41 @@ final class CarbonModal {
   transform-origin:top_center
   transition:transform_240ms_cubic-bezier(0.4, 0.14, 1, 1)
   """;
+
+  private boolean open;
+
+  @Override
+  public final void open(boolean value) {
+    open = value;
+  }
+
+  @Override
+  public final void renderHtml(Html.Markup m) {
+    m.dialog(
+        m.id("reload"),
+
+        m.css("""
+        position:fixed
+        visibility:hidden
+        z-index:9000
+
+        background-color:overlay
+        opacity:0
+
+        block-size:100vh
+        inline-size:100vw
+        inset-block-start:0
+        inset-inline-start:0
+
+        display:flex
+        align-items:center
+        justify-content:center
+
+        content:''
+        transition:opacity_240ms_cubic-bezier(0.4,0.14,1,1),visibility_0ms_linear_240ms
+        """),
+        open ? Html.Markup.open : m.noop()
+    );
+  }
 
 }

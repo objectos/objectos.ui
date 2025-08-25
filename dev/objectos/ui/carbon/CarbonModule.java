@@ -15,31 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.carbon;
 
 import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
+import objectos.ui.Carbon;
 import objectos.way.App;
 import objectos.way.Css;
 import objectos.way.Http;
 import objectos.way.Note;
 
-final class CarbonModule implements Http.Routing.Module {
+public final class CarbonModule implements Http.RoutingPath.Module {
 
   private final App.Injector injector;
 
-  CarbonModule(App.Injector injector) {
+  public CarbonModule(App.Injector injector) {
     this.injector = injector;
   }
 
   @Override
-  public final void configure(Http.Routing carbon) {
-    carbon.path("/carbon/page/{theme}", GET, this::page);
+  public final void configure(Http.RoutingPath carbon) {
+    carbon.subpath("/page/{theme}", GET, this::page);
 
-    CarbonTearsheetTest.module(carbon);
-
-    carbon.path("/carbon/styles.css", GET, this::styles);
+    carbon.subpath("/styles.css", GET, this::styles);
   }
 
   private void page(Http.Exchange http) {

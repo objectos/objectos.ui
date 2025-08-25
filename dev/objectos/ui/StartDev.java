@@ -19,17 +19,18 @@ package objectos.ui;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.nio.file.Path;
 import objectos.way.App;
 import objectos.way.Http;
 import objectos.way.Note;
 
-public class YStart extends App.Bootstrap {
+public final class StartDev extends App.Bootstrap {
 
   public static final int TESTING_HTTP_PORT = 9007;
 
   public static void main(String[] args) {
-    final YStart start;
-    start = new YStart();
+    final StartDev start;
+    start = new StartDev();
 
     start.start(args);
   }
@@ -87,7 +88,18 @@ public class YStart extends App.Bootstrap {
   private void injector(App.Injector.Options ctx) {
     // Note.Sink
     final Note.Sink noteSink;
-    noteSink = Y.noteSink();
+    noteSink = App.NoteSink.ofAppendable(System.out, opts -> {
+      opts.filter(note -> {
+        final String source;
+        source = note.source();
+
+        if (source.startsWith("objectos.ui")) {
+          return true;
+        }
+
+        return note.hasAny(Note.ERROR, Note.WARN, Note.INFO);
+      });
+    });
 
     ctx.putInstance(Note.Sink.class, noteSink);
 
@@ -99,7 +111,9 @@ public class YStart extends App.Bootstrap {
 
     // App.ShutdownHook
     final App.ShutdownHook shutdownHook;
-    shutdownHook = Y.shutdownHook();
+    shutdownHook = App.ShutdownHook.create(opts -> {
+      opts.noteSink(noteSink);
+    });
 
     shutdownHook.registerIfPossible(noteSink);
 
@@ -110,7 +124,7 @@ public class YStart extends App.Bootstrap {
     @Override
     public final Http.Handler reload(ClassLoader loader) throws Exception {
       final Class<?> bootClass;
-      bootClass = loader.loadClass("objectos.ui.YModule");
+      bootClass = loader.loadClass("objectos.ui.DevModule");
 
       final Constructor<?> constructor;
       constructor = bootClass.getConstructor(App.Injector.class, Module.class);
@@ -134,12 +148,15 @@ public class YStart extends App.Bootstrap {
   private Http.Handler serverHandler(App.Injector injector) {
     try {
       return App.Reloader.create(opts -> {
+        opts.directory(Path.of("work", "main"));
+        opts.directory(Path.of("work", "dev"));
+
         final Reloader reloader;
         reloader = new Reloader(injector);
 
         opts.handlerFactory(reloader);
 
-        opts.moduleOf(YStart.class);
+        opts.moduleOf(StartDev.class);
 
         final Note.Sink noteSink;
         noteSink = injector.getInstance(Note.Sink.class);

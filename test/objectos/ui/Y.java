@@ -49,7 +49,7 @@ public final class Y implements ISuiteListener {
   @Override
   public final void onStart(ISuite suite) {
     final App.Bootstrap bootstrap;
-    bootstrap = new YStart();
+    bootstrap = new StartDev();
 
     bootstrap.start(new String[0]);
   }
@@ -242,7 +242,7 @@ public final class Y implements ISuiteListener {
 
   public static Y.Tab tabDev(ScreenSize size) {
     final String baseUrl;
-    baseUrl = "http://objectos.ui.localhost:" + YStart.TESTING_HTTP_PORT;
+    baseUrl = "http://objectos.ui.localhost:" + StartDev.TESTING_HTTP_PORT;
 
     Browser.NewPageOptions options;
     options = new Browser.NewPageOptions().setBaseURL(baseUrl).setViewportSize(size.width, size.height);

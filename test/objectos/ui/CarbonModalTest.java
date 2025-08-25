@@ -17,41 +17,25 @@
  */
 package objectos.ui;
 
-import objectos.way.Css;
-import objectos.way.Html;
+import static objectos.way.Http.Method.GET;
 
-@Css.Source
-final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
+import objectos.way.Http;
 
-  static final String CONTAINER = """
-  block-size:100%
-  inset-block-start:auto
-  max-block-size:calc(100%-3rem)
+public class CarbonModalTest extends CarbonTest {
 
-  transform:translate3d(0,min(95vh,500px),0)
-  """;
-
-  private boolean visible;
-
-  @Override
-  public final void visible(boolean value) {
-    visible = value;
+  static void module(Http.Routing carbon) {
+    carbon.path("/carbon/modal/tc01/{theme}", GET, CarbonModalTest::testCase01);
   }
 
-  @Override
-  public final void renderHtml(Html.Markup m) {
-    m.div(
-        m.css(CarbonModal.MODAL),
-        visible ? m.css(CarbonModal.IS_VISIBLE) : m.noop(),
+  static void testCase01(Http.Exchange http) {
+    http.ok(page(http, page -> {
+      page.title("Modal - TC01");
 
-        m.div(
-            m.css(CarbonModal.CONTAINER),
-            m.css(CONTAINER),
+      page.add(Carbon.modal(t -> {
+        t.open(true);
+      }));
+    }));
 
-            m.div(
-            )
-        )
-    );
   }
 
 }

@@ -19,19 +19,20 @@ package objectos.ui;
 
 import static objectos.way.Http.Method.GET;
 
+import objectos.ui.carbon.CarbonModule;
 import objectos.way.App;
 import objectos.way.Http;
 import objectos.way.Media;
 import objectos.way.Script;
 
-public class YModule implements Http.Routing.Module {
+public class DevModule implements Http.Routing.Module {
 
   private final App.Injector injector;
 
-  public YModule(App.Injector injector, Module original) {
+  public DevModule(App.Injector injector, Module original) {
     this.injector = injector;
 
-    final Class<? extends YModule> self;
+    final Class<? extends DevModule> self;
     self = getClass();
 
     final Module module;
@@ -42,7 +43,7 @@ public class YModule implements Http.Routing.Module {
 
   @Override
   public final void configure(Http.Routing routing) {
-    routing.install(new CarbonModule(injector));
+    routing.path("/carbon{}", new CarbonModule(injector));
 
     routing.path("/script.js", GET, http -> http.ok(Script.Library.of()));
 
