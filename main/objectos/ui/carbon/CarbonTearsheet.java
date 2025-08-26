@@ -17,6 +17,7 @@
  */
 package objectos.ui.carbon;
 
+import java.util.Objects;
 import objectos.ui.Carbon;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -32,26 +33,59 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
   transform:translate3d(0,min(95vh,500px),0)
   """;
 
-  private boolean visible;
+  private Html.Id id;
+
+  private boolean open;
 
   @Override
-  public final void visible(boolean value) {
-    visible = value;
+  public final void id(Html.Id value) {
+    id = Objects.requireNonNull(value, "value == value");
+  }
+
+  @Override
+  public final void open(boolean value) {
+    open = value;
   }
 
   @Override
   public final void renderHtml(Html.Markup m) {
-    m.div(
-        m.css(CarbonModal.MODAL),
-        visible ? m.css(CarbonModal.IS_VISIBLE) : m.noop(),
+    m.dialog(
+        id != null ? m.id(id.value()) : m.noop(),
 
-        m.div(
-            m.css(CarbonModal.CONTAINER),
-            m.css(CONTAINER),
+        m.css("""
+        z-index:9000
 
-            m.div(
-            )
-        )
+        block-size:100vh
+        inline-size:100vw
+        inset-block-start:0
+        inset-inline-start:0
+        max-block-size:none
+        max-inline-size:none
+
+        border:none
+        outline:none
+
+        display:flex
+        align-items:center
+        justify-content:center
+
+        transition:opacity_240ms_cubic-bezier(0.4,0.14,1,1),visibility_0ms_linear_240ms
+
+        backdrop:background-color:overlay
+        backdrop:opacity:0
+
+        [open]:backdrop:opacity:1
+        """),
+
+        open
+            ? m.dataOnLoad(script -> {
+              var el = script.element();
+
+              el.showModal();
+            })
+            : m.noop(),
+
+        m.p("Lorem Ipsum")
     );
   }
 

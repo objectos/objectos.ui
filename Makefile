@@ -144,6 +144,15 @@ $(CARBON_GEN_TEST_SCRIPT): $(CARBON_GEN_TEST_JAVA)
 	sed '/\/\/ SED_REMOVE/d' $< > $@
 
 #
+# ui@dev
+#
+
+## dev main class
+DEV_MAIN := objectos.ui.DevStart
+
+include make/java-dev.mk
+
+#
 # ui@test-compile
 #
 
@@ -182,23 +191,6 @@ include make/java-test.mk
 
 
 #
-# ui@dev
-#
-
-include make/java-patched.mk
-
-## dev main class
-DEV_MAIN := objectos.ui.StartDev
-
-## dev add-modules
-DEV_COMPILE_ADD_MODULES := playwright 
-
-## dev add-reads
-DEV_COMPILE_ADD_READS := objectos.ui=playwright 
-
-$(eval $(call java_patched,DEV,dev))
-
-#
 # ui@docs
 #
 
@@ -223,8 +215,9 @@ include make/java-javadoc.mk
 # ui@jar
 #
 
-## do not add the X* classes
-JAR_EXCLUDES := X*.class
+## do not add dev and script classes
+JAR_EXCLUDES := Dev*.class
+JAR_EXCLUDES += X*.class
 
 include make/java-jar.mk
 

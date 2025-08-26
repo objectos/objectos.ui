@@ -15,30 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.carbon;
+package objectos.ui;
 
 import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
-import objectos.ui.Carbon;
+import java.util.function.Consumer;
 import objectos.way.App;
 import objectos.way.Css;
+import objectos.way.Html;
 import objectos.way.Http;
 import objectos.way.Note;
 
-public final class CarbonModule implements Http.RoutingPath.Module {
+/// This class is not part of the Objectos UI JAR file.
+/// It is placed in the main source tree to ease its development.
+public final class DevCarbon implements Http.RoutingPath.Module {
+
+  private static final Html.Id MODAL = Html.Id.of("carbon-modal");
 
   private final App.Injector injector;
 
-  public CarbonModule(App.Injector injector) {
+  public DevCarbon(App.Injector injector) {
     this.injector = injector;
   }
 
   @Override
   public final void configure(Http.RoutingPath carbon) {
     carbon.subpath("/page/{theme}", GET, this::page);
+    carbon.subpath("/tearsheet/{id}/{theme}", GET, this::tearsheet);
 
     carbon.subpath("/styles.css", GET, this::styles);
+
+    carbon.handler(Http.Handler.notFound());
   }
 
   private void page(Http.Exchange http) {
@@ -52,6 +60,33 @@ public final class CarbonModule implements Http.RoutingPath.Module {
 
       page.title("Objectos Carbon");
     }));
+  }
+
+  private Html.Component page(Http.Exchange http, Consumer<? super Carbon.Page> more) {
+    return Carbon.page(page -> {
+      page.theme(theme(http));
+
+      page.headEnd(m -> {
+        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
+        m.script(m.src("/script.js"));
+      });
+
+      more.accept(page);
+    });
+  }
+
+  private void tearsheet(Http.Exchange http) {
+    switch (http.pathParam("id")) {
+      case "default" -> http.ok(page(http, page -> {
+        page.title("Tearsheet - Default");
+
+        page.add(Carbon.tearsheet(t -> {
+          t.id(MODAL);
+
+          t.open(true);
+        }));
+      }));
+    }
   }
 
   private void styles(Http.Exchange http) {

@@ -17,28 +17,11 @@
  */
 package objectos.ui;
 
-import static objectos.way.Http.Method.GET;
-
-import objectos.way.Http;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(Y.class)
 public class CarbonTearsheetTest extends CarbonTest {
-
-  static void module(Http.Routing carbon) {
-    carbon.path("/carbon/tearsheet/tc01/{theme}", GET, CarbonTearsheetTest::testCase01);
-  }
-
-  static void testCase01(Http.Exchange http) {
-    http.ok(page(http, page -> {
-      page.title("Objectos Carbon");
-
-      page.add(Carbon.tearsheet(t -> {
-        t.visible(true);
-      }));
-    }));
-  }
 
   @Test(enabled = false)
   public void testCase01(Carbon.Theme theme, Y.ScreenSize screen) {

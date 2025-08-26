@@ -19,18 +19,19 @@ package objectos.ui;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.nio.file.Path;
 import objectos.way.App;
 import objectos.way.Http;
 import objectos.way.Note;
 
-public final class StartDev extends App.Bootstrap {
+/// This class is not part of the Objectos UI JAR file.
+/// It is placed in the main source tree to ease its development.
+public final class DevStart extends App.Bootstrap {
 
   public static final int TESTING_HTTP_PORT = 9007;
 
   public static void main(String[] args) {
-    final StartDev start;
-    start = new StartDev();
+    final DevStart start;
+    start = new DevStart();
 
     start.start(args);
   }
@@ -148,15 +149,12 @@ public final class StartDev extends App.Bootstrap {
   private Http.Handler serverHandler(App.Injector injector) {
     try {
       return App.Reloader.create(opts -> {
-        opts.directory(Path.of("work", "main"));
-        opts.directory(Path.of("work", "dev"));
-
         final Reloader reloader;
         reloader = new Reloader(injector);
 
         opts.handlerFactory(reloader);
 
-        opts.moduleOf(StartDev.class);
+        opts.moduleOf(DevStart.class);
 
         final Note.Sink noteSink;
         noteSink = injector.getInstance(Note.Sink.class);

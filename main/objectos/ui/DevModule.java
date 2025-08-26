@@ -19,12 +19,13 @@ package objectos.ui;
 
 import static objectos.way.Http.Method.GET;
 
-import objectos.ui.carbon.CarbonModule;
 import objectos.way.App;
 import objectos.way.Http;
 import objectos.way.Media;
 import objectos.way.Script;
 
+/// This class is not part of the Objectos UI JAR file.
+/// It is placed in the main source tree to ease its development.
 public class DevModule implements Http.Routing.Module {
 
   private final App.Injector injector;
@@ -43,7 +44,7 @@ public class DevModule implements Http.Routing.Module {
 
   @Override
   public final void configure(Http.Routing routing) {
-    routing.path("/carbon{}", new CarbonModule(injector));
+    routing.path("/carbon{}", new DevCarbon(injector));
 
     routing.path("/script.js", GET, http -> http.ok(Script.Library.of()));
 

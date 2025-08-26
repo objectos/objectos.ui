@@ -19,7 +19,6 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-import objectos.ui.carbon.CarbonModal;
 import objectos.ui.carbon.CarbonTearsheet;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -29,29 +28,6 @@ import objectos.way.Html;
 public final class Carbon {
 
   private Carbon() {}
-
-  // ##################################################################
-  // # BEGIN: Modal
-  // ##################################################################
-
-  public sealed interface Modal permits CarbonModal {
-
-    void open(boolean value);
-
-  }
-
-  public static Html.Component modal(Consumer<? super Modal> modal) {
-    final CarbonModal pojo;
-    pojo = new CarbonModal();
-
-    modal.accept(pojo);
-
-    return pojo;
-  }
-
-  // ##################################################################
-  // # END: Modal
-  // ##################################################################
 
   // ##################################################################
   // # BEGIN: Page
@@ -88,7 +64,9 @@ public final class Carbon {
 
   public sealed interface Tearsheet permits CarbonTearsheet {
 
-    void visible(boolean value);
+    void id(Html.Id value);
+
+    void open(boolean value);
 
   }
 

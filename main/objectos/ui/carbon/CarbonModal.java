@@ -17,12 +17,11 @@
  */
 package objectos.ui.carbon;
 
-import objectos.ui.Carbon;
 import objectos.way.Css;
 import objectos.way.Html;
 
 @Css.Source
-public final class CarbonModal implements Carbon.Modal, Html.Component {
+public final class CarbonModal implements Html.Component {
 
   static final String MODAL = """
   position:fixed
@@ -76,7 +75,6 @@ public final class CarbonModal implements Carbon.Modal, Html.Component {
 
   private boolean open;
 
-  @Override
   public final void open(boolean value) {
     open = value;
   }
@@ -84,15 +82,9 @@ public final class CarbonModal implements Carbon.Modal, Html.Component {
   @Override
   public final void renderHtml(Html.Markup m) {
     m.dialog(
-        m.id("reload"),
-
         m.css("""
         position:fixed
-        visibility:hidden
         z-index:9000
-
-        background-color:overlay
-        opacity:0
 
         block-size:100vh
         inline-size:100vw
@@ -103,10 +95,15 @@ public final class CarbonModal implements Carbon.Modal, Html.Component {
         align-items:center
         justify-content:center
 
-        content:''
         transition:opacity_240ms_cubic-bezier(0.4,0.14,1,1),visibility_0ms_linear_240ms
+
+        backdrop:background-color:overlay
+        backdrop:opacity:0
+
+        [open]:backdrop:opacity:1
         """),
-        open ? Html.Markup.open : m.noop()
+        open ? Html.Markup.open : m.noop(),
+        m.p("Lorem Ipsum")
     );
   }
 
