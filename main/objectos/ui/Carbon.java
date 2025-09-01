@@ -68,6 +68,11 @@ public final class Carbon {
 
     void open(boolean value);
 
+    /// Sets the tearsheet title.
+    ///
+    /// @param value the title value
+    void title(String value);
+
   }
 
   public static Html.Component tearsheet(Consumer<? super Tearsheet> tearsheet) {

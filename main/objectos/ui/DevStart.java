@@ -27,7 +27,7 @@ import objectos.way.Note;
 /// It is placed in the main source tree to ease its development.
 public final class DevStart extends App.Bootstrap {
 
-  public static final int TESTING_HTTP_PORT = 9007;
+  public static final int TESTING_HTTP_PORT = 8007;
 
   public static void main(String[] args) {
     final DevStart start;

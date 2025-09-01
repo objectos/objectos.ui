@@ -25,17 +25,11 @@ import objectos.way.Html;
 @Css.Source
 public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
 
-  static final String CONTAINER = """
-  block-size:100%
-  inset-block-start:auto
-  max-block-size:calc(100%-3rem)
-
-  transform:translate3d(0,min(95vh,500px),0)
-  """;
-
   private Html.Id id;
 
   private boolean open;
+
+  private String title = "";
 
   @Override
   public final void id(Html.Id value) {
@@ -48,44 +42,97 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
   }
 
   @Override
+  public final void title(String value) {
+    title = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
   public final void renderHtml(Html.Markup m) {
+    // tearsheet
     m.dialog(
         id != null ? m.id(id.value()) : m.noop(),
 
         m.css("""
-        z-index:9000
-
-        block-size:100vh
-        inline-size:100vw
-        inset-block-start:0
-        inset-inline-start:0
-        max-block-size:none
-        max-inline-size:none
-
+        background-color:layer
+        block-size:100%
         border:none
+        display:grid
+        grid-template-columns:100%
+        grid-template-rows:auto_1fr_auto
+        inline-size:100%
+        inset-block-start:auto
+        inset-inline-start:0
+        max-block-size:100%
+        max-inline-size:100%
         outline:none
-
-        display:flex
-        align-items:center
-        justify-content:center
-
-        transition:opacity_240ms_cubic-bezier(0.4,0.14,1,1),visibility_0ms_linear_240ms
+        transform:translateY(min(95vh,500px))
+        transform-origin:top_center
+        transition:transform_.24s_cubic-bezier(0,0,.3,1)
+        z-index:9000
 
         backdrop:background-color:overlay
         backdrop:opacity:0
 
+        [open]:transform:translateY(0)
         [open]:backdrop:opacity:1
         """),
 
+        m.ariaLabel(title),
+
         open
             ? m.dataOnLoad(script -> {
-              var el = script.element();
+              script.delay(1, () -> {
+                var el = script.element();
 
-              el.showModal();
+                el.showModal();
+              });
             })
             : m.noop(),
 
-        m.p("Lorem Ipsum")
+        // header
+        m.div(
+            m.css("""
+            background-color:layer
+            border-block-end:1px_solid_border-subtle
+            grid-column:1/-1
+            grid-row:1/1
+            margin:0
+            margin-block-end:.5rem
+            max-block-size:50vh
+            padding:1.5rem_2rem
+            padding-block-start:1rem
+            padding-inline:1rem_3rem
+            overflow-y:auto
+            """),
+
+            // header-content
+            m.div(
+                m.css("""
+                display:flex
+                justify-content:space-between
+                """)
+            )
+        ),
+
+        // body
+        m.div(
+            m.css("""
+            color:text-primary
+            display:flex
+            flex-direction:row
+            font-size:var(--carbon-body-01-font-size,0.875rem)
+            font-weight:var(--carbon-body-01-font-weight,400)
+            grid-column:1/-1
+            grid-row:2/-2
+            letter-spacing:var(--carbon-body-01-letter-spacing,0.16px)
+            line-height:var(--carbon-body-01-line-height,1.42857)
+            margin:0
+            overflow-y:auto
+            padding-block:.5rem_3rem
+            padding-inline:1rem_1rem
+            position:relative
+            """)
+        )
     );
   }
 

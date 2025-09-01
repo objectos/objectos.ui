@@ -31,8 +31,6 @@ import objectos.way.Note;
 /// It is placed in the main source tree to ease its development.
 public final class DevCarbon implements Http.RoutingPath.Module {
 
-  private static final Html.Id MODAL = Html.Id.of("carbon-modal");
-
   private final App.Injector injector;
 
   public DevCarbon(App.Injector injector) {
@@ -81,7 +79,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
         page.title("Tearsheet - Default");
 
         page.add(Carbon.tearsheet(t -> {
-          t.id(MODAL);
+          t.title("Title of the tearsheet");
 
           t.open(true);
         }));
