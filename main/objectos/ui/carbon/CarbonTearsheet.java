@@ -25,15 +25,15 @@ import objectos.way.Html;
 @Css.Source
 public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
 
-  private Html.Id id;
+  private String description = "";
 
   private boolean open;
 
   private String title = "";
 
   @Override
-  public final void id(Html.Id value) {
-    id = Objects.requireNonNull(value, "value == value");
+  public final void description(String value) {
+    description = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -50,8 +50,6 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
   public final void renderHtml(Html.Markup m) {
     // tearsheet
     m.dialog(
-        id != null ? m.id(id.value()) : m.noop(),
-
         m.css("""
         background-color:layer
         block-size:100%
@@ -110,8 +108,47 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
                 m.css("""
                 display:flex
                 justify-content:space-between
-                """)
-            )
+                """),
+
+                // fields
+                m.div(
+                    // title
+                    m.h3(
+                        m.css("""
+                        font-size:var(--carbon-heading-04-font-size,1.75rem)
+                        font-weight:var(--carbon-heading-04-font-weight,400)
+                        letter-spacing:var(--carbon-heading-04-letter-spacing,0)
+                        line-height:var(--carbon-heading-04-line-height,1.28572)
+                        """),
+
+                        m.text(title)
+                    ),
+
+                    // description
+                    m.div(
+                        m.css("""
+                        display:inline-flex
+                        font-size:var(--carbon-body-compact-01-font-size,.875rem)
+                        font-weight:var(--carbon-body-compact-01-font-weight,400)
+                        margin-block-start:1rem
+                        max-inline-size:100%
+                        letter-spacing:var(--carbon-body-compact-01-letter-spacing,.16px)
+                        line-height:var(--carbon-body-compact-01-line-height,1.28572)
+                        """),
+
+                        m.text(description)
+                    )
+                ),
+
+                // actions
+                m.noop()
+            ),
+
+            // header-navigation
+            m.noop(),
+
+            // modal-close-button
+            m.noop()
         ),
 
         // body

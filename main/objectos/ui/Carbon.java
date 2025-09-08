@@ -62,19 +62,35 @@ public final class Carbon {
   // # BEGIN: Tearsheet
   // ##################################################################
 
+  /// Configures the creation of a tearsheet.
   public sealed interface Tearsheet permits CarbonTearsheet {
 
-    void id(Html.Id value);
+    /// A description of the flow, displayed in the header area of the tearsheet.
+    ///
+    /// @param value the tearsheet description
+    void description(String value);
 
+    /// Specifies whether the tearsheet is currently open.
+    ///
+    /// @param value `true` if the tearsheet is currently open; `false` otherwise
     void open(boolean value);
 
-    /// Sets the tearsheet title.
+    /// The main title of the tearsheet, displayed in the header area.
     ///
     /// @param value the title value
     void title(String value);
 
   }
 
+  /// Creates a new tearsheet with the specified options.
+  ///
+  /// A tearsheet is a mostly full-screen type of dialog that keeps users
+  /// in-context and focused by bringing actionable content front and center
+  /// while revealing parts of the UI behind it.
+  ///
+  /// @param tearsheet allows for setting the options
+  ///
+  /// @return a newly created tearsheet with the specified options
   public static Html.Component tearsheet(Consumer<? super Tearsheet> tearsheet) {
     final CarbonTearsheet pojo;
     pojo = new CarbonTearsheet();

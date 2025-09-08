@@ -79,9 +79,11 @@ public final class DevCarbon implements Http.RoutingPath.Module {
         page.title("Tearsheet - Default");
 
         page.add(Carbon.tearsheet(t -> {
+          t.open(true);
+
           t.title("Title of the tearsheet");
 
-          t.open(true);
+          t.description("This is a description for the tearsheet, providing an opportunity to describe the flow over a couple of lines in the header of the tearsheet.");
         }));
       }));
     }

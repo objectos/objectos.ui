@@ -23,7 +23,7 @@
 ## Coordinates
 GROUP_ID := br.com.objectos
 ARTIFACT_ID := objectos.ui
-VERSION := 0.2.7-SNAPSHOT
+VERSION := 0.2.9-SNAPSHOT
 MODULE := $(ARTIFACT_ID)
 
 ## javac --release option
