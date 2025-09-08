@@ -27,6 +27,8 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
 
   private String description = "";
 
+  private Html.Component main;
+
   private boolean open;
 
   private String title = "";
@@ -34,6 +36,11 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
   @Override
   public final void description(String value) {
     description = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void main(Html.Component value) {
+    main = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -95,11 +102,8 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
             grid-column:1/-1
             grid-row:1/1
             margin:0
-            margin-block-end:.5rem
             max-block-size:50vh
             padding:1.5rem_2rem
-            padding-block-start:1rem
-            padding-inline:1rem_3rem
             overflow-y:auto
             """),
 
@@ -165,10 +169,43 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
             line-height:var(--carbon-body-01-line-height,1.42857)
             margin:0
             overflow-y:auto
-            padding-block:.5rem_3rem
-            padding-inline:1rem_1rem
+            padding:0
             position:relative
-            """)
+            """),
+
+            // right
+            m.div(
+                m.css("""
+                display:grid
+                flex-grow:1
+                grid-template-columns:100%
+                grid-template-rows:1fr_auto
+                """),
+
+                // main
+                m.div(
+                    m.css("""
+                    background-color:background
+                    display:flex
+                    flex-direction:row
+                    grid-column:1/-1
+                    grid-row:1/-1
+                    """),
+
+                    // content
+                    m.section(
+                        m.css("""
+                        flex-grow:1
+                        overflow:auto
+                        """),
+
+                        main != null ? m.renderComponent(main) : m.noop()
+                    )
+                ),
+
+                // button-container
+                m.div()
+            )
         )
     );
   }
