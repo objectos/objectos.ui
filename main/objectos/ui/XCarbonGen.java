@@ -449,7 +449,9 @@ final class XCarbonGen {
         css(THEME, EXACT, ".cds--g10", ".carbon-g10"),
         css(THEME, EXACT, ".cds--g90", ".carbon-g90"),
         css(THEME, EXACT, ".cds--g100", ".carbon-g100"),
-        css(THEME, STARTS_WITH, "[data-carbon-theme=", null),
+        css(THEME, EXACT, ".cds--layer-one", ".carbon-layer-01"),
+        css(THEME, EXACT, ".cds--layer-two", ".carbon-layer-02"),
+        css(THEME, EXACT, ".cds--layer-three", ".carbon-layer-03"),
 
         css(COMPONENT, STARTS_WITH, ".cds--btn", "button"),
         css(COMPONENT, STARTS_WITH, ".cds--fieldset", "formgroup"),
@@ -1643,8 +1645,6 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
             parser = Parser.VALUE_VAR_END;
 
             val1 = ctx.name();
-
-            theme.add(kind, name, val0, val1);
           }
 
           else {

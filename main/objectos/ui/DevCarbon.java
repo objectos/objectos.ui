@@ -39,12 +39,35 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
   @Override
   public final void configure(Http.RoutingPath carbon) {
+    carbon.subpath("/layer/{id}/{theme}", GET, this::layer);
     carbon.subpath("/page/{theme}", GET, this::page);
     carbon.subpath("/tearsheet/{id}/{theme}", GET, this::tearsheet);
 
     carbon.subpath("/styles.css", GET, this::styles);
 
     carbon.handler(Http.Handler.notFound());
+  }
+
+  private void layer(Http.Exchange http) {
+    final Html.Component test;
+    test = m -> m.div(
+        m.css("""
+        background-color:layer
+        color:text-primary
+        padding:1rem
+        """),
+
+        m.text("Test component")
+    );
+
+    switch (http.pathParam("id")) {
+      case "default" -> http.ok(page(http, page -> {
+        page.title("Layer - Default");
+
+        page.add(Carbon.layer(l -> {
+        }));
+      }));
+    }
   }
 
   private void page(Http.Exchange http) {

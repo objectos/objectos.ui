@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
+import objectos.ui.carbon.CarbonLayer;
 import objectos.ui.carbon.CarbonTearsheet;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -28,6 +29,33 @@ import objectos.way.Html;
 public final class Carbon {
 
   private Carbon() {}
+
+  // ##################################################################
+  // # BEGIN: Layer
+  // ##################################################################
+
+  /// Configures the creation of a layer.
+  public sealed interface Layer permits CarbonLayer {
+
+    /// Adds a child component to the end of this layer.
+    ///
+    /// @param value the child component
+    void add(Html.Component value);
+
+  }
+
+  public static Html.Component layer(Consumer<? super Layer> layer) {
+    final CarbonLayer pojo;
+    pojo = new CarbonLayer();
+
+    layer.accept(pojo);
+
+    return pojo;
+  }
+
+  // ##################################################################
+  // # END: Layer
+  // ##################################################################
 
   // ##################################################################
   // # BEGIN: Page
