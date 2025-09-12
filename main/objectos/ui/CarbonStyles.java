@@ -22,7 +22,7 @@ import objectos.way.Css;
 
 final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
 
-  static final String VERSION = "1.90.0";
+  static final String VERSION = "1.91.0";
 
   @Override
   public final void accept(Css.StyleSheet.Options opts) {
@@ -560,7 +560,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --carbon-grid-margin: 1.5rem;
     """);
 
-    opts.theme(".carbon-layer-01", """
+    opts.theme(".carbon-layer-0", """
     --color-layer: var(--color-layer-01, #f4f4f4);
     --color-layer-active: var(--color-layer-active-01, #c6c6c6);
     --color-layer-background: var(--color-layer-background-01, #ffffff);
@@ -578,7 +578,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --color-border-tile: var(--color-border-tile-01, #c6c6c6);
     """);
 
-    opts.theme(".carbon-layer-02", """
+    opts.theme(".carbon-layer-1", """
     --color-layer: var(--color-layer-02, #ffffff);
     --color-layer-active: var(--color-layer-active-02, #c6c6c6);
     --color-layer-background: var(--color-layer-background-02, #f4f4f4);
@@ -596,7 +596,7 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
     --color-border-tile: var(--color-border-tile-02, #a8a8a8);
     """);
 
-    opts.theme(".carbon-layer-03", """
+    opts.theme(".carbon-layer-2", """
     --color-layer: var(--color-layer-03, #f4f4f4);
     --color-layer-active: var(--color-layer-active-03, #c6c6c6);
     --color-layer-background: var(--color-layer-background-03, #ffffff);

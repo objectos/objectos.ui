@@ -449,9 +449,9 @@ final class XCarbonGen {
         css(THEME, EXACT, ".cds--g10", ".carbon-g10"),
         css(THEME, EXACT, ".cds--g90", ".carbon-g90"),
         css(THEME, EXACT, ".cds--g100", ".carbon-g100"),
-        css(THEME, EXACT, ".cds--layer-one", ".carbon-layer-01"),
-        css(THEME, EXACT, ".cds--layer-two", ".carbon-layer-02"),
-        css(THEME, EXACT, ".cds--layer-three", ".carbon-layer-03"),
+        css(THEME, EXACT, ".cds--layer-one", ".carbon-layer-0"),
+        css(THEME, EXACT, ".cds--layer-two", ".carbon-layer-1"),
+        css(THEME, EXACT, ".cds--layer-three", ".carbon-layer-2"),
 
         css(COMPONENT, STARTS_WITH, ".cds--btn", "button"),
         css(COMPONENT, STARTS_WITH, ".cds--fieldset", "formgroup"),

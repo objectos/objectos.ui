@@ -21,14 +21,17 @@ import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import objectos.ui.carbon.CarbonTheme;
 import objectos.way.App;
 import objectos.way.Css;
 import objectos.way.Html;
 import objectos.way.Http;
 import objectos.way.Note;
+import objectos.way.Script;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
+@Css.Source
 public final class DevCarbon implements Http.RoutingPath.Module {
 
   private final App.Injector injector;
@@ -54,7 +57,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
         m.css("""
         background-color:layer
         color:text-primary
-        padding:1rem
+        padding:16rx
         """),
 
         m.text("Test component")
@@ -64,8 +67,21 @@ public final class DevCarbon implements Http.RoutingPath.Module {
       case "default" -> http.ok(page(http, page -> {
         page.title("Layer - Default");
 
-        page.add(Carbon.layer(l -> {
-        }));
+        page.add(m -> m.div(
+            m.css("padding:32rx sm:max-width:640rx"),
+
+            m.c(test),
+
+            m.c(Carbon.layer(l1 -> {
+              l1.add(test);
+
+              l1.add(Carbon.layer(l2 -> {
+                l2.add(test);
+              }));
+            })),
+
+            m.c(themeSwitcher(http))
+        ));
       }));
     }
   }
@@ -136,6 +152,45 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     themeName = http.pathParam("theme");
 
     return Carbon.Theme.of(themeName);
+  }
+
+  private Html.Component themeSwitcher(Http.Exchange http) {
+    final Carbon.Theme theme;
+    theme = theme(http);
+
+    final CarbonTheme impl;
+    impl = (CarbonTheme) theme;
+
+    final CarbonTheme[] values;
+    values = CarbonTheme.values();
+
+    final int ordinal;
+    ordinal = impl.ordinal();
+
+    final CarbonTheme prev;
+    prev = ordinal == 0 ? null : values[ordinal - 1];
+
+    final CarbonTheme next;
+    next = ordinal == values.length - 1 ? null : values[ordinal + 1];
+
+    return m -> m.div(
+        m.css("""
+        display:grid
+        grid-template-columns:1fr_1fr
+        """),
+
+        prev != null ? m.a(
+            m.dataOnClick(Script::navigate),
+            m.href(prev.name().toLowerCase()),
+            m.text("prev")
+        ) : m.span(),
+
+        next != null ? m.a(
+            m.dataOnClick(Script::navigate),
+            m.href(next.name().toLowerCase()),
+            m.text("next")
+        ) : m.span()
+    );
   }
 
 }

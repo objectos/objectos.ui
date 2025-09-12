@@ -15,20 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.carbon;
 
-import java.util.Locale;
+import objectos.way.Html;
 
-enum CarbonTheme implements Carbon.Theme {
+final class CarbonMarkup extends Html.Markup.OfHtml {
 
-  WHITE,
+  private int layer;
 
-  G10,
+  CarbonMarkup() {}
 
-  G90,
-
-  G100;
-
-  final String className = "carbon-" + name().toLowerCase(Locale.US);
+  public final int nextLayer() {
+    return ++layer;
+  }
 
 }

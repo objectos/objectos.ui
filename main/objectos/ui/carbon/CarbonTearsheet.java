@@ -199,7 +199,7 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
                         overflow:auto
                         """),
 
-                        main != null ? m.renderComponent(main) : m.noop()
+                        main != null ? m.c(main) : m.noop()
                     )
                 ),
 

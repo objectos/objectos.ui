@@ -15,22 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.carbon;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import objectos.ui.Carbon;
 import objectos.way.Css;
 import objectos.way.Html;
 
 @Css.Source
-final class CarbonPage implements Carbon.Page, Html.Component {
+public final class CarbonPage extends CarbonComponent implements Carbon.Page {
+
+  private String bodyFrame;
+  private String bodyFrameValue;
 
   private List<Html.Component> components;
 
   private Html.Component head;
 
-  private CarbonTheme theme;
+  private CarbonTheme theme = CarbonTheme.WHITE;
 
   private String title = "";
 
@@ -43,6 +47,17 @@ final class CarbonPage implements Carbon.Page, Html.Component {
     components.add(
         Objects.requireNonNull(value, "value == null")
     );
+  }
+
+  @Override
+  public final void bodyFrame(String name) {
+    bodyFrame = Objects.requireNonNull(name, "name == null");
+  }
+
+  @Override
+  public final void bodyFrame(String name, String value) {
+    bodyFrame = Objects.requireNonNull(name, "name == null");
+    bodyFrameValue = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -71,14 +86,22 @@ final class CarbonPage implements Carbon.Page, Html.Component {
     m.doctype();
 
     m.html(
-        theme != null ? m.className(theme.className) : m.noop(),
 
         m.head(
-            m.renderComponent(head != null ? head : this::headDefault)
+            m.c(head != null ? head : this::headDefault)
         ),
 
         m.body(
-            components != null ? m.f(this::renderBody, m) : m.noop()
+            m.className(theme.className),
+            m.dataFrame("theme", theme.className),
+
+            bodyFrame != null
+                ? bodyFrameValue == null
+                    ? m.dataFrame(bodyFrame)
+                    : m.dataFrame(bodyFrame, bodyFrameValue)
+                : m.noop(),
+
+            components != null ? m.c(components) : m.noop()
         )
     );
   }
@@ -88,12 +111,6 @@ final class CarbonPage implements Carbon.Page, Html.Component {
     m.meta(m.httpEquiv("content-type"), m.content("text/html; charset=utf-8"));
     m.meta(m.name("viewport"), m.content("width=device-width, initial-scale=1"));
     m.title(title);
-  }
-
-  private void renderBody(Html.Markup m) {
-    for (Html.Component c : components) {
-      m.renderComponent(c);
-    }
   }
 
 }

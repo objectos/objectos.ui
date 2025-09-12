@@ -20,7 +20,9 @@ package objectos.ui;
 import java.util.Locale;
 import java.util.function.Consumer;
 import objectos.ui.carbon.CarbonLayer;
+import objectos.ui.carbon.CarbonPage;
 import objectos.ui.carbon.CarbonTearsheet;
+import objectos.ui.carbon.CarbonTheme;
 import objectos.way.Css;
 import objectos.way.Html;
 
@@ -63,13 +65,17 @@ public final class Carbon {
 
   public sealed interface Page permits CarbonPage {
 
+    void add(Html.Component value);
+
+    void bodyFrame(String name);
+
+    void bodyFrame(String name, String value);
+
     void headEnd(Html.Component value);
 
     void theme(Theme value);
 
     void title(String value);
-
-    void add(Html.Component value);
 
   }
 

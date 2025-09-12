@@ -150,6 +150,11 @@ $(CARBON_GEN_TEST_SCRIPT): $(CARBON_GEN_TEST_JAVA)
 ## dev main class
 DEV_MAIN := objectos.ui.DevStart
 
+## dev jvm opts
+ifeq ($(ENABLE_DEBUG),1)
+DEV_JVM_OPTS += -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:7000
+endif
+
 include make/java-dev.mk
 
 #
