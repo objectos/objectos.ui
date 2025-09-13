@@ -17,6 +17,7 @@
  */
 package objectos.ui.carbon;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import objectos.way.Html;
 
 abstract class CarbonComponent implements Html.Component {
@@ -24,6 +25,32 @@ abstract class CarbonComponent implements Html.Component {
   @Override
   public final Html.Markup newHtmlMarkup() {
     return new CarbonMarkup();
+  }
+
+  final String id(Html.Markup m, String userId) {
+    if (userId != null) {
+      return userId;
+    }
+
+    if (m instanceof CarbonMarkup cm) {
+      return cm.nextId();
+    }
+
+    if (m instanceof Html.Markup.OfTestable) {
+      return "id-testable";
+    }
+
+    return IdGen.next();
+  }
+
+  static final class IdGen {
+
+    static final AtomicInteger NEXT = new AtomicInteger(1);
+
+    public static String next() {
+      return "id-" + NEXT.getAndIncrement();
+    }
+
   }
 
 }

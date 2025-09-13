@@ -45,6 +45,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     carbon.subpath("/layer/{id}/{theme}", GET, this::layer);
     carbon.subpath("/page/{theme}", GET, this::page);
     carbon.subpath("/tearsheet/{id}/{theme}", GET, this::tearsheet);
+    carbon.subpath("/textinput/{id}/{theme}", GET, this::textInput);
 
     carbon.subpath("/styles.css", GET, this::styles);
 
@@ -138,6 +139,36 @@ public final class DevCarbon implements Http.RoutingPath.Module {
               m.c(themeSwitcher(http))
           ));
         }));
+      }));
+    }
+  }
+
+  private void textInput(Http.Exchange http) {
+    switch (http.pathParam("id")) {
+      case "default" -> http.ok(page(http, page -> {
+        page.title("TextInput - Default");
+
+        page.add(m -> m.div(
+            m.css("""
+            display:flex
+            flex-direction:column
+            gap:16rx
+            max-width:640rx
+            padding:42rx
+            """),
+
+            m.c(Carbon.textInput(t -> {
+              t.helperText("Helper text");
+
+              t.id(Html.Id.of("text-input-1"));
+
+              t.labelText("Label text");
+
+              t.placeholder("Placeholder text");
+            })),
+
+            m.c(themeSwitcher(http))
+        ));
       }));
     }
   }

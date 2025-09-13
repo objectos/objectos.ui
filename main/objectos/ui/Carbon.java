@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import objectos.ui.carbon.CarbonLayer;
 import objectos.ui.carbon.CarbonPage;
 import objectos.ui.carbon.CarbonTearsheet;
+import objectos.ui.carbon.CarbonTextInput;
 import objectos.ui.carbon.CarbonTheme;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -141,6 +142,51 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Tearsheet
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: TextInput
+  // ##################################################################
+
+  /// Configures the creation of a text input.
+  public sealed interface TextInput permits CarbonTextInput {
+
+    /// Provide text that is used alongside the control label for additional help.
+    /// @param value the helper text value
+    void helperText(String value);
+
+    /// Specify a custom `id` form the `<input>`.
+    /// @param value the `id` value
+    void id(Html.Id value);
+
+    /// Provide the text that will be read by a screen reader when visiting this control.
+    /// @param value the label text value
+    void labelText(String value);
+
+    /// Specify the placeholder attribute for the `<input>`
+    /// @param value the placeholder text value
+    void placeholder(String value);
+
+  }
+
+  /// Creates a new text input with the specified id and options.
+  ///
+  /// Text inputs enable users to enter free-form text data.
+  ///
+  /// @param textInput allows for setting the options
+  ///
+  /// @return a newly created text input with the specified options
+  public static Html.Component textInput(Consumer<? super TextInput> textInput) {
+    final CarbonTextInput pojo;
+    pojo = new CarbonTextInput();
+
+    textInput.accept(pojo);
+
+    return pojo;
+  }
+
+  // ##################################################################
+  // # END: TextInput
   // ##################################################################
 
   // ##################################################################

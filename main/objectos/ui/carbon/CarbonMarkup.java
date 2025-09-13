@@ -21,9 +21,15 @@ import objectos.way.Html;
 
 final class CarbonMarkup extends Html.Markup.OfHtml {
 
+  private int id;
+
   private int layer;
 
   CarbonMarkup() {}
+
+  public final String nextId() {
+    return "id-" + ++id;
+  }
 
   public final int nextLayer() {
     return ++layer;
