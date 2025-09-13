@@ -104,7 +104,7 @@ public final class Carbon {
     /// @param value the tearsheet description
     void description(String value);
 
-    /// The HTML component (the one and only one) to be rendered in the main section of the tearsheet.
+    /// The HTML component to be rendered as the main section of the tearsheet.
     ///
     /// @param value the HTML component
     void main(Html.Component value);

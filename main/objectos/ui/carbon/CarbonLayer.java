@@ -27,6 +27,10 @@ import objectos.way.Html;
 @Css.Source
 public final class CarbonLayer extends CarbonComponent implements Carbon.Layer {
 
+  static final Html.ClassName LAYER_0 = Html.ClassName.of("carbon-layer-0");
+  static final Html.ClassName LAYER_1 = Html.ClassName.of("carbon-layer-1");
+  static final Html.ClassName LAYER_2 = Html.ClassName.of("carbon-layer-2");
+
   private final Html.ElementName as = Html.ElementName.DIV;
 
   private List<Html.Component> components = List.of();
@@ -67,13 +71,13 @@ public final class CarbonLayer extends CarbonComponent implements Carbon.Layer {
       layer = level;
     }
 
-    final String cn = switch (layer) {
-      case 0 -> "carbon-layer-0";
-      case 1 -> "carbon-layer-1";
-      default -> "carbon-layer-2";
+    final Html.ClassName cn = switch (layer) {
+      case 0 -> LAYER_0;
+      case 1 -> LAYER_1;
+      default -> LAYER_2;
     };
 
-    m.elem(as, m.className(cn), m.c(components));
+    m.elem(as, cn, m.c(components));
   }
 
 }

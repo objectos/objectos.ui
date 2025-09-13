@@ -122,10 +122,21 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           t.title("Title of the tearsheet");
 
-          t.description("This is a description for the tearsheet, "
-              + "providing an opportunity to describe the flow over a couple of lines in the header of the tearsheet.");
+          t.description("""
+          This is a description for the tearsheet, \
+          providing an opportunity to describe the flow over \
+          a couple of lines in the header of the tearsheet.\
+          """);
 
-          t.main(m -> m.h3("Main content heading"));
+          t.main(m -> m.div(
+              m.css("""
+              padding:24rx_32rx
+              """),
+
+              m.h3("Main content heading"),
+
+              m.c(themeSwitcher(http))
+          ));
         }));
       }));
     }

@@ -61,6 +61,7 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
         background-color:layer
         block-size:100%
         border:none
+        color:text-primary
         display:grid
         grid-template-columns:100%
         grid-template-rows:auto_1fr_auto
@@ -98,7 +99,7 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
         m.div(
             m.css("""
             background-color:layer
-            border-block-end:1px_solid_border-subtle
+            border-block-end:1px_solid_var(--color-border-subtle-01)
             grid-column:1/-1
             grid-row:1/1
             margin:0
@@ -109,6 +110,8 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
 
             // header-content
             m.div(
+                CarbonLayer.LAYER_1,
+
                 m.css("""
                 display:flex
                 justify-content:space-between
@@ -119,10 +122,15 @@ public final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
                     // title
                     m.h3(
                         m.css("""
+                        border:0
                         font-size:var(--carbon-heading-04-font-size,1.75rem)
                         font-weight:var(--carbon-heading-04-font-weight,400)
                         letter-spacing:var(--carbon-heading-04-letter-spacing,0)
                         line-height:var(--carbon-heading-04-line-height,1.28572)
+                        margin:0
+                        padding:0
+                        padding-inline-end:calc(20%_-_3rem)
+                        vertical-align:baseline
                         """),
 
                         m.text(title)
