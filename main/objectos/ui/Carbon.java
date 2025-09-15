@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
+import objectos.ui.carbon.CarbonIcon;
 import objectos.ui.carbon.CarbonLayer;
 import objectos.ui.carbon.CarbonPage;
 import objectos.ui.carbon.CarbonTearsheet;
@@ -32,6 +33,46 @@ import objectos.way.Html;
 public final class Carbon {
 
   private Carbon() {}
+
+  // ##################################################################
+  // # BEGIN: Icon
+  // ##################################################################
+
+  /// Configures the creation of an icon.
+  public sealed interface Icon permits CarbonIcon {
+
+    void css(String value);
+
+    void size16();
+
+    void size20();
+
+    void size24();
+
+    void size32();
+
+    // START generated code
+
+    void iconWarningAlt();
+
+    void iconWarningFilled();
+
+    // END generated code
+
+  }
+
+  public static Html.Component icon(Consumer<? super Icon> icon) {
+    final CarbonIcon pojo;
+    pojo = new CarbonIcon();
+
+    icon.accept(pojo);
+
+    return pojo;
+  }
+
+  // ##################################################################
+  // # END: Icon
+  // ##################################################################
 
   // ##################################################################
   // # BEGIN: Layer
@@ -155,9 +196,13 @@ public final class Carbon {
     /// @param value the helper text value
     void helperText(String value);
 
-    /// Specify a custom `id` form the `<input>`.
+    /// Specify a custom `id` for the `<input>`.
     /// @param value the `id` value
     void id(Html.Id value);
+
+    /// Sets this control in the invalid state and displays the specified value as the error message.
+    /// @param value the error message to be displayed
+    void invalidText(String value);
 
     /// Provide the text that will be read by a screen reader when visiting this control.
     /// @param value the label text value
@@ -167,9 +212,13 @@ public final class Carbon {
     /// @param value the placeholder text value
     void placeholder(String value);
 
+    /// Specify the value of the `<input>`.
+    /// @param value the value of the `<input>`
+    void value(String value);
+
   }
 
-  /// Creates a new text input with the specified id and options.
+  /// Creates a new text input with the specified options.
   ///
   /// Text inputs enable users to enter free-form text data.
   ///

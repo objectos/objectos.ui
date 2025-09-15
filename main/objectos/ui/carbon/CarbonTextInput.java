@@ -29,9 +29,15 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
 
   private String id;
 
+  private String invalidText;
+
   private String labelText = "Please specify a labelText value";
 
   private String placeholder;
+
+  private String value = "";
+
+  private String warnText;
 
   @Override
   public final void helperText(String value) {
@@ -41,6 +47,11 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
   @Override
   public final void id(Html.Id value) {
     id = Objects.requireNonNull(value, "value == null").value();
+  }
+
+  @Override
+  public final void invalidText(String value) {
+    invalidText = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -54,9 +65,17 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
   }
 
   @Override
+  public final void value(String value) {
+    this.value = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
   public final void renderHtml(Html.Markup m) {
     final String id;
     id = id(m, this.id);
+
+    final MessageLevel level;
+    level = msg(helperText, warnText, invalidText);
 
     // wrapper
     m.div(
@@ -114,6 +133,20 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
                 position:relative
                 """),
 
+                level == MessageLevel.ERROR
+                    ? m.c(Carbon.icon(icon -> {
+                      icon.iconWarningFilled();
+                      icon.size16();
+                      icon.css("""
+                      fill:support-error
+                      inset-block-start:50%
+                      inset-inline-end:1rem
+                      position:absolute
+                      transform:translateY(-50%)
+                      """);
+                    }))
+                    : m.noop(),
+
                 m.input(
                     m.id(id),
 
@@ -139,17 +172,33 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
                     padding:0_16rx
                     """),
 
+                    level == MessageLevel.ERROR ? m.css("""
+                    box-shadow:none
+                    outline:2px_solid_support-error
+                    outline-offset:-2px
+                    """) : m.noop(),
+
                     placeholder != null ? m.placeholder(placeholder) : m.noop(),
 
-                    m.type("text")
+                    m.type("text"),
+
+                    m.value(value)
                 )
             ),
 
-            // helper text
-            helperText != null
-                ? m.div(
+            // message
+            level == MessageLevel.NONE
+                ? m.noop()
+                : m.div(
+                    m.css(
+                        switch (level) {
+                          default -> "color:text-helper";
+                          case WARN -> "color:text-warn";
+                          case ERROR -> "color:text-error";
+                        }
+                    ),
+
                     m.css("""
-                    color:text-helper
                     font-size:var(--carbon-helper-text-01-font-size,0.75rem)
                     inline-size:100%
                     letter-spacing:var(--carbon-helper-text-01-letter-spacing,0.32px)
@@ -159,9 +208,14 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
                     z-index:0
                     """),
 
-                    m.text(helperText)
+                    m.text(
+                        switch (level) {
+                          default -> helperText;
+                          case WARN -> warnText;
+                          case ERROR -> invalidText;
+                        }
+                    )
                 )
-                : m.noop()
         )
     );
   }

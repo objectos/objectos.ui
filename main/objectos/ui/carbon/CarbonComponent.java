@@ -22,9 +22,20 @@ import objectos.way.Html;
 
 abstract class CarbonComponent implements Html.Component {
 
+  enum MessageLevel {
+    NONE,
+    INFO,
+    WARN,
+    ERROR;
+  }
+
   @Override
   public final Html.Markup newHtmlMarkup() {
     return new CarbonMarkup();
+  }
+
+  final Html.Instruction.OfElement icon16(Html.Markup m, CarbonIcon icon) {
+    throw new UnsupportedOperationException("Implement me");
   }
 
   final String id(Html.Markup m, String userId) {
@@ -43,7 +54,23 @@ abstract class CarbonComponent implements Html.Component {
     return IdGen.next();
   }
 
-  static final class IdGen {
+  final MessageLevel msg(String info, String warn, String error) {
+    if (error != null) {
+      return MessageLevel.ERROR;
+    }
+
+    if (warn != null) {
+      return MessageLevel.WARN;
+    }
+
+    if (info != null) {
+      return MessageLevel.INFO;
+    }
+
+    return MessageLevel.NONE;
+  }
+
+  private static final class IdGen {
 
     static final AtomicInteger NEXT = new AtomicInteger(1);
 

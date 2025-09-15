@@ -20,6 +20,7 @@ package objectos.ui;
 import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import objectos.ui.carbon.CarbonTheme;
 import objectos.way.App;
@@ -144,12 +145,12 @@ public final class DevCarbon implements Http.RoutingPath.Module {
   }
 
   private void textInput(Http.Exchange http) {
-    switch (http.pathParam("id")) {
-      case "default" -> http.ok(page(http, page -> {
-        page.title("TextInput - Default");
+    final BiConsumer<String, Html.Component> tmpl;
+    tmpl = (title, input) -> http.ok(page(http, page -> {
+      page.title(title);
 
-        page.add(m -> m.div(
-            m.css("""
+      page.add(m -> m.div(
+          m.css("""
             display:flex
             flex-direction:column
             gap:16rx
@@ -157,19 +158,36 @@ public final class DevCarbon implements Http.RoutingPath.Module {
             padding:42rx
             """),
 
-            m.c(Carbon.textInput(t -> {
-              t.helperText("Helper text");
+          m.c(input),
 
-              t.id(Html.Id.of("text-input-1"));
+          m.c(themeSwitcher(http))
+      ));
+    }));
 
-              t.labelText("Label text");
+    switch (http.pathParam("id")) {
+      case "default" -> tmpl.accept(
+          "TextInput - Default",
 
-              t.placeholder("Placeholder text");
-            })),
+          Carbon.textInput(t -> {
+            t.helperText("Helper text");
 
-            m.c(themeSwitcher(http))
-        ));
-      }));
+            t.labelText("Label text");
+
+            t.placeholder("Placeholder text");
+          })
+      );
+
+      case "invalid" -> tmpl.accept(
+          "TextInput - Invalid",
+
+          Carbon.textInput(t -> {
+            t.invalidText("Error message goes here");
+
+            t.labelText("Label text");
+
+            t.placeholder("Placeholder text");
+          })
+      );
     }
   }
 
