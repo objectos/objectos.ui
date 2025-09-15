@@ -25,6 +25,8 @@ import objectos.way.Html;
 @Css.Source
 public final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput {
 
+  private boolean focus;
+
   private String helperText;
 
   private String id;
@@ -38,6 +40,11 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
   private String value = "";
 
   private String warnText;
+
+  @Override
+  public final void focus() {
+    focus = true;
+  }
 
   @Override
   public final void helperText(String value) {
@@ -164,6 +171,9 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
                     outline-offset:-2px
                     vertical-align:baseline
                     transition:background-color_70ms_cubic-bezier(0.2,0,0.38,0.9),outline_70ms_cubic-bezier(0.2,0,0.38,0.9)
+
+                    active:outline-color:focus
+                    focus:outline-color:focus
                     """),
 
                     // md
@@ -177,6 +187,11 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
                     outline:2px_solid_support-error
                     outline-offset:-2px
                     """) : m.noop(),
+
+                    focus ? m.dataOnLoad(script -> {
+                      var el = script.element();
+                      el.focus();
+                    }) : m.noop(),
 
                     placeholder != null ? m.placeholder(placeholder) : m.noop(),
 

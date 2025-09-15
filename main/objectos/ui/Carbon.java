@@ -192,6 +192,9 @@ public final class Carbon {
   /// Configures the creation of a text input.
   public sealed interface TextInput permits CarbonTextInput {
 
+    /// Adds a script that causes the focus to be set on this `<input>` upon loading.
+    void focus();
+
     /// Provide text that is used alongside the control label for additional help.
     /// @param value the helper text value
     void helperText(String value);

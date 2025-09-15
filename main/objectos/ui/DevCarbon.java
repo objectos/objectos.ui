@@ -177,10 +177,38 @@ public final class DevCarbon implements Http.RoutingPath.Module {
           })
       );
 
+      case "default-focus" -> tmpl.accept(
+          "TextInput - Default (Focus)",
+
+          Carbon.textInput(t -> {
+            t.focus();
+
+            t.helperText("Helper text");
+
+            t.labelText("Label text");
+
+            t.placeholder("Placeholder text");
+          })
+      );
+
       case "invalid" -> tmpl.accept(
           "TextInput - Invalid",
 
           Carbon.textInput(t -> {
+            t.invalidText("Error message goes here");
+
+            t.labelText("Label text");
+
+            t.placeholder("Placeholder text");
+          })
+      );
+
+      case "invalid-focus" -> tmpl.accept(
+          "TextInput - Invalid (Focus)",
+
+          Carbon.textInput(t -> {
+            t.focus();
+
             t.invalidText("Error message goes here");
 
             t.labelText("Label text");
