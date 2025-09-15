@@ -234,6 +234,8 @@ public final class Y implements ISuiteListener {
 
     String title();
 
+    void waitForFunction(String expression, Object arg);
+
   }
 
   public static Y.Tab tabDev() {

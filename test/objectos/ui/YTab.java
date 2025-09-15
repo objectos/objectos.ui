@@ -22,6 +22,7 @@ import static org.testng.Assert.assertEquals;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.ScreenshotOptions;
 import com.microsoft.playwright.Page.WaitForURLOptions;
+import com.microsoft.playwright.options.ScreenshotAnimations;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -126,6 +127,8 @@ final class YTab implements Y.Tab {
     final ScreenshotOptions options;
     options = new ScreenshotOptions();
 
+    options.setAnimations(ScreenshotAnimations.DISABLED);
+
     options.setPath(file);
 
     page.screenshot(options);
@@ -162,6 +165,11 @@ final class YTab implements Y.Tab {
   @Override
   public final String title() {
     return page.title();
+  }
+
+  @Override
+  public final void waitForFunction(String expression, Object arg) {
+    page.waitForFunction(expression, arg);
   }
 
 }

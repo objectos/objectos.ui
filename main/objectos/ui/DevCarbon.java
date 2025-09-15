@@ -144,6 +144,8 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     }
   }
 
+  static final Html.Id TEXT_INPUT = Html.Id.of("text-input");
+
   private void textInput(Http.Exchange http) {
     final BiConsumer<String, Html.Component> tmpl;
     tmpl = (title, input) -> http.ok(page(http, page -> {
@@ -170,9 +172,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           Carbon.textInput(t -> {
             t.helperText("Helper text");
-
             t.labelText("Label text");
-
             t.placeholder("Placeholder text");
           })
       );
@@ -182,11 +182,9 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           Carbon.textInput(t -> {
             t.focus();
-
             t.helperText("Helper text");
-
+            t.id(TEXT_INPUT);
             t.labelText("Label text");
-
             t.placeholder("Placeholder text");
           })
       );
@@ -208,11 +206,9 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           Carbon.textInput(t -> {
             t.focus();
-
+            t.id(TEXT_INPUT);
             t.invalidText("Error message goes here");
-
             t.labelText("Label text");
-
             t.placeholder("Placeholder text");
           })
       );
