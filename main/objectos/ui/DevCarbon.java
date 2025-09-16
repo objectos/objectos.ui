@@ -42,6 +42,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
   @Override
   public final void configure(Http.RoutingPath carbon) {
+    carbon.subpath("/button/{id}/{theme}", GET, this::button);
     carbon.subpath("/formgroup/{id}/{theme}", GET, this::formGroup);
     carbon.subpath("/layer/{id}/{theme}", GET, this::layer);
     carbon.subpath("/page/{theme}", GET, this::page);
@@ -51,6 +52,22 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     carbon.subpath("/styles.css", GET, this::styles);
 
     carbon.handler(Http.Handler.notFound());
+  }
+
+  private void button(Http.Exchange http) {
+    switch (http.pathParam("id")) {
+      case "default" -> ok(
+          http,
+
+          "Button - Default",
+
+          Carbon.button(b -> {
+          }),
+
+          Carbon.button(b -> {
+          })
+      );
+    }
   }
 
   private void formGroup(Http.Exchange http) {
@@ -250,7 +267,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     }
   }
 
-  private void ok(Http.Exchange http, String title, Html.Component component) {
+  private void ok(Http.Exchange http, String title, Html.Component... elements) {
     http.ok(Carbon.page(page -> {
       page.theme(theme(http));
 
@@ -270,7 +287,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
       """);
 
       page.main(
-          component,
+          m -> m.c(elements),
 
           themeSwitcher(http)
       );

@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
+import objectos.ui.carbon.CarbonButton;
 import objectos.ui.carbon.CarbonFormGroup;
 import objectos.ui.carbon.CarbonIcon;
 import objectos.ui.carbon.CarbonLayer;
@@ -34,6 +35,36 @@ import objectos.way.Html;
 public final class Carbon {
 
   private Carbon() {}
+
+  // ##################################################################
+  // # BEGIN: Button
+  // ##################################################################
+
+  /// Configures the creation of a button.
+  public sealed interface Button permits CarbonButton {
+
+    void sizeSm();
+
+    void sizeMd();
+
+    void sizeXl();
+
+    void size2xl();
+
+  }
+
+  public static Html.Component button(Consumer<? super Button> button) {
+    final CarbonButton pojo;
+    pojo = new CarbonButton();
+
+    button.accept(pojo);
+
+    return pojo;
+  }
+
+  // ##################################################################
+  // # END: Button
+  // ##################################################################
 
   // ##################################################################
   // # BEGIN: Form
