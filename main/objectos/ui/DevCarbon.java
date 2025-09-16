@@ -165,6 +165,24 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
               m.h3("Main content heading"),
 
+              m.c(Carbon.formGroup(g -> {
+                g.css("""
+                display:flex
+                flex-direction:column
+                gap:16rx
+                """);
+
+                g.legendText("FormGroup legend");
+
+                g.textInput(input -> {
+                  input.labelText("Enter an important value here");
+                });
+
+                g.textInput(input -> {
+                  input.labelText("Here is an entry field:");
+                });
+              })),
+
               m.c(themeSwitcher(http))
           ));
         }));
