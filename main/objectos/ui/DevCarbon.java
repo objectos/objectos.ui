@@ -43,6 +43,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
   @Override
   public final void configure(Http.RoutingPath carbon) {
+    carbon.subpath("/formgroup/{id}/{theme}", GET, this::formGroup);
     carbon.subpath("/layer/{id}/{theme}", GET, this::layer);
     carbon.subpath("/page/{theme}", GET, this::page);
     carbon.subpath("/tearsheet/{id}/{theme}", GET, this::tearsheet);
@@ -51,6 +52,34 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     carbon.subpath("/styles.css", GET, this::styles);
 
     carbon.handler(Http.Handler.notFound());
+  }
+
+  private void formGroup(Http.Exchange http) {
+    switch (http.pathParam("id")) {
+      case "default" -> ok(
+          http,
+
+          "Form Group - Default",
+
+          Carbon.formGroup(g -> {
+            g.css("""
+            display:flex
+            flex-direction:column
+            gap:32rx
+            """);
+
+            g.legendText("FormGroup legend");
+
+            g.textInput(t -> {
+              t.labelText("First name");
+            });
+
+            g.textInput(t -> {
+              t.labelText("Last name");
+            });
+          })
+      );
+    }
   }
 
   private void layer(Http.Exchange http) {
@@ -148,7 +177,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
   private void textInput(Http.Exchange http) {
     final BiConsumer<String, Html.Component> tmpl;
-    tmpl = (title, input) -> http.ok(page(http, page -> {
+    tmpl = (title, component) -> http.ok(page(http, page -> {
       page.title(title);
 
       page.add(m -> m.div(
@@ -160,7 +189,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
             padding:42rx
             """),
 
-          m.c(input),
+          m.c(component),
 
           m.c(themeSwitcher(http))
       ));
@@ -213,6 +242,33 @@ public final class DevCarbon implements Http.RoutingPath.Module {
           })
       );
     }
+  }
+
+  private void ok(Http.Exchange http, String title, Html.Component component) {
+    http.ok(Carbon.page(page -> {
+      page.theme(theme(http));
+
+      page.headEnd(m -> {
+        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
+        m.script(m.src("/script.js"));
+      });
+
+      page.title(title);
+
+      page.add(m -> m.div(
+          m.css("""
+            display:flex
+            flex-direction:column
+            gap:16rx
+            max-width:640rx
+            padding:42rx
+            """),
+
+          m.c(component),
+
+          m.c(themeSwitcher(http))
+      ));
+    }));
   }
 
   private void styles(Http.Exchange http) {

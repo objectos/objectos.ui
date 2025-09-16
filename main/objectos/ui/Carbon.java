@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
+import objectos.ui.carbon.CarbonFormGroup;
 import objectos.ui.carbon.CarbonIcon;
 import objectos.ui.carbon.CarbonLayer;
 import objectos.ui.carbon.CarbonPage;
@@ -35,12 +36,67 @@ public final class Carbon {
   private Carbon() {}
 
   // ##################################################################
+  // # BEGIN: Form
+  // ##################################################################
+
+  sealed interface FormBuilder {
+
+    void add(Html.Component value);
+
+    /// Adds a text input with the specified options.
+    /// @param textInput allows for setting the text input options
+    default void textInput(Consumer<? super TextInput> textInput) {
+      add(Carbon.textInput(textInput));
+    }
+
+  }
+
+  // ##################################################################
+  // # END: Form
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: Form Group
+  // ##################################################################
+
+  /// Configures the creation of a form group.
+  public sealed interface FormGroup extends FormBuilder permits CarbonFormGroup {
+
+    /// Adds the specified component to the form group.
+    /// @param value the component to add
+    @Override
+    void add(Html.Component value);
+
+    /// Class name to be applied to the `fieldset` element.
+    /// @param value the class name
+    void css(String value);
+
+    void legendText(String value);
+
+  }
+
+  public static Html.Component formGroup(Consumer<? super FormGroup> group) {
+    final CarbonFormGroup pojo;
+    pojo = new CarbonFormGroup();
+
+    group.accept(pojo);
+
+    return pojo;
+  }
+
+  // ##################################################################
+  // # END: Form Group
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: Icon
   // ##################################################################
 
   /// Configures the creation of an icon.
   public sealed interface Icon permits CarbonIcon {
 
+    /// Class name to be applied to the `svg` element.
+    /// @param value the class name
     void css(String value);
 
     void size16();
