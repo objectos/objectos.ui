@@ -46,7 +46,7 @@ public abstract class CarbonTest {
     return Carbon.page(page -> {
       page.theme(theme(http));
 
-      page.headEnd(m -> {
+      page.head(m -> {
         m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
         m.script(m.src("/script.js"));
       });

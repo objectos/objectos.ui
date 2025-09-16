@@ -20,7 +20,6 @@ package objectos.ui;
 import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import objectos.ui.carbon.CarbonTheme;
 import objectos.way.App;
@@ -98,7 +97,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
       case "default" -> http.ok(page(http, page -> {
         page.title("Layer - Default");
 
-        page.add(m -> m.div(
+        page.main(m -> m.div(
             m.css("padding:32rx sm:max-width:640rx"),
 
             m.c(test),
@@ -121,7 +120,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     http.ok(Carbon.page(page -> {
       page.theme(theme(http));
 
-      page.headEnd(m -> {
+      page.head(m -> {
         m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
         m.script(m.src("/script.js"));
       });
@@ -134,7 +133,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     return Carbon.page(page -> {
       page.theme(theme(http));
 
-      page.headEnd(m -> {
+      page.head(m -> {
         m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
         m.script(m.src("/script.js"));
       });
@@ -148,7 +147,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
       case "default" -> http.ok(page(http, page -> {
         page.title("Tearsheet - Default");
 
-        page.add(Carbon.tearsheet(t -> {
+        page.main(Carbon.tearsheet(t -> {
           t.open(true);
 
           t.title("Title of the tearsheet");
@@ -176,27 +175,10 @@ public final class DevCarbon implements Http.RoutingPath.Module {
   static final Html.Id TEXT_INPUT = Html.Id.of("text-input");
 
   private void textInput(Http.Exchange http) {
-    final BiConsumer<String, Html.Component> tmpl;
-    tmpl = (title, component) -> http.ok(page(http, page -> {
-      page.title(title);
-
-      page.add(m -> m.div(
-          m.css("""
-            display:flex
-            flex-direction:column
-            gap:16rx
-            max-width:640rx
-            padding:42rx
-            """),
-
-          m.c(component),
-
-          m.c(themeSwitcher(http))
-      ));
-    }));
-
     switch (http.pathParam("id")) {
-      case "default" -> tmpl.accept(
+      case "default" -> ok(
+          http,
+
           "TextInput - Default",
 
           Carbon.textInput(t -> {
@@ -206,7 +188,9 @@ public final class DevCarbon implements Http.RoutingPath.Module {
           })
       );
 
-      case "default-focus" -> tmpl.accept(
+      case "default-focus" -> ok(
+          http,
+
           "TextInput - Default (Focus)",
 
           Carbon.textInput(t -> {
@@ -218,7 +202,9 @@ public final class DevCarbon implements Http.RoutingPath.Module {
           })
       );
 
-      case "invalid" -> tmpl.accept(
+      case "invalid" -> ok(
+          http,
+
           "TextInput - Invalid",
 
           Carbon.textInput(t -> {
@@ -230,7 +216,9 @@ public final class DevCarbon implements Http.RoutingPath.Module {
           })
       );
 
-      case "invalid-focus" -> tmpl.accept(
+      case "invalid-focus" -> ok(
+          http,
+
           "TextInput - Invalid (Focus)",
 
           Carbon.textInput(t -> {
@@ -248,26 +236,26 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     http.ok(Carbon.page(page -> {
       page.theme(theme(http));
 
-      page.headEnd(m -> {
+      page.title(title);
+
+      page.head(m -> {
         m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
         m.script(m.src("/script.js"));
       });
 
-      page.title(title);
+      page.css("""
+      display:flex
+      flex-direction:column
+      gap:16rx
+      max-width:640rx
+      padding:42rx
+      """);
 
-      page.add(m -> m.div(
-          m.css("""
-            display:flex
-            flex-direction:column
-            gap:16rx
-            max-width:640rx
-            padding:42rx
-            """),
+      page.main(
+          component,
 
-          m.c(component),
-
-          m.c(themeSwitcher(http))
-      ));
+          themeSwitcher(http)
+      );
     }));
   }
 

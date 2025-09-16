@@ -17,7 +17,6 @@
  */
 package objectos.ui.carbon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import objectos.ui.Carbon;
@@ -27,48 +26,29 @@ import objectos.way.Html;
 @Css.Source
 public final class CarbonPage extends CarbonComponent implements Carbon.Page {
 
-  private String bodyFrame;
-  private String bodyFrameValue;
-
-  private List<Html.Component> components;
+  private String css;
 
   private Html.Component head;
+
+  private List<Html.Component> main = List.of();
 
   private CarbonTheme theme = CarbonTheme.WHITE;
 
   private String title = "";
 
   @Override
-  public final void add(Html.Component value) {
-    if (components == null) {
-      components = new ArrayList<>();
-    }
-
-    components.add(
-        Objects.requireNonNull(value, "value == null")
-    );
+  public final void css(String value) {
+    css = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
-  public final void bodyFrame(String name) {
-    bodyFrame = Objects.requireNonNull(name, "name == null");
+  public final void head(Html.Component value) {
+    head = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
-  public final void bodyFrame(String name, String value) {
-    bodyFrame = Objects.requireNonNull(name, "name == null");
-    bodyFrameValue = Objects.requireNonNull(value, "value == null");
-  }
-
-  @Override
-  public final void headEnd(Html.Component value) {
-    final Html.Component headEnd;
-    headEnd = Objects.requireNonNull(value, "value == null");
-
-    head = m -> {
-      headDefault(m);
-      headEnd.renderHtml(m);
-    };
+  public final void main(Html.Component... elements) {
+    main = List.of(elements);
   }
 
   @Override
@@ -86,31 +66,24 @@ public final class CarbonPage extends CarbonComponent implements Carbon.Page {
     m.doctype();
 
     m.html(
-
         m.head(
-            m.c(head != null ? head : this::headDefault)
+            m.meta(m.charset("utf-8")),
+            m.meta(m.httpEquiv("content-type"), m.content("text/html; charset=utf-8")),
+            m.meta(m.name("viewport"), m.content("width=device-width, initial-scale=1")),
+            m.title(title),
+            head != null ? m.c(head) : m.noop()
         ),
 
         m.body(
             m.className(theme.className),
+
+            css != null ? m.css(css) : m.noop(),
+
             m.dataFrame("theme", theme.className),
 
-            bodyFrame != null
-                ? bodyFrameValue == null
-                    ? m.dataFrame(bodyFrame)
-                    : m.dataFrame(bodyFrame, bodyFrameValue)
-                : m.noop(),
-
-            components != null ? m.c(components) : m.noop()
+            m.c(main)
         )
     );
-  }
-
-  private void headDefault(Html.Markup m) {
-    m.meta(m.charset("utf-8"));
-    m.meta(m.httpEquiv("content-type"), m.content("text/html; charset=utf-8"));
-    m.meta(m.name("viewport"), m.content("width=device-width, initial-scale=1"));
-    m.title(title);
   }
 
 }

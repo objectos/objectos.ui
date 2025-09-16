@@ -95,8 +95,8 @@ public final class Carbon {
   /// Configures the creation of an icon.
   public sealed interface Icon permits CarbonIcon {
 
-    /// Class name to be applied to the `svg` element.
-    /// @param value the class name
+    /// Applies the specified Objectos CSS to the `<svg>` element.
+    /// @param value the Objectos CSS to apply
     void css(String value);
 
     void size16();
@@ -161,22 +161,36 @@ public final class Carbon {
   // # BEGIN: Page
   // ##################################################################
 
+  /// Configures the creation of a Carbon UI page component.
   public sealed interface Page permits CarbonPage {
 
-    void add(Html.Component value);
+    /// Applies the specified Objectos CSS to the `<body>` element of the page.
+    /// @param value the Objectos CSS to apply
+    void css(String value);
 
-    void bodyFrame(String name);
+    /// Sets the component that will be applied to the end of the `<head>` section of this page.
+    /// @param value the component to apply
+    void head(Html.Component value);
 
-    void bodyFrame(String name, String value);
+    /// Sets the components of the main section of this page, i.e., the `<body>` element.
+    /// @param elements the main section components
+    void main(Html.Component... elements);
 
-    void headEnd(Html.Component value);
-
+    /// Sets the page Carbon theme.
+    /// @param value the page theme
     void theme(Theme value);
 
+    /// Sets the page title.
+    /// @param value the page title
     void title(String value);
 
   }
 
+  /// Creates a new Carbon page with the specified options.
+  ///
+  /// @param page allows for setting the options
+  ///
+  /// @return a newly create page with the specified options
   public static Html.Component page(Consumer<? super Page> page) {
     final CarbonPage pojo;
     pojo = new CarbonPage();
