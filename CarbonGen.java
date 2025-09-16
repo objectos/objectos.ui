@@ -459,6 +459,7 @@ final class XCarbonGen {
         css(COMPONENT, STARTS_WITH, ".cds--layer", "layer"),
         css(COMPONENT, STARTS_WITH, ".cds--modal", "modal"),
         css(COMPONENT, STARTS_WITH, ".cds--popover", "popover"),
+        css(COMPONENT, STARTS_WITH, ".cds--stack", "stack"),
         css(COMPONENT, STARTS_WITH, ".cds--text-input", "textinput"),
         css(COMPONENT, STARTS_WITH, ".cds--tooltip", "tooltip")
     );
@@ -485,7 +486,8 @@ final class XCarbonGen {
         html("components-modal--default", "#storybook-root"),
         html("components-popover--default", "#storybook-root"),
         html("components-textinput--default", "#storybook-root"),
-        html("components-tooltip--default", "#storybook-root")
+        html("components-tooltip--default", "#storybook-root"),
+        html("layout-stack--default", "#storybook-root")
     );
   }
 

@@ -20,9 +20,9 @@ package objectos.ui.carbon;
 import java.util.concurrent.atomic.AtomicInteger;
 import objectos.way.Html;
 
-abstract class CarbonComponent implements Html.Component {
+public abstract class CarbonComponent implements Html.Component {
 
-  enum MessageLevel {
+  protected enum MessageLevel {
     NONE,
     INFO,
     WARN,

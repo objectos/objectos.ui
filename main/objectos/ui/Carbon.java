@@ -236,6 +236,97 @@ public final class Carbon {
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Spacing
+  // ##################################################################
+
+  /// Represents a spacing token.
+  public sealed interface Spacing permits CarbonSpacing {}
+
+  /// The zero value spacing.
+  public static final Spacing SPACING_00 = CarbonSpacing.SPACING_00;
+
+  /// The `$spacing-01` token.
+  public static final Spacing SPACING_01 = CarbonSpacing.SPACING_01;
+
+  /// The `$spacing-02` token.
+  public static final Spacing SPACING_02 = CarbonSpacing.SPACING_02;
+
+  /// The `$spacing-03` token.
+  public static final Spacing SPACING_03 = CarbonSpacing.SPACING_03;
+
+  /// The `$spacing-04` token.
+  public static final Spacing SPACING_04 = CarbonSpacing.SPACING_04;
+
+  /// The `$spacing-05` token.
+  public static final Spacing SPACING_05 = CarbonSpacing.SPACING_05;
+
+  /// The `$spacing-06` token.
+  public static final Spacing SPACING_06 = CarbonSpacing.SPACING_06;
+
+  /// The `$spacing-07` token.
+  public static final Spacing SPACING_07 = CarbonSpacing.SPACING_07;
+
+  /// The `$spacing-08` token.
+  public static final Spacing SPACING_08 = CarbonSpacing.SPACING_08;
+
+  /// The `$spacing-09` token.
+  public static final Spacing SPACING_09 = CarbonSpacing.SPACING_09;
+
+  /// The `$spacing-10` token.
+  public static final Spacing SPACING_10 = CarbonSpacing.SPACING_10;
+
+  /// The `$spacing-11` token.
+  public static final Spacing SPACING_11 = CarbonSpacing.SPACING_11;
+
+  /// The `$spacing-12` token.
+  public static final Spacing SPACING_12 = CarbonSpacing.SPACING_12;
+
+  /// The `$spacing-13` token.
+  public static final Spacing SPACING_13 = CarbonSpacing.SPACING_13;
+
+  // ##################################################################
+  // # END: Spacing
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: Stack
+  // ##################################################################
+
+  /// Configures the creation of a stack.
+  public sealed interface Stack permits CarbonStack {
+
+    /// Sets the gap to the specified spacing.
+    /// @param value the spacing to used as gap
+    void gap(Spacing value);
+
+    /// Sets the components of the main section of this stack.
+    /// @param elements the main section components
+    void main(Html.Component... elements);
+
+  }
+
+  public static Html.Component stack(Consumer<? super Stack> stack) {
+    final CarbonStack pojo;
+    pojo = new CarbonStack();
+
+    stack.accept(pojo);
+
+    return pojo;
+  }
+
+  public static Html.Component stack(Spacing gap, Html.Component... elements) {
+    return stack(s -> {
+      s.gap(gap);
+
+      s.main(elements);
+    });
+  }
+
+  // ##################################################################
+  // # END: Stack
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: Tearsheet
   // ##################################################################
 

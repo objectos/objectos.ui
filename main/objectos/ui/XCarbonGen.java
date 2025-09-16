@@ -460,6 +460,7 @@ final class XCarbonGen {
         css(COMPONENT, STARTS_WITH, ".cds--layer", "layer"),
         css(COMPONENT, STARTS_WITH, ".cds--modal", "modal"),
         css(COMPONENT, STARTS_WITH, ".cds--popover", "popover"),
+        css(COMPONENT, STARTS_WITH, ".cds--stack", "stack"),
         css(COMPONENT, STARTS_WITH, ".cds--text-input", "textinput"),
         css(COMPONENT, STARTS_WITH, ".cds--tooltip", "tooltip")
     );

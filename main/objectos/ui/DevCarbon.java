@@ -46,6 +46,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     carbon.subpath("/formgroup/{id}/{theme}", GET, this::formGroup);
     carbon.subpath("/layer/{id}/{theme}", GET, this::layer);
     carbon.subpath("/page/{theme}", GET, this::page);
+    carbon.subpath("/stack/{id}/{theme}", GET, this::stack);
     carbon.subpath("/tearsheet/{id}/{theme}", GET, this::tearsheet);
     carbon.subpath("/textinput/{id}/{theme}", GET, this::textInput);
 
@@ -157,6 +158,30 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
       more.accept(page);
     });
+  }
+
+  private void stack(Http.Exchange http) {
+    final int raw;
+    raw = http.queryParamAsInt("gap", 0);
+
+    final CarbonSpacing gap;
+    gap = 0 <= raw && raw <= 13 ? CarbonSpacing.values()[raw] : CarbonSpacing.SPACING_00;
+
+    switch (http.pathParam("id")) {
+      case "default" -> ok(
+          http,
+
+          "Stack - Default",
+
+          Carbon.stack(
+              gap,
+
+              m -> m.div("Item 1"),
+              m -> m.div("Item 2"),
+              m -> m.div("Item 3")
+          )
+      );
+    }
   }
 
   private void tearsheet(Http.Exchange http) {
