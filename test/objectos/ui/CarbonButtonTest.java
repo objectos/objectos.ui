@@ -34,9 +34,18 @@ public class CarbonButtonTest extends CarbonTest {
   );
 
   @Test(dataProvider = "themes")
-  public void testCase01(Carbon.Theme theme) {
+  public void defaultTest(Carbon.Theme theme) {
+    test("default", theme);
+  }
+
+  @Test(dataProvider = "themes")
+  public void secondary(Carbon.Theme theme) {
+    test("secondary", theme);
+  }
+
+  private void test(String kind, Carbon.Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/button/default", theme);
+      tab.navigate("/carbon/button/" + kind, theme);
 
       tab.screenshot();
 
@@ -63,6 +72,7 @@ public class CarbonButtonTest extends CarbonTest {
         tab.mouseTo(0, 0);
       }
     }
+
   }
 
 }

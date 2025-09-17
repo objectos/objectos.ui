@@ -25,9 +25,11 @@ import objectos.way.Html;
 @Css.Source
 final class CarbonButton extends CarbonComponent implements Carbon.Button {
 
-  enum Kind {
+  enum Kind implements Carbon.Button.Kind {
 
-    PRIMARY;
+    PRIMARY,
+
+    SECONDARY;
 
   }
 
@@ -61,7 +63,7 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
 
   private Html.Id id;
 
-  private final Kind kind = Kind.PRIMARY;
+  private Kind kind = Kind.PRIMARY;
 
   private CarbonButton.Size size = CarbonButton.Size.LG;
 
@@ -72,6 +74,11 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
   @Override
   public final void id(Html.Id value) {
     id = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void kind(Carbon.Button.Kind value) {
+    kind = (Kind) Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -125,6 +132,17 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
           focus:border-color:focus
           focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
           hover:background-color:button-primary-hover
+          """;
+
+          case SECONDARY -> """
+          background-color:button-secondary
+          border:1px_solid_rgba(0,0,0,0)
+          color:text-on-color
+
+          active:background-color:button-secondary-active
+          focus:border-color:focus
+          focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
+          hover:background-color:button-secondary-hover
           """;
         }),
 

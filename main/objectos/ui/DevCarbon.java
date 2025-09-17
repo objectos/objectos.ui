@@ -67,40 +67,57 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Button - Default",
 
-          Carbon.stack(
-              Carbon.SPACING_04,
+          button(Carbon.Button.PRIMARY)
+      );
 
-              Carbon.button(b -> {
-                b.id(BTN);
-                b.text("Button");
-              }),
+      case "secondary" -> ok(
+          http,
 
-              Carbon.button(b -> {
-                b.id(BTN_SM);
-                b.size(Carbon.SM);
-                b.text("Button");
-              }),
+          "Button - Secondary",
 
-              Carbon.button(b -> {
-                b.id(BTN_MD);
-                b.size(Carbon.MD);
-                b.text("Button");
-              }),
-
-              Carbon.button(b -> {
-                b.id(BTN_XL);
-                b.size(Carbon.XL);
-                b.text("Button");
-              }),
-
-              Carbon.button(b -> {
-                b.id(BTN_X2L);
-                b.size(Carbon.X2L);
-                b.text("Button");
-              })
-          )
+          button(Carbon.Button.SECONDARY)
       );
     }
+  }
+
+  private Html.Component button(Carbon.Button.Kind kind) {
+    return Carbon.stack(
+        Carbon.SPACING_04,
+
+        Carbon.button(b -> {
+          b.id(BTN);
+          b.kind(kind);
+          b.text("Button");
+        }),
+
+        Carbon.button(b -> {
+          b.id(BTN_SM);
+          b.kind(kind);
+          b.size(Carbon.Button.SM);
+          b.text("Button");
+        }),
+
+        Carbon.button(b -> {
+          b.id(BTN_MD);
+          b.kind(kind);
+          b.size(Carbon.Button.MD);
+          b.text("Button");
+        }),
+
+        Carbon.button(b -> {
+          b.id(BTN_XL);
+          b.kind(kind);
+          b.size(Carbon.Button.XL);
+          b.text("Button");
+        }),
+
+        Carbon.button(b -> {
+          b.id(BTN_X2L);
+          b.kind(kind);
+          b.size(Carbon.Button.X2L);
+          b.text("Button");
+        })
+    );
   }
 
   private void formGroup(Http.Exchange http) {

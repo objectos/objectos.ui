@@ -32,27 +32,55 @@ public final class Carbon {
   // # BEGIN: Button
   // ##################################################################
 
-  /// The `button` button type.
-  public static final Button.Type BUTTON = CarbonButton.Type.BUTTON;
-
-  /// The `reset` button type.
-  public static final Button.Type RESET = CarbonButton.Type.RESET;
-
-  /// The `submit` button type.
-  public static final Button.Type SUBMIT = CarbonButton.Type.SUBMIT;
-
   /// Configures the creation of a button.
   public sealed interface Button permits CarbonButton {
+
+    /// Represents the kind of a Carbon button.
+    sealed interface Kind permits CarbonButton.Kind {}
+
+    /// The primary button kind.
+    Kind PRIMARY = CarbonButton.Kind.PRIMARY;
+
+    /// The secondary button kind.
+    Kind SECONDARY = CarbonButton.Kind.SECONDARY;
 
     /// Represents the size of a Carbon button.
     sealed interface Size permits CarbonButton.Size {}
 
+    /// The `sm` size.
+    Button.Size SM = CarbonButton.Size.SM;
+
+    /// The `md` size.
+    Button.Size MD = CarbonButton.Size.MD;
+
+    /// The `lg` size.
+    Button.Size LG = CarbonButton.Size.LG;
+
+    /// The `xl` size.
+    Button.Size XL = CarbonButton.Size.XL;
+
+    /// The `2xl` size.
+    Button.Size X2L = CarbonButton.Size.X2L;
+
     /// Represents a `<button>` type.
     sealed interface Type permits CarbonButton.Type {}
+
+    /// The `button` button type.
+    Button.Type BUTTON = CarbonButton.Type.BUTTON;
+
+    /// The `reset` button type.
+    Button.Type RESET = CarbonButton.Type.RESET;
+
+    /// The `submit` button type.
+    Button.Type SUBMIT = CarbonButton.Type.SUBMIT;
 
     /// Sets the `id` attribute for the `<button>`.
     /// @param value the `id` attribute value
     void id(Html.Id value);
+
+    /// Sets the kind of this button, defaults to `[PRIMARY][#PRIMARY]` when not specified.
+    /// @param value the kind of this button
+    void kind(Kind value);
 
     /// Sets the size of this button, defaults to `[LG][#LG]` when not specified.
     /// @param value the size of this button
@@ -253,29 +281,6 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Page
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Size
-  // ##################################################################
-
-  /// The `sm` size.
-  public static final Button.Size SM = CarbonButton.Size.SM;
-
-  /// The `md` size.
-  public static final Button.Size MD = CarbonButton.Size.MD;
-
-  /// The `lg` size.
-  public static final Button.Size LG = CarbonButton.Size.LG;
-
-  /// The `xl` size.
-  public static final Button.Size XL = CarbonButton.Size.XL;
-
-  /// The `2xl` size.
-  public static final Button.Size X2L = CarbonButton.Size.X2L;
-
-  // ##################################################################
-  // # END: Size
   // ##################################################################
 
   // ##################################################################

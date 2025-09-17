@@ -103,6 +103,8 @@ final class YProjectBuilder implements Y.Project.Options {
         opts.noteSink(noteSink);
       });
 
+      Y.shutdownHook(webResources);
+
       final Http.Server server;
       server = Http.Server.create(opts -> {
         opts.bufferSize(8192, 8192);
