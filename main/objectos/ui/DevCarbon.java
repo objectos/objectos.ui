@@ -62,11 +62,33 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Button - Default",
 
-          Carbon.button(b -> {
-          }),
+          Carbon.stack(
+              Carbon.SPACING_04,
 
-          Carbon.button(b -> {
-          })
+              Carbon.button(b -> {
+                b.text("Button");
+              }),
+
+              Carbon.button(b -> {
+                b.size(Carbon.SM);
+                b.text("Button");
+              }),
+
+              Carbon.button(b -> {
+                b.size(Carbon.MD);
+                b.text("Button");
+              }),
+
+              Carbon.button(b -> {
+                b.size(Carbon.XL);
+                b.text("Button");
+              }),
+
+              Carbon.button(b -> {
+                b.size(Carbon.X2L);
+                b.text("Button");
+              })
+          )
       );
     }
   }

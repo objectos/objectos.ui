@@ -19,7 +19,6 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-import objectos.ui.carbon.CarbonButton;
 import objectos.ui.carbon.CarbonFormGroup;
 import objectos.ui.carbon.CarbonIcon;
 import objectos.ui.carbon.CarbonLayer;
@@ -43,13 +42,11 @@ public final class Carbon {
   /// Configures the creation of a button.
   public sealed interface Button permits CarbonButton {
 
-    void sizeSm();
+    sealed interface Size permits CarbonSize {}
 
-    void sizeMd();
+    void size(Size value);
 
-    void sizeXl();
-
-    void size2xl();
+    void text(String value);
 
   }
 
@@ -236,6 +233,29 @@ public final class Carbon {
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Size
+  // ##################################################################
+
+  /// The `sm` size.
+  public static final Button.Size SM = CarbonSize.SM;
+
+  /// The `md` size.
+  public static final Button.Size MD = CarbonSize.MD;
+
+  /// The `lg` size.
+  public static final Button.Size LG = CarbonSize.LG;
+
+  /// The `xl` size.
+  public static final Button.Size XL = CarbonSize.XL;
+
+  /// The `2xl` size.
+  public static final Button.Size X2L = CarbonSize.X2L;
+
+  // ##################################################################
+  // # END: Size
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: Spacing
   // ##################################################################
 
@@ -305,6 +325,11 @@ public final class Carbon {
 
   }
 
+  /// Creates a new stack with the specified options.
+  ///
+  /// @param stack allows for setting the options
+  ///
+  /// @return a newly created stack with the specified options
   public static Html.Component stack(Consumer<? super Stack> stack) {
     final CarbonStack pojo;
     pojo = new CarbonStack();
@@ -314,6 +339,12 @@ public final class Carbon {
     return pojo;
   }
 
+  /// Creates a new stack with the specified gap and elements.
+  ///
+  /// @param gap the spacing to be used as gap
+  /// @param elements the components of the main section of the stack
+  ///
+  /// @return a newly created stack with the specified options
   public static Html.Component stack(Spacing gap, Html.Component... elements) {
     return stack(s -> {
       s.gap(gap);
