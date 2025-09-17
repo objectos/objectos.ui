@@ -54,6 +54,12 @@ public class CarbonButtonTest extends CarbonTest {
 
         tab.screenshot(id.value(), "hover");
 
+        tab.mouseDown();
+
+        tab.screenshot(id.value(), "active");
+
+        tab.mouseUp();
+
         tab.mouseTo(0, 0);
       }
     }

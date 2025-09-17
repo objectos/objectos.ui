@@ -229,6 +229,10 @@ public final class Y implements ISuiteListener {
 
     void dev();
 
+    void mouseDown();
+
+    void mouseUp();
+
     void mouseTo(double x, double y);
 
     void navigate(String path);

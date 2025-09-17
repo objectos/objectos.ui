@@ -21,7 +21,6 @@ import static org.testng.Assert.assertEquals;
 
 import com.microsoft.playwright.Keyboard;
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Mouse;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.ScreenshotOptions;
 import com.microsoft.playwright.Page.WaitForURLOptions;
@@ -107,11 +106,18 @@ final class YTab implements Y.Tab {
   }
 
   @Override
-  public final void mouseTo(double x, double y) {
-    final Mouse mouse;
-    mouse = page.mouse();
+  public final void mouseDown() {
+    page.mouse().down();
+  }
 
-    mouse.move(x, y);
+  @Override
+  public final void mouseUp() {
+    page.mouse().up();
+  }
+
+  @Override
+  public final void mouseTo(double x, double y) {
+    page.mouse().move(x, y);
   }
 
   @Override
