@@ -77,6 +77,14 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           button(Carbon.Button.SECONDARY)
       );
+
+      case "ghost" -> ok(
+          http,
+
+          "Button - Ghost",
+
+          button(Carbon.Button.GHOST)
+      );
     }
   }
 

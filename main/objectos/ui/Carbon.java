@@ -44,6 +44,9 @@ public final class Carbon {
     /// The secondary button kind.
     Kind SECONDARY = CarbonButton.Kind.SECONDARY;
 
+    /// The ghost button kind.
+    Kind GHOST = CarbonButton.Kind.GHOST;
+
     /// Represents the size of a Carbon button.
     sealed interface Size permits CarbonButton.Size {}
 

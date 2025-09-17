@@ -29,7 +29,9 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
 
     PRIMARY,
 
-    SECONDARY;
+    SECONDARY,
+
+    GHOST;
 
   }
 
@@ -143,6 +145,18 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
           focus:border-color:focus
           focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
           hover:background-color:button-secondary-hover
+          """;
+
+          case GHOST -> """
+          background-color:rgba(0,0,0,0)
+          border:1px_solid_rgba(0,0,0,0)
+          color:link-primary
+          padding-inline-end:15rx
+
+          active:background-color:background-active
+          focus:border-color:focus
+          focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
+          hover:background-color:background-hover
           """;
         }),
 
