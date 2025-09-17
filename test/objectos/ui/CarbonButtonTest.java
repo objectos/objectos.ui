@@ -17,68 +17,44 @@
  */
 package objectos.ui;
 
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Request;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.function.Consumer;
-import objectos.way.Http;
+import java.util.List;
+import objectos.way.Html;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-public class CarbonButtonTest {
+@Listeners(Y.class)
+public class CarbonButtonTest extends CarbonTest {
 
-  static void module(Http.Routing carbon) {
-  }
+  private final List<Html.Id> buttons = List.of(
+      DevCarbon.BTN,
+      DevCarbon.BTN_SM,
+      DevCarbon.BTN_MD,
+      DevCarbon.BTN_XL,
+      DevCarbon.BTN_X2L
+  );
 
-  static final String JS = """
-  (_el, _level) => {
-    function dom(element, level) {
-      const tagName = element.tagName.toLowerCase();
+  @Test(dataProvider = "themes")
+  public void testCase01(Carbon.Theme theme) {
+    try (Y.Tab tab = Y.tabDev()) {
+      tab.navigate("/carbon/button/default", theme);
 
-      const classAttr = element.className ? ` class="${element.className}"` : '';
+      tab.screenshot();
 
-      const startTag = `<${tagName}${classAttr}>`;
+      for (Html.Id id : buttons) {
+        final Y.TabElem btn;
+        btn = tab.byId(id);
 
-      const children = element.children;
+        btn.focus();
 
-      const ind = " ".repeat(level * 2);
+        tab.screenshot(id.value(), "focus");
 
-      if (children.length === 0) {
-        return `${ind}${startTag}\\n${ind}</${tagName}>\\n`;
-      } else {
-        const nested = Array.from(children)
-          .map(child => dom(child, level + 1))
-          .join("");
+        btn.blur();
 
-        return `${ind}${startTag}\\n${nested}${ind}</${tagName}>\\n`;
-      }
-    }
+        btn.hover();
 
-    return dom(_el, _level);
-  }
-  """;
+        tab.screenshot(id.value(), "hover");
 
-  @Test(enabled = false)
-  public void testCase01() {
-    try (Page page = Y.page()) {
-      Consumer<Request> listener = request -> System.out.println("curl -O " + request.url());
-      page.onRequestFinished(listener);
-      page.navigate("https://react.carbondesignsystem.com/iframe.html?id=components-button--default");
-
-      final Locator root;
-      root = page.locator("#storybook-root");
-
-      root.waitFor();
-
-      Object result = root.evaluate(JS, 0);
-
-      try (BufferedWriter w = Files.newBufferedWriter(Path.of("/tmp/button.html"))) {
-        w.write(result.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
+        tab.mouseTo(0, 0);
       }
     }
   }

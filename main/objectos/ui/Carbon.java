@@ -32,17 +32,47 @@ public final class Carbon {
   // # BEGIN: Button
   // ##################################################################
 
+  /// The `button` button type.
+  public static final Button.Type BUTTON = CarbonButton.Type.BUTTON;
+
+  /// The `reset` button type.
+  public static final Button.Type RESET = CarbonButton.Type.RESET;
+
+  /// The `submit` button type.
+  public static final Button.Type SUBMIT = CarbonButton.Type.SUBMIT;
+
   /// Configures the creation of a button.
   public sealed interface Button permits CarbonButton {
 
-    sealed interface Size permits CarbonSize {}
+    /// Represents the size of a Carbon button.
+    sealed interface Size permits CarbonButton.Size {}
 
+    /// Represents a `<button>` type.
+    sealed interface Type permits CarbonButton.Type {}
+
+    /// Sets the `id` attribute for the `<button>`.
+    /// @param value the `id` attribute value
+    void id(Html.Id value);
+
+    /// Sets the size of this button, defaults to `[LG][#LG]` when not specified.
+    /// @param value the size of this button
     void size(Size value);
 
+    /// Sets the single text node to be rendered as a child of this button.
+    /// @param value the text value
     void text(String value);
+
+    /// Sets the type of this button, defaults to `[BUTTON][#BUTTON]` when not specified.
+    /// @param value the type of this button
+    void type(Type value);
 
   }
 
+  /// Creates a new Carbon button with the specified options.
+  ///
+  /// @param button allows for setting the options
+  ///
+  /// @return a newly created button with the specified options
   public static Html.Component button(Consumer<? super Button> button) {
     final CarbonButton pojo;
     pojo = new CarbonButton();
@@ -211,7 +241,7 @@ public final class Carbon {
   ///
   /// @param page allows for setting the options
   ///
-  /// @return a newly create page with the specified options
+  /// @return a newly created page with the specified options
   public static Html.Component page(Consumer<? super Page> page) {
     final CarbonPage pojo;
     pojo = new CarbonPage();
@@ -230,19 +260,19 @@ public final class Carbon {
   // ##################################################################
 
   /// The `sm` size.
-  public static final Button.Size SM = CarbonSize.SM;
+  public static final Button.Size SM = CarbonButton.Size.SM;
 
   /// The `md` size.
-  public static final Button.Size MD = CarbonSize.MD;
+  public static final Button.Size MD = CarbonButton.Size.MD;
 
   /// The `lg` size.
-  public static final Button.Size LG = CarbonSize.LG;
+  public static final Button.Size LG = CarbonButton.Size.LG;
 
   /// The `xl` size.
-  public static final Button.Size XL = CarbonSize.XL;
+  public static final Button.Size XL = CarbonButton.Size.XL;
 
   /// The `2xl` size.
-  public static final Button.Size X2L = CarbonSize.X2L;
+  public static final Button.Size X2L = CarbonButton.Size.X2L;
 
   // ##################################################################
   // # END: Size

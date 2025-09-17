@@ -19,6 +19,9 @@ package objectos.ui;
 
 import static org.testng.Assert.assertEquals;
 
+import com.microsoft.playwright.Keyboard;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Mouse;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.ScreenshotOptions;
 import com.microsoft.playwright.Page.WaitForURLOptions;
@@ -26,12 +29,40 @@ import com.microsoft.playwright.options.ScreenshotAnimations;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import javax.imageio.ImageIO;
+import objectos.way.Html;
 
 final class YTab implements Y.Tab {
+
+  static final class ThisElem implements Y.TabElem {
+
+    private final Locator locator;
+
+    private ThisElem(Locator locator) {
+      this.locator = locator;
+    }
+
+    @Override
+    public final void blur() {
+      locator.blur();
+    }
+
+    @Override
+    public final void focus() {
+      locator.focus();
+    }
+
+    @Override
+    public final void hover() {
+      locator.hover();
+    }
+
+  }
 
   private final String baseUrl;
 
@@ -41,6 +72,17 @@ final class YTab implements Y.Tab {
     this.baseUrl = baseUrl;
 
     this.page = page;
+  }
+
+  @Override
+  public final Y.TabElem byId(Html.Id id) {
+    final String selector;
+    selector = "#" + id.value();
+
+    final Locator locator;
+    locator = page.locator(selector);
+
+    return new ThisElem(locator);
   }
 
   @Override
@@ -62,6 +104,14 @@ final class YTab implements Y.Tab {
     options = new Page.WaitForURLOptions().setTimeout(TimeUnit.DAYS.toMillis(1));
 
     page.waitForURL(baseUrl + "/dev-stop", options);
+  }
+
+  @Override
+  public final void mouseTo(double x, double y) {
+    final Mouse mouse;
+    mouse = page.mouse();
+
+    mouse.move(x, y);
   }
 
   @Override
@@ -88,25 +138,44 @@ final class YTab implements Y.Tab {
     navigate(path + "/" + theme);
   }
 
+  @Override
+  public final void press(String key) {
+    final Keyboard keyboard;
+    keyboard = page.keyboard();
+
+    keyboard.press(key);
+  }
+
   private static final Path TMPDIR = Y.nextTempDir();
 
   private static final Path TESTDIR = Path.of("test-screenshots");
 
   @Override
-  public final void screenshot() {
+  public final void screenshot(String... suffixes) {
     final String url;
     url = page.url();
 
     final String sub;
     sub = url.substring(baseUrl.length());
 
-    final String rel;
-    rel = sub.substring(1) + ".png";
+    final String suffix;
 
-    final Path relative = Path.of(rel);
+    if (suffixes.length == 0) {
+      suffix = ".png";
+    } else {
+      suffix = Stream.of(suffixes)
+          .map(o -> String.valueOf(o))
+          .collect(Collectors.joining("-", "-", ".png"));
+    }
+
+    final String rel;
+    rel = sub.substring(1) + suffix;
+
+    final Path relative;
+    relative = Path.of(rel);
 
     final Path path;
-    path = Path.of("test-screenshots" + sub + ".png");
+    path = Path.of("test-screenshots" + sub + suffix);
 
     final Path test;
     test = TESTDIR.resolve(relative);
@@ -136,6 +205,9 @@ final class YTab implements Y.Tab {
 
   private void compare(Path test, Path shot) {
     try {
+      final String pathName;
+      pathName = test.toString();
+
       final BufferedImage img1;
       img1 = ImageIO.read(test.toFile());
 
@@ -154,7 +226,7 @@ final class YTab implements Y.Tab {
           final int pixel2;
           pixel2 = img2.getRGB(x, y);
 
-          assertEquals(pixel1, pixel2);
+          assertEquals(pixel1, pixel2, pathName);
         }
       }
     } catch (IOException e) {

@@ -54,6 +54,12 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     carbon.handler(Http.Handler.notFound());
   }
 
+  static final Html.Id BTN = Html.Id.of("btn");
+  static final Html.Id BTN_SM = Html.Id.of("btn-sm");
+  static final Html.Id BTN_MD = Html.Id.of("btn-md");
+  static final Html.Id BTN_XL = Html.Id.of("btn-xl");
+  static final Html.Id BTN_X2L = Html.Id.of("btn-x2l");
+
   private void button(Http.Exchange http) {
     switch (http.pathParam("id")) {
       case "default" -> ok(
@@ -65,25 +71,30 @@ public final class DevCarbon implements Http.RoutingPath.Module {
               Carbon.SPACING_04,
 
               Carbon.button(b -> {
+                b.id(BTN);
                 b.text("Button");
               }),
 
               Carbon.button(b -> {
+                b.id(BTN_SM);
                 b.size(Carbon.SM);
                 b.text("Button");
               }),
 
               Carbon.button(b -> {
+                b.id(BTN_MD);
                 b.size(Carbon.MD);
                 b.text("Button");
               }),
 
               Carbon.button(b -> {
+                b.id(BTN_XL);
                 b.size(Carbon.XL);
                 b.text("Button");
               }),
 
               Carbon.button(b -> {
+                b.id(BTN_X2L);
                 b.size(Carbon.X2L);
                 b.text("Button");
               })

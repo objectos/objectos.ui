@@ -17,6 +17,7 @@
  */
 package objectos.ui;
 
+import java.util.Locale;
 import java.util.Objects;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -30,22 +31,62 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
 
   }
 
+  enum Size implements Carbon.Button.Size {
+
+    SM,
+
+    MD,
+
+    LG,
+
+    XL,
+
+    X2L;
+
+  }
+
+  enum Type implements Carbon.Button.Type {
+
+    BUTTON,
+
+    RESET,
+
+    SUBMIT;
+
+    final String value = name().toLowerCase(Locale.US);
+
+  }
+
   private final Html.ElementName as = Html.ElementName.BUTTON;
+
+  private Html.Id id;
 
   private final Kind kind = Kind.PRIMARY;
 
-  private CarbonSize size = CarbonSize.LG;
+  private CarbonButton.Size size = CarbonButton.Size.LG;
 
   private String text;
 
+  private Type type = Type.BUTTON;
+
+  @Override
+  public final void id(Html.Id value) {
+    id = Objects.requireNonNull(value, "value == null");
+  }
+
   @Override
   public final void size(Carbon.Button.Size value) {
-    size = (CarbonSize) Objects.requireNonNull(value, "value == null");
+    size = (CarbonButton.Size) Objects.requireNonNull(value, "value == null");
   }
 
   @Override
   public final void text(String value) {
     text = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void type(Carbon.Button.Type value) {
+    type = (Type) Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -114,6 +155,10 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button {
           padding-block:14rx
           """;
         }),
+
+        id != null ? m.attr(id) : m.noop(),
+
+        m.type(type.value),
 
         text != null ? m.text(text) : m.noop()
     );

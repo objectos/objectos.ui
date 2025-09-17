@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import objectos.ui.Carbon.Theme;
 import objectos.way.App;
+import objectos.way.Html;
 import objectos.way.Io;
 import objectos.way.Note;
 import org.testng.ISuite;
@@ -221,20 +222,36 @@ public final class Y implements ISuiteListener {
 
   public sealed interface Tab extends AutoCloseable permits YTab {
 
+    TabElem byId(Html.Id id);
+
     @Override
     void close();
 
     void dev();
 
+    void mouseTo(double x, double y);
+
     void navigate(String path);
 
     void navigate(String path, Theme theme);
 
-    void screenshot();
+    void press(String key);
+
+    void screenshot(String... suffixes);
 
     String title();
 
     void waitForFunction(String expression, Object arg);
+
+  }
+
+  public sealed interface TabElem permits YTab.ThisElem {
+
+    void blur();
+
+    void focus();
+
+    void hover();
 
   }
 
