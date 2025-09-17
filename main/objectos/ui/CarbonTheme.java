@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.carbon;
+package objectos.ui;
 
 import java.util.Locale;
-import objectos.ui.Carbon;
 
-public enum CarbonTheme implements Carbon.Theme {
+enum CarbonTheme implements Carbon.Theme {
 
   WHITE,
 

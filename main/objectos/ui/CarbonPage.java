@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.carbon;
+package objectos.ui;
 
 import java.util.List;
 import java.util.Objects;
-import objectos.ui.Carbon;
 import objectos.way.Css;
 import objectos.way.Html;
 
 @Css.Source
-public final class CarbonPage extends CarbonComponent implements Carbon.Page {
+final class CarbonPage extends CarbonComponent implements Carbon.Page {
 
   private String css;
 

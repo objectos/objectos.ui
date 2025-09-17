@@ -19,13 +19,6 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-import objectos.ui.carbon.CarbonFormGroup;
-import objectos.ui.carbon.CarbonIcon;
-import objectos.ui.carbon.CarbonLayer;
-import objectos.ui.carbon.CarbonPage;
-import objectos.ui.carbon.CarbonTearsheet;
-import objectos.ui.carbon.CarbonTextInput;
-import objectos.ui.carbon.CarbonTheme;
 import objectos.way.Css;
 import objectos.way.Html;
 

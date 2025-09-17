@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.carbon;
+package objectos.ui;
 
 import java.util.Objects;
-import objectos.ui.Carbon;
 import objectos.way.Html;
 
-public final class CarbonIcon extends CarbonComponent implements Carbon.Icon {
+final class CarbonIcon extends CarbonComponent implements Carbon.Icon {
 
   private String css;
 
@@ -83,7 +82,8 @@ public final class CarbonIcon extends CarbonComponent implements Carbon.Icon {
     return switch (kind) {
       // WarningAlt
       case 0 -> switch (sizeInt) {
-        case 16 -> """
+        case 16
+             -> """
         <style type="text/css">.st0{fill:none;}</style><title>warning</title><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M8,14c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S11.3,14,8,14z"/><rect x="7.5" y="4" width="1" height="5"/><path d="M8,10.2c-0.4,0-0.8,0.3-0.8,0.8s0.3,0.8,0.8,0.8c0.4,0,0.8-0.3,0.8-0.8S8.4,10.2,8,10.2z"/><rect id="_Transparent_Rectangle_" class="st0" width="16" height="16"/>""";
 
         default -> "";
@@ -91,7 +91,8 @@ public final class CarbonIcon extends CarbonComponent implements Carbon.Icon {
 
       // WarningFilled
       case 1 -> switch (sizeInt) {
-        case 16 -> """
+        case 16
+             -> """
         <style type="text/css">.st0{fill:none;}.st1{opacity:0;}</style><rect id="Transparent_Rectangle" class="st0" width="16" height="16"/><path id="Compound_Path" d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2 c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"/><path id="inner-path" class="st1" d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8 c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"/>""";
 
         default -> "";

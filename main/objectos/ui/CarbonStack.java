@@ -19,7 +19,6 @@ package objectos.ui;
 
 import java.util.List;
 import java.util.Objects;
-import objectos.ui.carbon.CarbonComponent;
 import objectos.way.Css;
 import objectos.way.Html;
 

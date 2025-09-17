@@ -15,17 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.carbon;
+package objectos.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import objectos.ui.Carbon;
 import objectos.way.Css;
 import objectos.way.Html;
 
 @Css.Source
-public final class CarbonLayer extends CarbonComponent implements Carbon.Layer {
+final class CarbonLayer extends CarbonComponent implements Carbon.Layer {
 
   static final Html.ClassName LAYER_0 = Html.ClassName.of("carbon-layer-0");
   static final Html.ClassName LAYER_1 = Html.ClassName.of("carbon-layer-1");

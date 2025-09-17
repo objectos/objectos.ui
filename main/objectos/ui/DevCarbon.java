@@ -21,7 +21,6 @@ import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
-import objectos.ui.carbon.CarbonTheme;
 import objectos.way.App;
 import objectos.way.Css;
 import objectos.way.Html;
