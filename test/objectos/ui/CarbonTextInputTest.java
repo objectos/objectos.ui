@@ -38,7 +38,7 @@ public class CarbonTextInputTest extends CarbonTest {
       tab.navigate("/carbon/textinput/default-focus", theme);
       tab.waitForFunction(
           "id => document.getElementById(id) === document.activeElement",
-          DevCarbon.TEXT_INPUT.value());
+          DevCarbon.TEXT_INPUT.attrValue());
       tab.screenshot();
     }
   }
@@ -58,7 +58,7 @@ public class CarbonTextInputTest extends CarbonTest {
       tab.navigate("/carbon/textinput/invalid-focus", theme);
       tab.waitForFunction(
           "id => document.getElementById(id) === document.activeElement",
-          DevCarbon.TEXT_INPUT.value());
+          DevCarbon.TEXT_INPUT.attrValue());
       tab.screenshot();
     }
   }

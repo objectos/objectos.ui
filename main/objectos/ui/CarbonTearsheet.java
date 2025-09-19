@@ -17,20 +17,69 @@
  */
 package objectos.ui;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import objectos.way.Css;
 import objectos.way.Html;
 
 @Css.Source
-final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
+final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet, Html.Component {
+
+  enum Kind {
+    NARROW,
+
+    WIDE;
+  }
+
+  private List<CarbonButton> actions = List.of();
 
   private String description = "";
+
+  private final Kind kind = Kind.WIDE;
 
   private Html.Component main;
 
   private boolean open;
 
   private String title = "";
+
+  @Override
+  public final void actions(Consumer<? super Action> action) {
+    throw new UnsupportedOperationException("Implement me");
+  }
+
+  @Override
+  public final void actions(Consumer<? super Action> action1, Consumer<? super Action> action2) {
+    throw new UnsupportedOperationException("Implement me");
+  }
+
+  @Override
+  public final void actions(Consumer<? super Action> action1, Consumer<? super Action> action2, Consumer<? super Action> action3) {
+    actions = actions(
+        action(action1, "action1 == null"),
+        action(action2, "action2 == null"),
+        action(action3, "action3 == null")
+    );
+  }
+
+  private List<CarbonButton> actions(CarbonButton... btns) {
+    return List.of(btns);
+  }
+
+  private CarbonButton action(Consumer<? super Action> action, String message) {
+    final Consumer<? super Action> a;
+    a = Objects.requireNonNull(action, message);
+
+    final CarbonButton btn;
+    btn = new CarbonButton();
+
+    a.accept(btn);
+
+    btn.expressive();
+
+    return btn;
+  }
 
   @Override
   public final void description(String value) {
@@ -94,33 +143,39 @@ final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
             })
             : m.noop(),
 
-        // header
+        header(m),
+
+        body(m)
+    );
+  }
+
+  private Html.Instruction header(Html.Markup m) {
+    return m.div(
+        m.css("""
+        background-color:layer
+        border-block-end:1px_solid_var(--color-border-subtle-01)
+        grid-column:1/-1
+        grid-row:1/1
+        margin:0
+        max-block-size:50vh
+        padding:1.5rem_2rem
+        overflow-y:auto
+        """),
+
+        // header-content
         m.div(
+            CarbonLayer.LAYER_1,
+
             m.css("""
-            background-color:layer
-            border-block-end:1px_solid_var(--color-border-subtle-01)
-            grid-column:1/-1
-            grid-row:1/1
-            margin:0
-            max-block-size:50vh
-            padding:1.5rem_2rem
-            overflow-y:auto
+            display:flex
+            justify-content:space-between
             """),
 
-            // header-content
+            // fields
             m.div(
-                CarbonLayer.LAYER_1,
-
-                m.css("""
-                display:flex
-                justify-content:space-between
-                """),
-
-                // fields
-                m.div(
-                    // title
-                    m.h3(
-                        m.css("""
+                // title
+                m.h3(
+                    m.css("""
                         border:0
                         font-size:var(--carbon-heading-04-font-size,1.75rem)
                         font-weight:var(--carbon-heading-04-font-weight,400)
@@ -132,12 +187,12 @@ final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
                         vertical-align:baseline
                         """),
 
-                        m.text(title)
-                    ),
+                    m.text(title)
+                ),
 
-                    // description
-                    m.div(
-                        m.css("""
+                // description
+                m.div(
+                    m.css("""
                         display:inline-flex
                         font-size:var(--carbon-body-compact-01-font-size,.875rem)
                         font-weight:var(--carbon-body-compact-01-font-weight,400)
@@ -147,74 +202,106 @@ final class CarbonTearsheet implements Carbon.Tearsheet, Html.Component {
                         line-height:var(--carbon-body-compact-01-line-height,1.28572)
                         """),
 
-                        m.text(description)
-                    )
-                ),
-
-                // actions
-                m.noop()
+                    m.text(description)
+                )
             ),
 
-            // header-navigation
-            m.noop(),
-
-            // modal-close-button
+            // actions
             m.noop()
         ),
 
-        // body
+        // header-navigation
+        m.noop(),
+
+        // modal-close-button
+        m.noop()
+    );
+  }
+
+  private Html.Instruction body(Html.Markup m) {
+    return m.div(
+        m.css("""
+        color:text-primary
+        display:flex
+        flex-direction:row
+        font-size:var(--carbon-body-01-font-size,0.875rem)
+        font-weight:var(--carbon-body-01-font-weight,400)
+        grid-column:1/-1
+        grid-row:2/-2
+        letter-spacing:var(--carbon-body-01-letter-spacing,0.16px)
+        line-height:var(--carbon-body-01-line-height,1.42857)
+        margin:0
+        overflow-y:auto
+        padding:0
+        position:relative
+        """),
+
+        // right
         m.div(
             m.css("""
-            color:text-primary
-            display:flex
-            flex-direction:row
-            font-size:var(--carbon-body-01-font-size,0.875rem)
-            font-weight:var(--carbon-body-01-font-weight,400)
-            grid-column:1/-1
-            grid-row:2/-2
-            letter-spacing:var(--carbon-body-01-letter-spacing,0.16px)
-            line-height:var(--carbon-body-01-line-height,1.42857)
-            margin:0
-            overflow-y:auto
-            padding:0
-            position:relative
+            display:grid
+            flex-grow:1
+            grid-template-columns:100%
+            grid-template-rows:1fr_auto
             """),
 
-            // right
+            // main
             m.div(
                 m.css("""
-                display:grid
-                flex-grow:1
-                grid-template-columns:100%
-                grid-template-rows:1fr_auto
+                background-color:background
+                display:flex
+                flex-direction:row
+                grid-column:1/-1
+                grid-row:1/-1
                 """),
 
-                // main
-                m.div(
+                // content
+                m.section(
                     m.css("""
-                    background-color:background
-                    display:flex
-                    flex-direction:row
-                    grid-column:1/-1
-                    grid-row:1/-1
+                    flex-grow:1
+                    overflow:auto
                     """),
 
-                    // content
-                    m.section(
-                        m.css("""
-                        flex-grow:1
-                        overflow:auto
-                        """),
+                    main != null ? m.c(main) : m.noop()
+                )
+            ),
 
-                        main != null ? m.c(main) : m.noop()
-                    )
-                ),
+            // button-container
+            !actions.isEmpty() ? m.div(
+                m.css("""
+                grid-column:1/-1
+                grid-row:-1/-1
+                overflow-x:auto
+                """),
 
-                // button-container
-                m.div()
-            )
+                // buttons
+                m.div(
+                    m.css("""
+                    align-items:stretch
+                    background-color:background
+                    border-block-start:1px_solid_border-subtle-01
+                    display:inline-flex
+                    justify-content:flex-end
+                    min-inline-size:100%
+                    """),
+
+                    m.role("presentation"),
+
+                    m.c(buttons())
+                )
+            ) : m.noop()
         )
     );
+  }
+
+  private List<CarbonButton> buttons() {
+    for (CarbonButton action : actions) {
+      action.size(
+          kind == Kind.WIDE ? Carbon.Button.X2L : Carbon.Button.LG
+      );
+    }
+
+    return actions;
   }
 
 }

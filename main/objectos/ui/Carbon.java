@@ -77,6 +77,9 @@ public final class Carbon {
     /// The `submit` button type.
     Button.Type SUBMIT = CarbonButton.Type.SUBMIT;
 
+    /// Sets this button as expressive.
+    void expressive();
+
     /// Sets the `id` attribute for the `<button>`.
     /// @param value the `id` attribute value
     void id(Html.Id value);
@@ -395,23 +398,46 @@ public final class Carbon {
   /// Configures the creation of a tearsheet.
   public sealed interface Tearsheet permits CarbonTearsheet {
 
+    /// Configures the creation of a tearsheet action.
+    sealed interface Action permits CarbonButton {
+
+      /// Sets the `id` attribute for the `<button>`.
+      /// @param value the `id` attribute value
+      void id(Html.Id value);
+
+      /// Sets the kind of this button, defaults to `[PRIMARY][#PRIMARY]` when not specified.
+      /// @param value the kind of this button
+      void kind(Carbon.Button.Kind value);
+
+      /// Sets the single text node to be rendered as a child of this button.
+      /// @param value the text value
+      void text(String value);
+
+      /// Sets the type of this button, defaults to `[BUTTON][#BUTTON]` when not specified.
+      /// @param value the type of this button
+      void type(Carbon.Button.Type value);
+
+    }
+
+    void actions(Consumer<? super Action> action);
+
+    void actions(Consumer<? super Action> action1, Consumer<? super Action> action2);
+
+    void actions(Consumer<? super Action> action1, Consumer<? super Action> action2, Consumer<? super Action> action3);
+
     /// A description of the flow, displayed in the header area of the tearsheet.
-    ///
     /// @param value the tearsheet description
     void description(String value);
 
     /// The HTML component to be rendered as the main section of the tearsheet.
-    ///
     /// @param value the HTML component
     void main(Html.Component value);
 
     /// Specifies whether the tearsheet is currently open.
-    ///
     /// @param value `true` if the tearsheet is currently open; `false` otherwise
     void open(boolean value);
 
     /// The main title of the tearsheet, displayed in the header area.
-    ///
     /// @param value the title value
     void title(String value);
 

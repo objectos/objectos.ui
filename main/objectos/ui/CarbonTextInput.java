@@ -52,7 +52,7 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
 
   @Override
   public final void id(Html.Id value) {
-    id = Objects.requireNonNull(value, "value == null").value();
+    id = Objects.requireNonNull(value, "value == null").attrValue();
   }
 
   @Override

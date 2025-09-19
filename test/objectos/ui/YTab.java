@@ -76,7 +76,7 @@ final class YTab implements Y.Tab {
   @Override
   public final Y.TabElem byId(Html.Id id) {
     final String selector;
-    selector = "#" + id.value();
+    selector = "#" + id.attrValue();
 
     final Locator locator;
     locator = page.locator(selector);

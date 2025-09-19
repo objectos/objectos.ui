@@ -60,17 +60,17 @@ public class CarbonButtonTest extends CarbonTest {
 
         btn.focus();
 
-        tab.screenshot(id.value(), "focus");
+        tab.screenshot(id.attrValue(), "focus");
 
         btn.blur();
 
         btn.hover();
 
-        tab.screenshot(id.value(), "hover");
+        tab.screenshot(id.attrValue(), "hover");
 
         tab.mouseDown();
 
-        tab.screenshot(id.value(), "active");
+        tab.screenshot(id.attrValue(), "active");
 
         tab.mouseUp();
 

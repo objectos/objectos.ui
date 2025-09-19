@@ -284,6 +284,23 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
               m.c(themeSwitcher(http))
           ));
+
+          t.actions(
+              a -> {
+                a.kind(Carbon.Button.GHOST);
+                a.text("Cancel");
+              },
+
+              a -> {
+                a.kind(Carbon.Button.SECONDARY);
+                a.text("Back");
+              },
+
+              a -> {
+                a.kind(Carbon.Button.PRIMARY);
+                a.text("Replace");
+              }
+          );
         }));
       }));
     }
