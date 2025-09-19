@@ -17,7 +17,9 @@
  */
 package objectos.ui;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import objectos.way.Css;
@@ -75,8 +77,6 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
     btn = new CarbonButton();
 
     a.accept(btn);
-
-    btn.expressive();
 
     return btn;
   }
@@ -294,14 +294,99 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
     );
   }
 
-  private List<CarbonButton> buttons() {
-    for (CarbonButton action : actions) {
-      action.size(
-          kind == Kind.WIDE ? Carbon.Button.X2L : Carbon.Button.LG
-      );
+  private static final String WIDE_BASE_BTN = """
+  align-items:center
+  block-size:80rx
+  box-shadow:-1rx_0_0_0_button-separator
+  padding-block:16rx_32rx
+
+  first-child:box-shadow:inherit
+  """;
+
+  @Css.Source
+  private enum ButtonStyle implements Html.AttributeObject {
+    HALF_WIDTH(WIDE_BASE_BTN, """
+    flex:1_1_50%
+    padding-inline-start:32rx
+    max-inline-size:none
+    """),
+
+    REGULAR(WIDE_BASE_BTN, """
+    flex:0_1_25%
+    max-inline-size:232rx
+    """);
+
+    private final String attrValue;
+
+    private ButtonStyle(String base, String css) {
+      attrValue = Html.formatAttrValue(base + css);
     }
 
-    return actions;
+    @Override
+    public final Html.AttributeName attrName() {
+      return Html.AttributeName.CLASS;
+    }
+
+    @Override
+    public final String attrValue() {
+      return attrValue;
+    }
+
+    final ButtonStyle narrow() {
+      return switch (this) {
+        default -> this;
+      };
+    }
+  }
+
+  private class Buttons implements Iterable<CarbonButton>, Iterator<CarbonButton> {
+
+    private int cursor;
+
+    @Override
+    public final boolean hasNext() {
+      return cursor < actions.size();
+    }
+
+    @Override
+    public final CarbonButton next() {
+      if (!hasNext()) {
+        throw new NoSuchElementException();
+      }
+
+      final int idx;
+      idx = cursor++;
+
+      final CarbonButton next;
+      next = actions.get(idx);
+
+      ButtonStyle style;
+      style = ButtonStyle.REGULAR;
+
+      if (idx == 0 && next.isGhost()) {
+        style = ButtonStyle.HALF_WIDTH;
+      }
+
+      if (kind == Kind.NARROW) {
+        style = style.narrow();
+      }
+
+      next.size(CarbonButton.Size.NOOP);
+
+      next.internalStyle(style);
+
+      return next;
+    }
+
+    @Override
+    public final Iterator<CarbonButton> iterator() {
+      return this;
+    }
+
+  }
+
+  private Iterable<CarbonButton> buttons() {
+    return new Buttons();
   }
 
 }

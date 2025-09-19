@@ -28,8 +28,6 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
   static final Html.ClassName BASE = Html.ClassName.ofText("""
   cursor:pointer
   display:inline-flex
-  flex-shrink:0
-  inline-size:max-content
   justify-content:space-between
   max-inline-size:20rem
   outline:none
@@ -94,24 +92,34 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
       return attrValue;
     }
 
+    final boolean isGhost() {
+      return this == GHOST;
+    }
+
   }
 
   private static final String PRODUCTIVE = """
+  flex-shrink:0
   font-size:var(--carbon-body-compact-01-font-size,0.875rem)
   font-weight:var(--carbon-body-compact-01-font-weight,400)
+  inline-size:max-content
   letter-spacing:var(--carbon-body-compact-01-letter-spacing,0.16px)
   line-height:var(--carbon-body-compact-01-line-height,1.28572)
   """;
 
   private static final String EXPRESSIVE = """
+  flex-shrink:0
   font-size:var(--carbon-body-compact-02-font-size,1rem)
   font-weight:var(--carbon-body-compact-02-font-weight,400)
+  inline-size:max-content
   letter-spacing:var(--carbon-body-compact-02-letter-spacing,0)
   line-height:var(--carbon-body-compact-02-line-height,1.375)
   """;
 
   @Css.Source
   enum Size implements Carbon.Button.Size, Html.AttributeObject {
+
+    NOOP(""),
 
     SM(PRODUCTIVE, """
     min-block-size:32rx
@@ -164,6 +172,10 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
     """);
 
     private final String attrValue;
+
+    private Size(String attrValue) {
+      this.attrValue = attrValue;
+    }
 
     private Size(String fonts, String css) {
       attrValue = Html.formatAttrValue(fonts + css);
@@ -218,9 +230,11 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
 
   private Html.Instruction id = Html.Instruction.noop();
 
-  private Html.AttributeObject kind = Kind.PRIMARY;
+  private CarbonButton.Kind kind = Kind.PRIMARY;
 
   private CarbonButton.Size size = CarbonButton.Size.LG;
+
+  private Html.AttributeObject style = Size.NOOP;
 
   private String text;
 
@@ -262,7 +276,7 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
         as,
 
         // class attributes should be together
-        BASE, kind, size,
+        BASE, kind, size, style,
 
         id,
 
@@ -270,6 +284,14 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
 
         text != null ? m.text(text) : m.noop()
     );
+  }
+
+  final boolean isGhost() {
+    return kind.isGhost();
+  }
+
+  final void internalStyle(Html.AttributeObject value) {
+    style = value;
   }
 
 }
