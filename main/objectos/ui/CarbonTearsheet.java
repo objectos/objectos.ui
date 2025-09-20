@@ -149,7 +149,7 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
         grid-template-rows:auto_1fr_auto
         inline-size:100%
         inset-block-start:auto
-        inset-inline-start:0
+        margin:auto
         max-block-size:100%
         max-inline-size:100%
         outline:none
@@ -162,6 +162,9 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
 
         [open]:display:grid
         [open]:backdrop:opacity:1
+
+        md:max-block-size:calc(100%_-_48rx)
+        md:max-inline-size:calc(100%_-_128rx)
         """),
 
         m.ariaLabel(title),
@@ -210,16 +213,16 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
                 // title
                 m.h3(
                     m.css("""
-                        border:0
-                        font-size:var(--carbon-heading-04-font-size,1.75rem)
-                        font-weight:var(--carbon-heading-04-font-weight,400)
-                        letter-spacing:var(--carbon-heading-04-letter-spacing,0)
-                        line-height:var(--carbon-heading-04-line-height,1.28572)
-                        margin:0
-                        padding:0
-                        padding-inline-end:calc(20%_-_3rem)
-                        vertical-align:baseline
-                        """),
+                    border:0
+                    font-size:var(--carbon-heading-04-font-size,1.75rem)
+                    font-weight:var(--carbon-heading-04-font-weight,400)
+                    letter-spacing:var(--carbon-heading-04-letter-spacing,0)
+                    line-height:var(--carbon-heading-04-line-height,1.28572)
+                    margin:0
+                    padding:0
+                    padding-inline-end:calc(20%_-_3rem)
+                    vertical-align:baseline
+                    """),
 
                     m.text(title)
                 ),
@@ -227,14 +230,16 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
                 // description
                 m.div(
                     m.css("""
-                        display:inline-flex
-                        font-size:var(--carbon-body-compact-01-font-size,.875rem)
-                        font-weight:var(--carbon-body-compact-01-font-weight,400)
-                        margin-block-start:1rem
-                        max-inline-size:100%
-                        letter-spacing:var(--carbon-body-compact-01-letter-spacing,.16px)
-                        line-height:var(--carbon-body-compact-01-line-height,1.28572)
-                        """),
+                    display:inline-flex
+                    font-size:var(--carbon-body-compact-01-font-size,.875rem)
+                    font-weight:var(--carbon-body-compact-01-font-weight,400)
+                    margin-block-start:1rem
+                    max-inline-size:100%
+                    letter-spacing:var(--carbon-body-compact-01-letter-spacing,.16px)
+                    line-height:var(--carbon-body-compact-01-line-height,1.28572)
+
+                    md:max-inline-size:60%
+                    """),
 
                     m.text(description)
                 )

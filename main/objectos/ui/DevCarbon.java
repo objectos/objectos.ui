@@ -251,7 +251,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
         page.main(
             Carbon.button(b -> {
               b.dataOnClick(Carbon.Tearsheet.openAction(TEARSHEET));
-              b.text("Open tearsheet");
+              b.text("Open Tearsheet");
             }),
 
             Carbon.tearsheet(t -> {
