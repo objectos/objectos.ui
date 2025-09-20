@@ -19,8 +19,10 @@ package objectos.ui;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Consumer;
 import objectos.way.Css;
 import objectos.way.Html;
+import objectos.way.Script;
 
 @Css.Source
 final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbon.Tearsheet.Action {
@@ -228,6 +230,8 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
 
   private final Html.ElementName as = Html.ElementName.BUTTON;
 
+  private Consumer<? super Script> dataOnClick;
+
   private Html.Instruction id = Html.Instruction.noop();
 
   private CarbonButton.Kind kind = Kind.PRIMARY;
@@ -239,6 +243,11 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
   private String text;
 
   private Html.AttributeObject type = Type.BUTTON;
+
+  @Override
+  public final void dataOnClick(Consumer<? super Script> value) {
+    dataOnClick = Objects.requireNonNull(value, "value == null");
+  }
 
   @Override
   public final void expressive() {
@@ -275,8 +284,10 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
     m.elem(
         as,
 
-        // class attributes should be together
+        // class attributes must be together
         BASE, kind, size, style,
+
+        dataOnClick != null ? m.dataOnClick(dataOnClick) : m.noop(),
 
         id,
 

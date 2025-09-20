@@ -241,67 +241,77 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     }
   }
 
+  static final Html.Id TEARSHEET = Html.Id.of("ts");
+
   private void tearsheet(Http.Exchange http) {
     switch (http.pathParam("id")) {
       case "default" -> http.ok(page(http, page -> {
         page.title("Tearsheet - Default");
 
-        page.main(Carbon.tearsheet(t -> {
-          t.open(true);
+        page.main(
+            Carbon.button(b -> {
+              b.dataOnClick(Carbon.Tearsheet.openAction(TEARSHEET));
+              b.text("Open tearsheet");
+            }),
 
-          t.title("Title of the tearsheet");
+            Carbon.tearsheet(t -> {
+              t.id(TEARSHEET);
 
-          t.description("""
-          This is a description for the tearsheet, \
-          providing an opportunity to describe the flow over \
-          a couple of lines in the header of the tearsheet.\
-          """);
+              t.title("Title of the tearsheet");
 
-          t.main(m -> m.div(
-              m.css("""
-              padding:24rx_32rx
-              """),
+              t.description("""
+              This is a description for the tearsheet, \
+              providing an opportunity to describe the flow over \
+              a couple of lines in the header of the tearsheet.\
+              """);
 
-              m.h3("Main content heading"),
+              t.main(m -> m.div(
+                  m.css("""
+                  padding:24rx_32rx
+                  """),
 
-              m.c(Carbon.formGroup(g -> {
-                g.css("""
-                display:flex
-                flex-direction:column
-                gap:16rx
-                """);
+                  m.h3("Main content heading"),
 
-                g.legendText("FormGroup legend");
+                  m.c(Carbon.formGroup(g -> {
+                    g.css("""
+                    display:flex
+                    flex-direction:column
+                    gap:16rx
+                    """);
 
-                g.textInput(input -> {
-                  input.labelText("Enter an important value here");
-                });
+                    g.legendText("FormGroup legend");
 
-                g.textInput(input -> {
-                  input.labelText("Here is an entry field:");
-                });
-              })),
+                    g.textInput(input -> {
+                      input.labelText("Enter an important value here");
+                    });
 
-              m.c(themeSwitcher(http))
-          ));
+                    g.textInput(input -> {
+                      input.labelText("Here is an entry field:");
+                    });
+                  })),
 
-          t.actions(
-              a -> {
-                a.kind(Carbon.Button.GHOST);
-                a.text("Cancel");
-              },
+                  m.c(themeSwitcher(http))
+              ));
 
-              a -> {
-                a.kind(Carbon.Button.SECONDARY);
-                a.text("Back");
-              },
+              t.actions(
+                  a -> {
+                    a.dataOnClick(Carbon.Tearsheet.close(TEARSHEET));
+                    a.kind(Carbon.Button.GHOST);
+                    a.text("Cancel");
+                  },
 
-              a -> {
-                a.kind(Carbon.Button.PRIMARY);
-                a.text("Replace");
-              }
-          );
-        }));
+                  a -> {
+                    a.kind(Carbon.Button.SECONDARY);
+                    a.text("Back");
+                  },
+
+                  a -> {
+                    a.kind(Carbon.Button.PRIMARY);
+                    a.text("Replace");
+                  }
+              );
+            })
+        );
       }));
     }
   }

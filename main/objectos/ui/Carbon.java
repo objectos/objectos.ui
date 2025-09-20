@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import objectos.way.Css;
 import objectos.way.Html;
+import objectos.way.Script;
 
 /// The **Objectos Carbon** main class.
 /// Objectos Carbon is an implementation of IBM's Carbon Design System for Objectos Way applications.
@@ -76,6 +77,10 @@ public final class Carbon {
 
     /// The `submit` button type.
     Button.Type SUBMIT = CarbonButton.Type.SUBMIT;
+
+    /// Sets the `data-on-click` attribute value to the specified script.
+    /// @param value the Objectos Script to execute
+    void dataOnClick(Consumer<? super Script> value);
 
     /// Sets this button as expressive.
     void expressive();
@@ -401,7 +406,11 @@ public final class Carbon {
     /// Configures the creation of a tearsheet action.
     sealed interface Action permits CarbonButton {
 
-      /// Sets the `id` attribute for the `<button>`.
+      /// Sets the `data-on-click` attribute value to the specified script.
+      /// @param value the Objectos Script to execute
+      void dataOnClick(Consumer<? super Script> value);
+
+      /// Sets the `id` attribute for the `<button>` element.
       /// @param value the `id` attribute value
       void id(Html.Id value);
 
@@ -419,6 +428,14 @@ public final class Carbon {
 
     }
 
+    static Consumer<? super Script> close(Html.Id id) {
+      return CarbonTearsheet.closeImpl(id);
+    }
+
+    static Consumer<? super Script> openAction(Html.Id id) {
+      return CarbonTearsheet.openImpl(id);
+    }
+
     void actions(Consumer<? super Action> action);
 
     void actions(Consumer<? super Action> action1, Consumer<? super Action> action2);
@@ -428,6 +445,10 @@ public final class Carbon {
     /// A description of the flow, displayed in the header area of the tearsheet.
     /// @param value the tearsheet description
     void description(String value);
+
+    /// Sets the `id` attribute for the `<dialog>` element.
+    /// @param value the `id` attribute value
+    void id(Html.Id value);
 
     /// The HTML component to be rendered as the main section of the tearsheet.
     /// @param value the HTML component
@@ -549,6 +570,28 @@ public final class Carbon {
   // ##################################################################
 
   public static void configureStyleSheet(Css.StyleSheet.Options opts) {
+    opts.keyframes(frames -> {
+      frames.name("opacity-fade-in");
+      frames.frame("from", "opacity: 0;");
+      frames.frame("to", "opacity: 1;");
+    });
+    opts.keyframes(frames -> {
+      frames.name("opacity-fade-out");
+      frames.frame("from", "opacity: 1;");
+      frames.frame("to", "opacity: 0;");
+    });
+
+    opts.keyframes(frames -> {
+      frames.name("tearsheet-enter");
+      frames.frame("from", "transform: translateY(min(95vh,500px));");
+      frames.frame("to", "transform: translateY(0);");
+    });
+    opts.keyframes(frames -> {
+      frames.name("tearsheet-exit");
+      frames.frame("from", "transform: translateY(0);");
+      frames.frame("to", "transform: translateY(min(95vh,500px));");
+    });
+
     final CarbonStyles sheet;
     sheet = new CarbonStyles();
 

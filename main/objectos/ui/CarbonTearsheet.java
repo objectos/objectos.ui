@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import objectos.way.Css;
 import objectos.way.Html;
+import objectos.way.Script;
 
 @Css.Source
 final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet, Html.Component {
@@ -37,6 +38,8 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
   private List<CarbonButton> actions = List.of();
 
   private String description = "";
+
+  private Html.Instruction id = Html.Instruction.noop();
 
   private final Kind kind = Kind.WIDE;
 
@@ -87,6 +90,11 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
   }
 
   @Override
+  public final void id(Html.Id value) {
+    id = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
   public final void main(Html.Component value) {
     main = Objects.requireNonNull(value, "value == null");
   }
@@ -101,16 +109,42 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
     title = Objects.requireNonNull(value, "value == null");
   }
 
+  private static final String CLOSE = "animation-name:tearsheet-exit backdrop:animation-name:opacity-fade-out";
+
+  public static Consumer<? super Script> closeImpl(Html.Id id) {
+    return script -> {
+      var dialog = script.elementById(id);
+      dialog.toggleClass(CLOSE);
+      script.delay(240, () -> {
+        dialog.close();
+        dialog.toggleClass(CLOSE);
+      });
+    };
+  }
+
+  private static final String OPEN = "animation-name:tearsheet-enter backdrop:animation-name:opacity-fade-in";
+
+  public static Consumer<? super Script> openImpl(Html.Id id) {
+    return script -> {
+      var dialog = script.elementById(id);
+      dialog.showModal();
+      dialog.toggleClass(OPEN);
+      script.delay(240, () -> {
+        dialog.toggleClass(OPEN);
+      });
+    };
+  }
+
   @Override
   public final void renderHtml(Html.Markup m) {
     // tearsheet
     m.dialog(
         m.css("""
+        animation-duration:240ms
         background-color:layer
         block-size:100%
         border:none
         color:text-primary
-        display:grid
         grid-template-columns:100%
         grid-template-rows:auto_1fr_auto
         inline-size:100%
@@ -119,29 +153,29 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
         max-block-size:100%
         max-inline-size:100%
         outline:none
-        transform:translateY(min(95vh,500px))
         transform-origin:top_center
-        transition:transform_.24s_cubic-bezier(0,0,.3,1)
         z-index:9000
 
+        backdrop:animation-duration:240ms
         backdrop:background-color:overlay
         backdrop:opacity:0
 
-        [open]:transform:translateY(0)
+        [open]:display:grid
         [open]:backdrop:opacity:1
         """),
 
         m.ariaLabel(title),
 
-        open
-            ? m.dataOnLoad(script -> {
-              script.delay(1, () -> {
-                var el = script.element();
+        id,
 
-                el.showModal();
-              });
-            })
-            : m.noop(),
+        open ? m.dataOnLoad(script -> {
+          var dialog = script.element();
+          dialog.showModal();
+          dialog.toggleClass(OPEN);
+          script.delay(240, () -> {
+            dialog.toggleClass(OPEN);
+          });
+        }) : m.noop(),
 
         header(m),
 
