@@ -570,32 +570,45 @@ public final class Carbon {
   // ##################################################################
 
   public static void configureStyleSheet(Css.StyleSheet.Options opts) {
-    opts.keyframes(frames -> {
-      frames.name("opacity-fade-in");
-      frames.frame("from", "opacity: 0;");
-      frames.frame("to", "opacity: 1;");
-    });
-    opts.keyframes(frames -> {
-      frames.name("opacity-fade-out");
-      frames.frame("from", "opacity: 1;");
-      frames.frame("to", "opacity: 0;");
-    });
+    opts.theme("""
+    @keyframes opacity-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes opacity-fade-out {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
 
-    opts.keyframes(frames -> {
-      frames.name("tearsheet-enter");
-      frames.frame("from", "transform: translateY(min(95vh,500px));");
-      frames.frame("to", "transform: translateY(0);");
-    });
-    opts.keyframes(frames -> {
-      frames.name("tearsheet-exit");
-      frames.frame("from", "transform: translateY(0);");
-      frames.frame("to", "transform: translateY(min(95vh,500px));");
-    });
+    @keyframes tearsheet-enter {
+      from {
+        transform: translateY(min(95vh,500px));
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+    @keyframes tearsheet-exit {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(min(95vh,500px));
+      }
+    }
+    """);
 
-    final CarbonStyles sheet;
-    sheet = new CarbonStyles();
-
-    sheet.accept(opts);
+    opts.include(
+        new CarbonStyles()
+    );
   }
 
 }

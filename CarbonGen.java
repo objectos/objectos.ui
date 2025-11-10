@@ -486,8 +486,7 @@ final class XCarbonGen {
         html("components-modal--default", "#storybook-root"),
         html("components-popover--default", "#storybook-root"),
         html("components-textinput--default", "#storybook-root"),
-        html("components-tooltip--default", "#storybook-root"),
-        html("layout-stack--default", "#storybook-root")
+        html("components-tooltip--default", "#storybook-root")
     );
   }
 
@@ -769,12 +768,12 @@ package objectos.ui;
 import java.util.function.Consumer;
 import objectos.way.Css;
 
-final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
+final class CarbonStyles implements Css.Library {
 
   static final String VERSION = "%s";
 
   @Override
-  public final void accept(Css.StyleSheet.Options opts) {
+  public final void configure(Css.Library.Options opts) {
 """.formatted(version));
 
       int idx;
@@ -800,20 +799,34 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
   }
 
   private void executeStyles(BufferedWriter w, Theme theme) throws IOException {
-    w.write("    opts.theme(");
+    w.write("    opts.theme(\"\"\"\n");
 
-    for (String name : theme.names) {
-      w.write('"');
-      w.write(name);
-      w.write('"');
-      w.write(',');
-      w.write(' ');
+    final List<String> names;
+    names = theme.names;
+
+    switch (names.size()) {
+      case 1 -> {
+        w.write("    ");
+        w.write(names.get(0));
+        w.write(" {\n");
+      }
+
+      case 2 -> {
+        w.write("    ");
+        w.write(names.get(1));
+        w.write(" { ");
+        w.write(names.get(0));
+        w.write(" {\n");
+      }
+
+      default -> throw new UnsupportedOperationException(
+          "Theme with " + names.size() + " names"
+      );
     }
-
-    w.write("\"\"\"\n");
 
     for (ThemeDeclaration decl : theme.declarations) {
       w.write("    ");
+      w.write("  ");
 
       String n = null, v = null;
 
@@ -864,6 +877,22 @@ final class CarbonStyles implements Consumer<Css.StyleSheet.Options> {
       w.write(v);
 
       w.write(";\n");
+    }
+
+    switch (names.size()) {
+      case 1 -> {
+        w.write("    ");
+        w.write("}\n");
+      }
+
+      case 2 -> {
+        w.write("    ");
+        w.write("}}\n");
+      }
+
+      default -> throw new UnsupportedOperationException(
+          "Theme with " + names.size() + " names"
+      );
     }
 
     w.write("""
