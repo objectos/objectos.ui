@@ -42,8 +42,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -444,14 +446,15 @@ final class XCarbonGen {
     cssResult = css(
         cssSource,
 
-        css(THEME, EXACT, ":root", null),
-        css(THEME, EXACT, ".cds--white", ".carbon-white"),
-        css(THEME, EXACT, ".cds--g10", ".carbon-g10"),
-        css(THEME, EXACT, ".cds--g90", ".carbon-g90"),
-        css(THEME, EXACT, ".cds--g100", ".carbon-g100"),
-        css(THEME, EXACT, ".cds--layer-one", ".carbon-layer-0"),
-        css(THEME, EXACT, ".cds--layer-two", ".carbon-layer-1"),
-        css(THEME, EXACT, ".cds--layer-three", ".carbon-layer-2"),
+        css(CFG_THEME, EXACT, ":root", null),
+        css(CFG_THEME, EXACT, ".cds--white", ".carbon-white"),
+        css(CFG_THEME, EXACT, ".cds--g10", ".carbon-g10"),
+        css(CFG_THEME, EXACT, ".cds--g90", ".carbon-g90"),
+        css(CFG_THEME, EXACT, ".cds--g100", ".carbon-g100"),
+
+        css(CFG_COMPONENTS, EXACT, ".cds--layer-one", ".carbon-layer-0"),
+        css(CFG_COMPONENTS, EXACT, ".cds--layer-two", ".carbon-layer-1"),
+        css(CFG_COMPONENTS, EXACT, ".cds--layer-three", ".carbon-layer-2"),
 
         css(COMPONENT, STARTS_WITH, ".cds--btn", "button"),
         css(COMPONENT, STARTS_WITH, ".cds--fieldset", "formgroup"),
@@ -779,12 +782,28 @@ final class CarbonStyles implements Css.Library {
       int idx;
       idx = 0;
 
-      for (Theme theme : css.themes) {
+      for (Cfg cfg : css.cfgs) {
+        if (cfg.kind == CfgKind.COMPONENTS) {
+          continue;
+        }
+
         if (idx++ != 0) {
           w.newLine();
         }
 
-        executeStyles(w, theme);
+        executeStyles(w, cfg);
+      }
+
+      for (Cfg cfg : css.cfgs) {
+        if (cfg.kind == CfgKind.THEME) {
+          continue;
+        }
+
+        if (idx++ != 0) {
+          w.newLine();
+        }
+
+        executeStyles(w, cfg);
       }
 
       w.write("""
@@ -794,15 +813,22 @@ final class CarbonStyles implements Css.Library {
       """);
 
     } catch (IOException e) {
-      throw error("Failed to generate CarbonStyleSheet.java", e);
+      throw error("Failed to generate CarbonStyles.java", e);
     }
   }
 
-  private void executeStyles(BufferedWriter w, Theme theme) throws IOException {
-    w.write("    opts.theme(\"\"\"\n");
+  private void executeStyles(BufferedWriter w, Cfg cfg) throws IOException {
+    w.write("    opts.");
+
+    final CfgKind cfgKind;
+    cfgKind = cfg.kind;
+
+    w.write(cfgKind.methodName);
+
+    w.write("(\"\"\"\n");
 
     final List<String> names;
-    names = theme.names;
+    names = cfg.names;
 
     switch (names.size()) {
       case 1 -> {
@@ -824,57 +850,21 @@ final class CarbonStyles implements Css.Library {
       );
     }
 
-    for (ThemeDeclaration decl : theme.declarations) {
+    final Iterator<RuleDeclaration> iterator;
+    iterator = cfg.declarations.stream().map(o -> o.toRuleDeclaration(colors)).sorted().iterator();
+
+    while (iterator.hasNext()) {
+      final RuleDeclaration next;
+      next = iterator.next();
+
       w.write("    ");
       w.write("  ");
 
-      String n = null, v = null;
-
-      switch (decl.kind) {
-        case CUSTOM -> {
-          if (colors.contains(decl.name)) {
-            n = "--color-" + decl.name;
-          } else {
-            n = "--carbon-" + decl.name;
-          }
-
-          v = decl.val0;
-        }
-
-        case CUSTOM_COLOR_VALUE -> { n = "--color-" + decl.name; v = decl.val0; }
-
-        case CUSTOM_COLOR_VAR2 -> { n = "--color-" + decl.name; v = "var(--color-" + decl.val0 + ", " + decl.val1 + ")"; }
-
-        case CUSTOM_DIMENSION -> { n = "--carbon-" + decl.name; v = decl.val0; }
-
-        case CUSTOM_VAR -> {
-          if (colors.contains(decl.name)) {
-            n = "--color-" + decl.name;
-
-            v = "var(--color-" + decl.val0 + ")";
-          } else {
-            throw new UnsupportedOperationException("Implement me");
-          }
-        }
-
-        case REGULAR -> throw new UnsupportedOperationException("Implement me :: decl=" + decl);
-
-        case REGULAR_VAR -> {
-          n = decl.name;
-
-          if (colors.contains(decl.val0)) {
-            v = "var(--color-" + decl.val0 + ")";
-          } else {
-            throw new UnsupportedOperationException("Implement me :: val0=" + decl.val0);
-          }
-        }
-      }
-
-      w.write(n);
+      w.write(next.property);
 
       w.write(": ");
 
-      w.write(v);
+      w.write(next.value);
 
       w.write(";\n");
     }
@@ -1100,13 +1090,24 @@ final class CarbonStyles implements Css.Library {
   // # BEGIN: CSS
   // ##################################################################
 
+  private static final CssAction CFG_COMPONENTS = CssAction.CFG_COMPONENTS;
+  private static final CssAction CFG_THEME = CssAction.CFG_THEME;
   private static final CssAction COMPONENT = CssAction.COMPONENT;
-  private static final CssAction THEME = CssAction.THEME;
 
   private enum CssAction {
-    COMPONENT,
+    CFG_COMPONENTS,
+    CFG_THEME,
 
-    THEME;
+    COMPONENT;
+
+    final CfgKind toCfgKind() {
+      return switch (this) {
+        case CFG_COMPONENTS -> CfgKind.COMPONENTS;
+        case CFG_THEME -> CfgKind.THEME;
+
+        default -> throw new UnsupportedOperationException();
+      };
+    }
   }
 
   private static final CssMatch EXACT = CssMatch.EXACT;
@@ -1120,9 +1121,11 @@ final class CarbonStyles implements Css.Library {
 
   private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
 
-  private record CssResult(List<Component> components, List<Theme> themes) {}
+  private record CssResult(List<Cfg> cfgs, List<Component> components) {}
 
   private class CssCtx {
+    final Map<List<String>, Cfg> cfgs = new LinkedHashMap<>();
+
     final Map<String, Component> components = new TreeMap<>();
 
     int cursor;
@@ -1138,8 +1141,6 @@ final class CarbonStyles implements Css.Library {
     final String s;
 
     final List<CssTarget> targets;
-
-    final Map<List<String>, Theme> themes = new LinkedHashMap<>();
 
     CssCtx(String s, List<CssTarget> targets) {
       this.s = s;
@@ -1198,8 +1199,8 @@ final class CarbonStyles implements Css.Library {
 
     final CssResult toResult() {
       return new CssResult(
-          List.copyOf(components.values()),
-          List.copyOf(themes.values())
+          List.copyOf(cfgs.values()),
+          List.copyOf(components.values())
       );
     }
   }
@@ -1250,23 +1251,29 @@ final class CarbonStyles implements Css.Library {
           continue;
         }
 
-        switch (target.action) {
-          case COMPONENT -> {
-            cssComponent(ctx, target.name);
+        final CssAction action;
+        action = target.action;
 
-            ctx.nameRemove();
-
-            ctx.markCursor();
-          }
-
-          case THEME -> {
+        switch (action) {
+          case CFG_COMPONENTS, CFG_THEME -> {
             if (target.name != null) {
               ctx.nameRemove();
 
               ctx.nameAdd(target.name);
             }
 
-            cssTheme(ctx);
+            final CfgKind kind;
+            kind = action.toCfgKind();
+
+            cssCfg(ctx, kind);
+
+            ctx.nameRemove();
+
+            ctx.markCursor();
+          }
+
+          case COMPONENT -> {
+            cssComponent(ctx, target.name);
 
             ctx.nameRemove();
 
@@ -1319,7 +1326,15 @@ final class CarbonStyles implements Css.Library {
     }
   }
 
-  private record RuleDeclaration(String property, String value) {}
+  private record RuleDeclaration(String property, String value)
+      implements Comparable<RuleDeclaration> {
+
+    @Override
+    public final int compareTo(RuleDeclaration o) {
+      return property.compareTo(o.property);
+    }
+
+  }
 
   private void cssComponent(CssCtx ctx, String componentName) {
     final Component comp;
@@ -1426,25 +1441,37 @@ final class CarbonStyles implements Css.Library {
 
   }
 
-  private static final class Theme {
+  private enum CfgKind {
+    COMPONENTS,
+
+    THEME;
+
+    final String methodName = name().toLowerCase(Locale.US);
+  }
+
+  private static final class Cfg {
+
+    final CfgKind kind;
 
     final List<String> names;
 
-    final List<ThemeDeclaration> declarations = new ArrayList<>();
+    final List<CfgDeclaration> declarations = new ArrayList<>();
 
-    Theme(List<String> names) {
+    Cfg(CfgKind kind, List<String> names) {
+      this.kind = kind;
+
       this.names = names;
     }
 
-    final void add(ThemeDeclarationKind kind, String name, String val0, String val1) {
+    final void add(CfgDeclarationKind kind, String name, String val0, String val1) {
       declarations.add(
-          new ThemeDeclaration(kind, name, val0, val1)
+          new CfgDeclaration(kind, name, val0, val1)
       );
     }
 
   }
 
-  private enum ThemeDeclarationKind {
+  private enum CfgDeclarationKind {
     CUSTOM,
 
     CUSTOM_COLOR_VALUE,
@@ -1460,14 +1487,82 @@ final class CarbonStyles implements Css.Library {
     REGULAR_VAR;
   }
 
-  private record ThemeDeclaration(ThemeDeclarationKind kind, String name, String val0, String val1) {}
+  private record CfgDeclaration(CfgDeclarationKind kind, String name, String val0, String val1) {
 
-  private void cssTheme(CssCtx ctx) {
+    public final RuleDeclaration toRuleDeclaration(Set<String> colors) {
+      String n = null, v = null;
+
+      switch (kind) {
+        case CUSTOM -> {
+          if (colors.contains(name)) {
+            n = "--color-" + name;
+          } else if (name.endsWith("font-family") ||
+              name.endsWith("font-size") ||
+              name.endsWith("font-weight") ||
+              name.endsWith("letter-spacing") ||
+              name.endsWith("line-height")
+          ) {
+            n = "--type-" + name;
+          } else {
+            n = "--carbon-" + name;
+          }
+
+          v = val0;
+        }
+
+        case CUSTOM_COLOR_VALUE -> { n = "--color-" + name; v = val0; }
+
+        case CUSTOM_COLOR_VAR2 -> { n = "--color-" + name; v = "var(--color-" + val0 + ", " + val1 + ")"; }
+
+        case CUSTOM_DIMENSION -> {
+          if (name.endsWith("font-family") ||
+              name.endsWith("font-size") ||
+              name.endsWith("font-weight") ||
+              name.endsWith("letter-spacing") ||
+              name.endsWith("line-height")
+          ) {
+            n = "--type-" + name;
+          } else {
+            n = "--carbon-" + name;
+          }
+
+          v = val0;
+        }
+
+        case CUSTOM_VAR -> {
+          if (colors.contains(name)) {
+            n = "--color-" + name;
+
+            v = "var(--color-" + val0 + ")";
+          } else {
+            throw new UnsupportedOperationException("Implement me");
+          }
+        }
+
+        case REGULAR -> throw new UnsupportedOperationException("Implement me :: decl=" + this);
+
+        case REGULAR_VAR -> {
+          n = name;
+
+          if (colors.contains(val0)) {
+            v = "var(--color-" + val0 + ")";
+          } else {
+            throw new UnsupportedOperationException("Implement me :: val0=" + val0);
+          }
+        }
+      }
+
+      return new RuleDeclaration(n, v);
+    }
+
+  }
+
+  private void cssCfg(CssCtx ctx, CfgKind cfgKind) {
     final List<String> names;
     names = List.copyOf(ctx.names);
 
-    final Theme theme;
-    theme = ctx.themes.computeIfAbsent(names, Theme::new);
+    final Cfg cfg;
+    cfg = ctx.cfgs.computeIfAbsent(names, key -> new Cfg(cfgKind, key));
 
     enum Parser {
       START,
@@ -1490,7 +1585,7 @@ final class CarbonStyles implements Css.Library {
 
     int dash = 0;
 
-    ThemeDeclarationKind kind = null;
+    CfgDeclarationKind kind = null;
 
     String name = null, val0 = null, val1 = null;
 
@@ -1570,7 +1665,7 @@ final class CarbonStyles implements Css.Library {
 
             parser = Parser.VALUE_END;
 
-            kind = ThemeDeclarationKind.CUSTOM_COLOR_VALUE;
+            kind = CfgDeclarationKind.CUSTOM_COLOR_VALUE;
           }
 
           else if ('0' <= c && c <= '9') {
@@ -1580,7 +1675,7 @@ final class CarbonStyles implements Css.Library {
 
             parser = Parser.VALUE_END;
 
-            kind = ThemeDeclarationKind.CUSTOM_DIMENSION;
+            kind = CfgDeclarationKind.CUSTOM_DIMENSION;
           }
 
           else if (c == 'v') {
@@ -1592,7 +1687,7 @@ final class CarbonStyles implements Css.Library {
           else {
             parser = Parser.VALUE_END;
 
-            kind = custom ? ThemeDeclarationKind.CUSTOM : ThemeDeclarationKind.REGULAR;
+            kind = custom ? CfgDeclarationKind.CUSTOM : CfgDeclarationKind.REGULAR;
           }
         }
 
@@ -1632,7 +1727,7 @@ final class CarbonStyles implements Css.Library {
           if (c == ')') {
             parser = Parser.VALUE_VAR_END;
 
-            kind = custom ? ThemeDeclarationKind.CUSTOM_VAR : ThemeDeclarationKind.REGULAR_VAR;
+            kind = custom ? CfgDeclarationKind.CUSTOM_VAR : CfgDeclarationKind.REGULAR_VAR;
 
             val0 = ctx.name();
           }
@@ -1652,7 +1747,7 @@ final class CarbonStyles implements Css.Library {
           else if (c == '#') {
             parser = Parser.VALUE_VAR_VAL1_COLOR;
 
-            kind = ThemeDeclarationKind.CUSTOM_COLOR_VAR2;
+            kind = CfgDeclarationKind.CUSTOM_COLOR_VAR2;
 
             ctx.markIdx();
           }
@@ -1686,11 +1781,11 @@ final class CarbonStyles implements Css.Library {
           if (c == ';') {
             parser = Parser.START;
 
-            theme.add(kind, name, val0, val1);
+            cfg.add(kind, name, val0, val1);
           }
 
           else if (c == '}') {
-            theme.add(kind, name, val0, val1);
+            cfg.add(kind, name, val0, val1);
 
             break loop;
           }
@@ -1706,13 +1801,13 @@ final class CarbonStyles implements Css.Library {
 
             val0 = ctx.name();
 
-            theme.add(kind, name, val0, val1);
+            cfg.add(kind, name, val0, val1);
           }
 
           else if (c == '}') {
             val0 = ctx.name();
 
-            theme.add(kind, name, val0, val1);
+            cfg.add(kind, name, val0, val1);
 
             break loop;
           }
