@@ -570,42 +570,6 @@ public final class Carbon {
   // ##################################################################
 
   public static void configureStyleSheet(Css.StyleSheet.Options opts) {
-    opts.theme("""
-    @keyframes opacity-fade-in {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-    @keyframes opacity-fade-out {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-
-    @keyframes tearsheet-enter {
-      from {
-        transform: translateY(min(95vh,500px));
-      }
-      to {
-        transform: translateY(0);
-      }
-    }
-    @keyframes tearsheet-exit {
-      from {
-        transform: translateY(0);
-      }
-      to {
-        transform: translateY(min(95vh,500px));
-      }
-    }
-    """);
-
     opts.include(
         new CarbonStyles()
     );

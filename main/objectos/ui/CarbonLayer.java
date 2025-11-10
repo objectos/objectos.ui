@@ -20,10 +20,8 @@ package objectos.ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import objectos.way.Css;
 import objectos.way.Html;
 
-@Css.Source
 final class CarbonLayer extends CarbonComponent implements Carbon.Layer {
 
   static final Html.ClassName LAYER_0 = Html.ClassName.of("carbon-layer-0");

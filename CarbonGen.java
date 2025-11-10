@@ -731,7 +731,7 @@ final class XCarbonGen {
 
   private void cdsWrite(String version, CssResult css) {
     final Path path;
-    path = Path.of("main", "objectos", "ui", "CarbonStyles.java");
+    path = Path.of("main", "objectos", "ui", "CarbonStylesGenerated.java");
 
     final Path file;
     file = basedir.resolve(path);
@@ -770,12 +770,12 @@ package objectos.ui;
 
 import objectos.way.Css;
 
-final class CarbonStyles implements Css.Library {
+sealed abstract class CarbonStylesGenerated implements Css.Library permits CarbonStyles {
 
   static final String VERSION = "%s";
 
   @Override
-  public final void configure(Css.Library.Options opts) {
+  public void configure(Css.Library.Options opts) {
 """.formatted(version));
 
       int idx;
@@ -812,7 +812,7 @@ final class CarbonStyles implements Css.Library {
       """);
 
     } catch (IOException e) {
-      throw error("Failed to generate CarbonStyles.java", e);
+      throw error("Failed to generate CarbonStylesGenerated.java", e);
     }
   }
 
@@ -1495,12 +1495,11 @@ final class CarbonStyles implements Css.Library {
         case CUSTOM -> {
           if (colors.contains(name)) {
             n = "--color-" + name;
-          } else if (
-            name.endsWith("font-family") ||
-                name.endsWith("font-size") ||
-                name.endsWith("font-weight") ||
-                name.endsWith("letter-spacing") ||
-                name.endsWith("line-height")
+          } else if (name.endsWith("font-family") ||
+              name.endsWith("font-size") ||
+              name.endsWith("font-weight") ||
+              name.endsWith("letter-spacing") ||
+              name.endsWith("line-height")
           ) {
             n = "--type-" + name;
           } else {
@@ -1514,7 +1513,20 @@ final class CarbonStyles implements Css.Library {
 
         case CUSTOM_COLOR_VAR2 -> { n = "--color-" + name; v = "var(--color-" + val0 + ", " + val1 + ")"; }
 
-        case CUSTOM_DIMENSION -> { n = "--carbon-" + name; v = val0; }
+        case CUSTOM_DIMENSION -> {
+          if (name.endsWith("font-family") ||
+              name.endsWith("font-size") ||
+              name.endsWith("font-weight") ||
+              name.endsWith("letter-spacing") ||
+              name.endsWith("line-height")
+          ) {
+            n = "--type-" + name;
+          } else {
+            n = "--carbon-" + name;
+          }
+
+          v = val0;
+        }
 
         case CUSTOM_VAR -> {
           if (colors.contains(name)) {

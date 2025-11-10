@@ -19,10 +19,8 @@ package objectos.ui;
 
 import java.util.List;
 import java.util.Objects;
-import objectos.way.Css;
 import objectos.way.Html;
 
-@Css.Source
 final class CarbonStack extends CarbonComponent implements Carbon.Stack {
 
   private static final String[] ROW_GAPS = {

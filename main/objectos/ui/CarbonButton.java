@@ -24,7 +24,6 @@ import objectos.way.Css;
 import objectos.way.Html;
 import objectos.way.Script;
 
-@Css.Source
 final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbon.Tearsheet.Action {
 
   static final Html.ClassName BASE = Html.ClassName.ofText("""

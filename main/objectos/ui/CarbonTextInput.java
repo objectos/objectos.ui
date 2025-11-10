@@ -18,10 +18,8 @@
 package objectos.ui;
 
 import java.util.Objects;
-import objectos.way.Css;
 import objectos.way.Html;
 
-@Css.Source
 final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput {
 
   private boolean focus;

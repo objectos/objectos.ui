@@ -26,7 +26,6 @@ import objectos.way.Css;
 import objectos.way.Html;
 import objectos.way.Script;
 
-@Css.Source
 final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet, Html.Component {
 
   enum Kind {
