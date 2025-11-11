@@ -75,6 +75,8 @@ final class XCarbonGenRes {
       cds();
 
       c4p();
+
+      plex();
     } finally {
       if (playwright != null) {
         playwright.close();
@@ -123,7 +125,6 @@ final class XCarbonGenRes {
 
   private record Resource(String url, Path target) {
     final void write() {
-
       try {
         final URI uri;
         uri = URI.create(url);
@@ -181,6 +182,33 @@ final class XCarbonGenRes {
 
   // ##################################################################
   // # END: C4P
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: IBM Plex
+  // ##################################################################
+
+  private void plex() {
+    logInfo("IBM Plex");
+
+    plex(
+        "https://github.com/IBM/plex/releases/download/%40ibm%2Fplex-sans%401.1.0/ibm-plex-sans.zip",
+        "ibm-plex-sans.zip"
+    );
+  }
+
+  private void plex(String url, String fileName) {
+    final Path target;
+    target = Path.of("test-resources", "ibm-plex", fileName);
+
+    final Resource resource;
+    resource = new Resource(url, target);
+
+    resource.write();
+  }
+
+  // ##################################################################
+  // # END: IBM Plex
   // ##################################################################
 
   // ##################################################################
