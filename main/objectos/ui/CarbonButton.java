@@ -44,37 +44,37 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
   enum Kind implements Carbon.Button.Kind, Html.AttributeObject {
 
     PRIMARY("""
-    background-color:button-primary
+    background-color:var(--color-button-primary)
     border:1px_solid_rgba(0,0,0,0)
-    color:text-on-color
+    color:var(--color-text-on-color)
 
-    active:background-color:button-primary-active
-    focus:border-color:focus
-    focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
-    hover:background-color:button-primary-hover
+    active/background-color:var(--color-button-primary-active)
+    focus/border-color:var(--color-focus)
+    focus/box-shadow:inset_0_0_0_1px_var(--color-focus),inset_0_0_0_2px_var(--color-background)
+    hover/background-color:var(--color-button-primary-hover)
     """),
 
     SECONDARY("""
-    background-color:button-secondary
+    background-color:var(--color-button-secondary)
     border:1px_solid_rgba(0,0,0,0)
-    color:text-on-color
+    color:var(--color-text-on-color)
 
-    active:background-color:button-secondary-active
-    focus:border-color:focus
-    focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
-    hover:background-color:button-secondary-hover
+    active/background-color:var(--color-button-secondary-active)
+    focus/border-color:var(--color-focus)
+    focus/box-shadow:inset_0_0_0_1px_var(--color-focus),inset_0_0_0_2px_var(--color-background)
+    hover/background-color:var(--color-button-secondary-hover)
     """),
 
     GHOST("""
     background-color:rgba(0,0,0,0)
     border:1px_solid_rgba(0,0,0,0)
-    color:link-primary
+    color:var(--color-link-primary)
     padding-inline-end:15rx
 
-    active:background-color:background-active
-    focus:border-color:focus
-    focus:box-shadow:inset_0_0_0_1px_focus,inset_0_0_0_2px_background
-    hover:background-color:background-hover
+    active/background-color:var(--color-background-active)
+    focus/border-color:var(--color-focus)
+    focus/box-shadow:inset_0_0_0_1px_var(--color-focus),inset_0_0_0_2px_var(--color-background)
+    hover/background-color:var(--color-background-hover)
     """);
 
     private final String attrValue;
@@ -101,20 +101,20 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
 
   private static final String PRODUCTIVE = """
   flex-shrink:0
-  font-size:var(--carbon-body-compact-01-font-size,0.875rem)
-  font-weight:var(--carbon-body-compact-01-font-weight,400)
+  font-size:var(--type-body-compact-01-font-size,0.875rem)
+  font-weight:var(--type-body-compact-01-font-weight,400)
   inline-size:max-content
-  letter-spacing:var(--carbon-body-compact-01-letter-spacing,0.16px)
-  line-height:var(--carbon-body-compact-01-line-height,1.28572)
+  letter-spacing:var(--type-body-compact-01-letter-spacing,0.16px)
+  line-height:var(--type-body-compact-01-line-height,1.28572)
   """;
 
   private static final String EXPRESSIVE = """
   flex-shrink:0
-  font-size:var(--carbon-body-compact-02-font-size,1rem)
-  font-weight:var(--carbon-body-compact-02-font-weight,400)
+  font-size:var(--type-body-compact-02-font-size,1rem)
+  font-weight:var(--type-body-compact-02-font-weight,400)
   inline-size:max-content
-  letter-spacing:var(--carbon-body-compact-02-letter-spacing,0)
-  line-height:var(--carbon-body-compact-02-line-height,1.375)
+  letter-spacing:var(--type-body-compact-02-letter-spacing,0)
+  line-height:var(--type-body-compact-02-line-height,1.375)
   """;
 
   @Css.Source

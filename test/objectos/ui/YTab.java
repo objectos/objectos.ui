@@ -232,7 +232,7 @@ final class YTab implements Y.Tab {
           final int pixel2;
           pixel2 = img2.getRGB(x, y);
 
-          assertEquals(pixel1, pixel2, pathName);
+          assertEquals(pixel1, pixel2, "x=%d,y=%d,pathName=%s".formatted(x, y, pathName));
         }
       }
     } catch (IOException e) {
