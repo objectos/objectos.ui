@@ -160,8 +160,8 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     final Html.Component test;
     test = m -> m.div(
         m.css("""
-        background-color:layer
-        color:text-primary
+        background-color:var(--color-layer)
+        color:var(--color-text-primary)
         padding:16rx
         """),
 
@@ -173,7 +173,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
         page.title("Layer - Default");
 
         page.main(m -> m.div(
-            m.css("padding:32rx sm:max-width:640rx"),
+            m.css("padding:32rx sm/max-width:640rx"),
 
             m.c(test),
 

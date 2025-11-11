@@ -101,20 +101,20 @@ final class CarbonButton extends CarbonComponent implements Carbon.Button, Carbo
 
   private static final String PRODUCTIVE = """
   flex-shrink:0
-  font-size:var(--type-body-compact-01-font-size,0.875rem)
-  font-weight:var(--type-body-compact-01-font-weight,400)
+  font-size:var(--type-body-compact-01-font-size)
+  font-weight:var(--type-body-compact-01-font-weight)
   inline-size:max-content
-  letter-spacing:var(--type-body-compact-01-letter-spacing,0.16px)
-  line-height:var(--type-body-compact-01-line-height,1.28572)
+  letter-spacing:var(--type-body-compact-01-letter-spacing)
+  line-height:var(--type-body-compact-01-line-height)
   """;
 
   private static final String EXPRESSIVE = """
   flex-shrink:0
-  font-size:var(--type-body-compact-02-font-size,1rem)
-  font-weight:var(--type-body-compact-02-font-weight,400)
+  font-size:var(--type-body-compact-02-font-size)
+  font-weight:var(--type-body-compact-02-font-weight)
   inline-size:max-content
-  letter-spacing:var(--type-body-compact-02-letter-spacing,0)
-  line-height:var(--type-body-compact-02-line-height,1.375)
+  letter-spacing:var(--type-body-compact-02-letter-spacing)
+  line-height:var(--type-body-compact-02-line-height)
   """;
 
   @Css.Source

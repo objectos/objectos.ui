@@ -87,10 +87,10 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
         align-items:flex-start
         display:flex
         flex-direction:column
-        font-size:var(--carbon-body-compact-01-font-size,0.875rem)
-        font-weight:var(--carbon-body-compact-01-font-weight,400)
-        letter-spacing:var(--carbon-body-compact-01-letter-spacing,0.16px)
-        line-height:var(--carbon-body-compact-01-line-height,1.28572)
+        font-size:var(--type-body-compact-01-font-size)
+        font-weight:var(--type-body-compact-01-font-weight)
+        letter-spacing:var(--type-body-compact-01-letter-spacing)
+        line-height:var(--type-body-compact-01-line-height)
         """),
 
         // label wrapper
@@ -103,11 +103,11 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
 
             m.label(
                 m.css("""
-                color:text-secondary
+                color:var(--color-text-secondary)
                 display:inline-block
-                font-size:var(--carbon-label-01-font-size,0.75rem)
+                font-size:var(--type-label-01-font-size)
                 font-weight:400
-                letter-spacing:var(--carbon-label-01-letter-spacing,0.32px)
+                letter-spacing:var(--type-label-01-letter-spacing)
                 line-height:1rem
                 margin-block-end:.5rem
                 vertical-align:baseline
@@ -142,7 +142,7 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
                       icon.iconWarningFilled();
                       icon.size16();
                       icon.css("""
-                      fill:support-error
+                      fill:var(--color-support-error)
                       inset-block-start:50%
                       inset-inline-end:1rem
                       position:absolute
@@ -155,22 +155,22 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
                     m.id(id),
 
                     m.css("""
-                    background-color:field
-                    border-block-end:1px_solid_border-strong
-                    color:text-primary
-                    font-size:var(--carbon-body-compact-01-font-size,0.875rem)
-                    font-weight:var(--carbon-body-compact-01-font-weight,400)
+                    background-color:var(--color-field)
+                    border-block-end:1px_solid_var(--color-border-strong)
+                    color:var(--color-text-primary)
+                    font-size:var(--type-body-compact-01-font-size)
+                    font-weight:var(--type-body-compact-01-font-weight)
                     inline-size:100%
-                    letter-spacing:var(--carbon-body-compact-01-letter-spacing,0.16px)
-                    line-height:var(--carbon-body-compact-01-line-height,1.28572)
+                    letter-spacing:var(--type-body-compact-01-letter-spacing)
+                    line-height:var(--type-body-compact-01-line-height)
                     margin:0
                     outline:2px_solid_rgba(0,0,0,0)
                     outline-offset:-2px
                     vertical-align:baseline
                     transition:background-color_70ms_cubic-bezier(0.2,0,0.38,0.9),outline_70ms_cubic-bezier(0.2,0,0.38,0.9)
 
-                    active:outline-color:focus
-                    focus:outline-color:focus
+                    active/outline-color:var(--color-focus)
+                    focus/outline-color:var(--color-focus)
                     """),
 
                     // md
@@ -181,7 +181,7 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
 
                     level == MessageLevel.ERROR ? m.css("""
                     box-shadow:none
-                    outline:2px_solid_support-error
+                    outline:2px_solid_var(--color-support-error)
                     outline-offset:-2px
                     """) : m.noop(),
 
@@ -204,17 +204,17 @@ final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput 
                 : m.div(
                     m.css(
                         switch (level) {
-                          default -> "color:text-helper";
-                          case WARN -> "color:text-warn";
-                          case ERROR -> "color:text-error";
+                          default -> "color:var(--color-text-helper)";
+                          case WARN -> "color:var(--color-text-warn)";
+                          case ERROR -> "color:var(--color-text-error)";
                         }
                     ),
 
                     m.css("""
-                    font-size:var(--carbon-helper-text-01-font-size,0.75rem)
+                    font-size:var(--type-helper-text-01-font-size)
                     inline-size:100%
-                    letter-spacing:var(--carbon-helper-text-01-letter-spacing,0.32px)
-                    line-height:var(--carbon-helper-text-01-line-height,1.33333)
+                    letter-spacing:var(--type-helper-text-01-letter-spacing)
+                    line-height:var(--type-helper-text-01-line-height)
                     margin-block-start:.25rem
                     opacity:1
                     z-index:0

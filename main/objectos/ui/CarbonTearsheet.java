@@ -108,7 +108,7 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
     title = Objects.requireNonNull(value, "value == null");
   }
 
-  private static final String CLOSE = "animation-name:tearsheet-exit backdrop:animation-name:opacity-fade-out";
+  private static final String CLOSE = "animation-name:tearsheet-exit backdrop/animation-name:opacity-fade-out";
 
   public static Consumer<? super Script> closeImpl(Html.Id id) {
     return script -> {
@@ -121,7 +121,7 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
     };
   }
 
-  private static final String OPEN = "animation-name:tearsheet-enter backdrop:animation-name:opacity-fade-in";
+  private static final String OPEN = "animation-name:tearsheet-enter backdrop/animation-name:opacity-fade-in";
 
   public static Consumer<? super Script> openImpl(Html.Id id) {
     return script -> {
@@ -140,10 +140,10 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
     m.dialog(
         m.css("""
         animation-duration:240ms
-        background-color:layer
+        background-color:var(--color-layer)
         block-size:100%
         border:none
-        color:text-primary
+        color:var(--color-text-primary)
         grid-template-columns:100%
         grid-template-rows:auto_1fr_auto
         inline-size:100%
@@ -155,15 +155,15 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
         transform-origin:top_center
         z-index:9000
 
-        backdrop:animation-duration:240ms
-        backdrop:background-color:overlay
-        backdrop:opacity:0
+        backdrop/animation-duration:240ms
+        backdrop/background-color:var(--color-overlay)
+        backdrop/opacity:0
 
-        [open]:display:grid
-        [open]:backdrop:opacity:1
+        &[open]/display:grid
+        &[open]/backdrop/opacity:1
 
-        md:max-block-size:calc(100%_-_48rx)
-        md:max-inline-size:calc(100%_-_128rx)
+        md/max-block-size:calc(100%_-_48rx)
+        md/max-inline-size:calc(100%_-_128rx)
         """),
 
         m.ariaLabel(title),
@@ -188,7 +188,7 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
   private Html.Instruction header(Html.Markup m) {
     return m.div(
         m.css("""
-        background-color:layer
+        background-color:var(--color-layer)
         border-block-end:1px_solid_var(--color-border-subtle-01)
         grid-column:1/-1
         grid-row:1/1
@@ -213,10 +213,10 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
                 m.h3(
                     m.css("""
                     border:0
-                    font-size:var(--carbon-heading-04-font-size,1.75rem)
-                    font-weight:var(--carbon-heading-04-font-weight,400)
-                    letter-spacing:var(--carbon-heading-04-letter-spacing,0)
-                    line-height:var(--carbon-heading-04-line-height,1.28572)
+                    font-size:var(--type-heading-04-font-size)
+                    font-weight:var(--type-heading-04-font-weight)
+                    letter-spacing:var(--type-heading-04-letter-spacing)
+                    line-height:var(--type-heading-04-line-height)
                     margin:0
                     padding:0
                     padding-inline-end:calc(20%_-_3rem)
@@ -230,14 +230,14 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
                 m.div(
                     m.css("""
                     display:inline-flex
-                    font-size:var(--carbon-body-compact-01-font-size,.875rem)
-                    font-weight:var(--carbon-body-compact-01-font-weight,400)
+                    font-size:var(--type-body-compact-01-font-size)
+                    font-weight:var(--type-body-compact-01-font-weight)
                     margin-block-start:1rem
                     max-inline-size:100%
-                    letter-spacing:var(--carbon-body-compact-01-letter-spacing,.16px)
-                    line-height:var(--carbon-body-compact-01-line-height,1.28572)
+                    letter-spacing:var(--type-body-compact-01-letter-spacing)
+                    line-height:var(--type-body-compact-01-line-height)
 
-                    md:max-inline-size:60%
+                    md/max-inline-size:60%
                     """),
 
                     m.text(description)
@@ -259,15 +259,15 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
   private Html.Instruction body(Html.Markup m) {
     return m.div(
         m.css("""
-        color:text-primary
+        color:var(--color-text-primary)
         display:flex
         flex-direction:row
-        font-size:var(--carbon-body-01-font-size,0.875rem)
-        font-weight:var(--carbon-body-01-font-weight,400)
+        font-size:var(--type-body-01-font-size)
+        font-weight:var(--type-body-01-font-weight)
         grid-column:1/-1
         grid-row:2/-2
-        letter-spacing:var(--carbon-body-01-letter-spacing,0.16px)
-        line-height:var(--carbon-body-01-line-height,1.42857)
+        letter-spacing:var(--type-body-01-letter-spacing)
+        line-height:var(--type-body-01-line-height)
         margin:0
         overflow-y:auto
         padding:0
@@ -286,7 +286,7 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
             // main
             m.div(
                 m.css("""
-                background-color:background
+                background-color:var(--color-background)
                 display:flex
                 flex-direction:row
                 grid-column:1/-1
@@ -316,8 +316,8 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
                 m.div(
                     m.css("""
                     align-items:stretch
-                    background-color:background
-                    border-block-start:1px_solid_border-subtle-01
+                    background-color:var(--color-background)
+                    border-block-start:1px_solid_var(--color-border-subtle-01)
                     display:inline-flex
                     justify-content:flex-end
                     min-inline-size:100%
@@ -335,10 +335,10 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
   private static final String WIDE_BASE_BTN = """
   align-items:center
   block-size:80rx
-  box-shadow:-1rx_0_0_0_button-separator
+  box-shadow:-1rx_0_0_0_var(--color-button-separator)
   padding-block:16rx_32rx
 
-  first-child:box-shadow:inherit
+  first-child/box-shadow:inherit
   """;
 
   @Css.Source

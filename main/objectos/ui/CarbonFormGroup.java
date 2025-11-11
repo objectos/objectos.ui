@@ -60,11 +60,11 @@ final class CarbonFormGroup extends CarbonComponent implements Carbon.FormGroup 
         legendText != null
             ? m.legend(
                 m.css("""
-                color:text-secondary
+                color:var(--color-text-secondary)
                 display:inline-block
-                font-size:var(--carbon-label-01-font-size,0.75rem)
+                font-size:var(--type-label-01-font-size)
                 font-weight:400
-                letter-spacing:var(--carbon-label-01-letter-spacing,0.32px)
+                letter-spacing:var(--type-label-01-letter-spacing)
                 line-height:1rem
                 margin-block-end:.5rem
                 vertical-align:baseline

@@ -19,11 +19,8 @@ package objectos.ui;
 
 import static org.testng.Assert.assertEquals;
 
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import org.testng.annotations.Test;
 
 public class XCarbonGenTest {
@@ -42,15 +39,7 @@ public class XCarbonGenTest {
           "--c4p-skip", "true"
       );
 
-      final Path styles = proj.resolve("main/objectos/ui/CarbonStyles.java");
-
-      try {
-        Files.copy(styles, Path.of("/tmp/CarbonStyles.java"), StandardCopyOption.REPLACE_EXISTING);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      assertEquals(proj.exists("main/objectos/ui/CarbonStyles.java"), true);
+      assertEquals(proj.exists("main/objectos/ui/CarbonStylesGenerated.java"), true);
       assertEquals(proj.exists("main-carbon/button.css"), true);
       assertEquals(proj.exists("main-carbon/button--default.html"), true);
     }
