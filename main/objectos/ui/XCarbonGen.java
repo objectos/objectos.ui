@@ -70,6 +70,8 @@ final class XCarbonGen {
 
   private final Appendable logger = System.out;
 
+  private final Options options = new Options();
+
   private Playwright playwright;
 
   XCarbonGen(Path basedir) {
@@ -104,21 +106,20 @@ final class XCarbonGen {
     startTime = System.currentTimeMillis();
 
     try {
-      final Options options;
-      options = options(args);
+      options.parse(args);
 
-      init(options);
+      init();
 
       if (!options.cdsSkip.bool()) {
-        cds(options);
+        cds();
       }
 
       if (!options.c4pSkip.bool()) {
-        c4p(options);
+        c4p();
       }
 
       if (!options.plexSkip.bool()) {
-        plex(options);
+        plex();
       }
     } finally {
       if (playwright != null) {
@@ -140,7 +141,7 @@ final class XCarbonGen {
   // # BEGIN: Options
   // ##################################################################
 
-  private static final class Option {
+  static final class Option {
 
     enum Kind {
 
@@ -201,8 +202,15 @@ final class XCarbonGen {
       return value(Kind.DURATION);
     }
 
-    final Path path() {
-      return value(Kind.PATH);
+    final Path path(Path basedir) {
+      final Path p;
+      p = value(Kind.PATH);
+
+      if (p.isAbsolute()) {
+        return p;
+      } else {
+        return basedir.resolve(p);
+      }
     }
 
     final String string() {
@@ -231,7 +239,7 @@ final class XCarbonGen {
   }
 
   // ad-hoc enum so instances can be GC'ed after use.
-  private class Options {
+  static final class Options {
 
     // these must come first
     final Map<String, Option> byName = new LinkedHashMap<>();
@@ -290,7 +298,11 @@ final class XCarbonGen {
 
     final Option plexSans = string("--plex-sans", opt -> {
       if (opt.unset()) {
-        opt.set("https://github.com/IBM/plex/releases/download/%40ibm%2Fplex-sans%401.1.0/ibm-plex-sans.zip");
+        if (!plexSkip.bool()) {
+          throw new IllegalArgumentException("The option --plex-sans is required");
+        } else {
+          opt.set("");
+        }
       }
     });
 
@@ -309,10 +321,40 @@ final class XCarbonGen {
     final Option workdir = path("--workdir", opt -> {
       if (opt.unset()) {
         opt.set(
-            basedir.resolve("work/carbon-gen")
+            Path.of("work/carbon-gen")
         );
       }
     });
+
+    public final void parse(String... args) {
+      int idx;
+      idx = 0;
+
+      while (idx < args.length) {
+        final String name;
+        name = args[idx++];
+
+        final Option option;
+        option = byName.get(name);
+
+        if (option == null) {
+          throw new IllegalArgumentException("Unknown option " + name);
+        }
+
+        if (idx >= args.length) {
+          throw new IllegalArgumentException("No value for option " + name);
+        }
+
+        try {
+          final String rawValue;
+          rawValue = args[idx++];
+
+          option.parse("CLI", rawValue);
+        } catch (RuntimeException parseException) {
+          throw new UnsupportedOperationException("Implement me", parseException);
+        }
+      }
+    }
 
     final Iterable<Option> values() {
       return byName.values();
@@ -347,44 +389,6 @@ final class XCarbonGen {
 
   }
 
-  private Options options(String[] args) {
-    final Options options;
-    options = new Options();
-
-    int idx;
-    idx = 0;
-
-    while (idx < args.length) {
-      final String name;
-      name = args[idx++];
-
-      final Map<String, Option> byName;
-      byName = options.byName;
-
-      final Option option;
-      option = byName.get(name);
-
-      if (option == null) {
-        throw new IllegalArgumentException("Unknown option " + name);
-      }
-
-      if (idx >= args.length) {
-        throw new IllegalArgumentException("No value for option " + name);
-      }
-
-      try {
-        final String rawValue;
-        rawValue = args[idx++];
-
-        option.parse("CLI", rawValue);
-      } catch (RuntimeException parseException) {
-        throw new UnsupportedOperationException("Implement me", parseException);
-      }
-    }
-
-    return options;
-  }
-
   // ##################################################################
   // # END: Options
   // ##################################################################
@@ -393,7 +397,7 @@ final class XCarbonGen {
   // # BEGIN: Init
   // ##################################################################
 
-  private void init(Options options) {
+  private void init() {
     for (Option opt : options.values()) {
       opt.validate();
     }
@@ -430,7 +434,7 @@ final class XCarbonGen {
   // # BEGIN: CDS
   // ##################################################################
 
-  private void cds(Options options) {
+  private void cds() {
     final Option iframe;
     iframe = options.cdsIframe;
 
@@ -441,7 +445,7 @@ final class XCarbonGen {
     iframeUri = URI.create(iframeLocation);
 
     final String html;
-    html = read(options, iframeUri, "carbon.html");
+    html = read(iframeUri, "carbon.html");
 
     final String cssPath;
     cssPath = cdsCssPath(html);
@@ -450,7 +454,7 @@ final class XCarbonGen {
     cssUri = resolveUri(options.cdsIframe, cssPath);
 
     final String cssSource;
-    cssSource = read(options, cssUri, "carbon.css");
+    cssSource = read(cssUri, "carbon.css");
 
     final CssResult cssResult;
     cssResult = css(
@@ -482,7 +486,7 @@ final class XCarbonGen {
     jsPath = cdsJsPath(html);
 
     final String cdsVersion;
-    cdsVersion = cdsJsVersion(options, jsPath);
+    cdsVersion = cdsJsVersion(jsPath);
 
     cdsWrite(cdsVersion, cssResult);
 
@@ -544,12 +548,12 @@ final class XCarbonGen {
     throw error("Could not find path for CDS JS file");
   }
 
-  private String cdsJsVersion(Options options, String pathJs) {
+  private String cdsJsVersion(String pathJs) {
     final URI uri;
     uri = resolveUri(options.cdsIframe, pathJs);
 
     final String s;
-    s = read(options, uri, "carbon.js");
+    s = read(uri, "carbon.js");
 
     int mark;
     mark = s.length() - 1;
@@ -912,7 +916,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // # BEGIN: C4P
   // ##################################################################
 
-  private void c4p(Options options) {
+  private void c4p() {
     final Option iframe;
     iframe = options.c4pIframe;
 
@@ -923,16 +927,16 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     iframeUri = URI.create(iframeLocation);
 
     final String html;
-    html = read(options, iframeUri, "c4p.html");
+    html = read(iframeUri, "c4p.html");
 
     final String jsPath;
     jsPath = c4pJsPath(html);
 
     final String version;
-    version = c4pJsVersion(options, jsPath);
+    version = c4pJsVersion(jsPath);
 
     final String cssSource;
-    cssSource = c4pCssSource(options);
+    cssSource = c4pCssSource();
 
     final CssResult cssResult;
     cssResult = css(
@@ -1007,12 +1011,12 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // We're looking for:
   //
   // const y$e="Carbon for IBM Products",w$e="2.73.0-rc.0",x$e={description:y$e,version:w$e}
-  private String c4pJsVersion(Options options, String jsPath) {
+  private String c4pJsVersion(String jsPath) {
     final URI uri;
     uri = resolveUri(options.c4pIframe, jsPath);
 
     final String s;
-    s = read(options, uri, "c4p.js");
+    s = read(uri, "c4p.js");
 
     for (int idx = 0, len = s.length(); idx < len; idx++) {
       final char c;
@@ -1058,7 +1062,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     throw error("Failed to find C4P JS version");
   }
 
-  private String c4pCssSource(Options options) {
+  private String c4pCssSource() {
     try (Page page = newPage()) {
       final Option opt;
       opt = options.c4pIframe;
@@ -1949,11 +1953,11 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // # BEGIN: Plex
   // ##################################################################
 
-  private void plex(Options options) {
-    plexSans(options);
+  private void plex() {
+    plexSans();
   }
 
-  private void plexSans(Options options) {
+  private void plexSans() {
     final Path targetPath;
     targetPath = Path.of("main-resources", "ibm-plex-sans");
 
@@ -1967,7 +1971,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     }
 
     final Path zipPath;
-    zipPath = write(options, options.plexSans, "ibm-plex-sans.zip");
+    zipPath = write(options.plexSans, "ibm-plex-sans.zip");
 
     try (FileSystem plexSans = FileSystems.newFileSystem(zipPath)) {
       final Path woff2;
@@ -2018,10 +2022,10 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     return page;
   }
 
-  private String read(Options options, URI uri, String dest) {
+  private String read(URI uri, String dest) {
     try {
       final Path target;
-      target = write(options, uri, dest);
+      target = write(uri, dest);
 
       return Files.readString(target, StandardCharsets.UTF_8);
     } catch (IOException e) {
@@ -2039,14 +2043,17 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     return uri.resolve(name);
   }
 
-  private Path resolveWork(Options options, String name) {
+  private Path resolveWork(String name) {
+    final Option option;
+    option = options.workdir;
+
     final Path workdir;
-    workdir = options.workdir.path();
+    workdir = option.path(basedir);
 
     return workdir.resolve(name);
   }
 
-  private Path write(Options options, Option opt, String dest) {
+  private Path write(Option opt, String dest) {
     try {
       final String location;
       location = opt.string();
@@ -2054,15 +2061,15 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
       final URI uri;
       uri = URI.create(location);
 
-      return write(options, uri, dest);
+      return write(uri, dest);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
-  private Path write(Options options, URI uri, String dest) throws IOException {
+  private Path write(URI uri, String dest) throws IOException {
     final Path target;
-    target = resolveWork(options, dest);
+    target = resolveWork(dest);
 
     final URL url;
     url = uri.toURL();

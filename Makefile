@@ -95,12 +95,16 @@ CARBON_CDS := https://react.carbondesignsystem.com/iframe.html
 ## html page (c4p)
 CARBON_C4P := https://ibm-products.carbondesignsystem.com/iframe.html
 
+## plex pacakges
+carbon_plex_sans := https://github.com/IBM/plex/releases/download/%40ibm%2Fplex-sans%401.1.0/ibm-plex-sans.zip
+
 ## carbon gen command
 CARBON_GENX := $(JAVA)
 CARBON_GENX += -cp @$(CARBON_GEN_PATH)
 CARBON_GENX += $(CARBON_GEN_SCRIPT)
 CARBON_GENX += --cds-iframe $(CARBON_CDS) 
 CARBON_GENX += --c4p-iframe $(CARBON_C4P) 
+CARBON_GENX += --plex-sans $(carbon_plex_sans) 
 
 .PHONY: carbon-gen
 carbon-gen: $(CARBON_GEN_SCRIPT) $(CARBON_GEN_PATH)
