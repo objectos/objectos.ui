@@ -27,16 +27,15 @@ public class XCarbonGenTest {
 
   @Test
   public void cds() {
-    try (Y.Project proj = Y.project(opts -> {
-      opts.webdir(Path.of("test-resources", "cds"));
-    })) {
+    try (Y.Project proj = Y.project(opts -> { opts.webdir(Path.of("test-resources", "cds")); })) {
       final URI iframe;
       iframe = proj.resolveWeb("iframe.html");
 
       proj.carbonGen(
           "--cds-iframe", iframe.toString(),
           "--cds-html-filter", "button--default",
-          "--c4p-skip", "true"
+          "--c4p-skip", "true",
+          "--plex-skip", "true"
       );
 
       assertEquals(proj.exists("main/objectos/ui/CarbonStylesGenerated.java"), true);
@@ -54,11 +53,28 @@ public class XCarbonGenTest {
       proj.carbonGen(
           "--c4p-iframe", iframe.toString(),
           "--c4p-html-filter", "tearsheet--tearsheet",
-          "--cds-skip", "true"
+          "--cds-skip", "true",
+          "--plex-skip", "true"
       );
 
       assertEquals(proj.exists("main-carbon/tearsheet.css"), true);
       assertEquals(proj.exists("main-carbon/tearsheet--tearsheet.html"), true);
+    }
+  }
+
+  @Test
+  public void plex() {
+    try (Y.Project proj = Y.project(opts -> { opts.webdir(Path.of("test-resources", "ibm-plex")); })) {
+      final URI sans;
+      sans = proj.resolveWeb("ibm-plex-sans.zip");
+
+      proj.carbonGen(
+          "--cds-skip", "true",
+          "--c4p-skip", "true",
+          "--plex-sans", sans.toString()
+      );
+
+      assertEquals(proj.exists("main-resources/ibm-plex-sans/IBMPlexSans-Regular-Latin1.woff2"), true);
     }
   }
 

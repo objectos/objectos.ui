@@ -32,6 +32,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -60,13 +62,13 @@ final class XCarbonGen {
 
   private Browser browser;
 
-  private Clock clock;
+  private final Clock clock = Clock.systemDefaultZone();
 
   private final Set<String> colors = new HashSet<>();
 
   private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-  private Appendable logger;
+  private final Appendable logger = System.out;
 
   private Playwright playwright;
 
@@ -113,6 +115,10 @@ final class XCarbonGen {
 
       if (!options.c4pSkip.bool()) {
         c4p(options);
+      }
+
+      if (!options.plexSkip.bool()) {
+        plex(options);
       }
     } finally {
       if (playwright != null) {
@@ -276,6 +282,18 @@ final class XCarbonGen {
       }
     });
 
+    final Option plexSkip = bool("--plex-skip", opt -> {
+      if (opt.unset()) {
+        opt.set(Boolean.FALSE);
+      }
+    });
+
+    final Option plexSans = string("--plex-sans", opt -> {
+      if (opt.unset()) {
+        opt.set("https://github.com/IBM/plex/releases/download/%40ibm%2Fplex-sans%401.1.0/ibm-plex-sans.zip");
+      }
+    });
+
     final Option httpConnectTimout = duration("--http-connect-timeout", opt -> {
       if (opt.unset()) {
         opt.set(Duration.ofSeconds(10));
@@ -378,14 +396,6 @@ final class XCarbonGen {
   private void init(Options options) {
     for (Option opt : options.values()) {
       opt.validate();
-    }
-
-    if (clock == null) {
-      clock = Clock.systemDefaultZone();
-    }
-
-    if (logger == null) {
-      logger = System.out;
     }
 
     logInfo("Objectos UI carbon-gen");
@@ -743,7 +753,7 @@ final class XCarbonGen {
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      throw error("Failed to create directory for CarbonStyles.java", e);
+      throw error("Failed to create directory for CarbonStylesGenerated.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -1936,6 +1946,66 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Plex
+  // ##################################################################
+
+  private void plex(Options options) {
+    plexSans(options);
+  }
+
+  private void plexSans(Options options) {
+    final Path targetPath;
+    targetPath = Path.of("main-resources", "ibm-plex-sans");
+
+    final Path targetDir;
+    targetDir = basedir.resolve(targetPath);
+
+    try {
+      Files.createDirectories(targetDir);
+    } catch (IOException e) {
+      throw error("Failed to create directory for ibm-plex-sans", e);
+    }
+
+    final Path zipPath;
+    zipPath = write(options, options.plexSans, "ibm-plex-sans.zip");
+
+    try (FileSystem plexSans = FileSystems.newFileSystem(zipPath)) {
+      final Path woff2;
+      woff2 = plexSans.getPath("ibm-plex-sans", "fonts", "split", "woff2");
+
+      Files.walk(woff2).filter(p -> woff2(p)).forEach(p -> {
+        try {
+          final String fileName;
+          fileName = p.getFileName().toString();
+
+          final Path target;
+          target = targetDir.resolve(fileName);
+
+          Files.copy(p, target);
+        } catch (IOException e) {
+          throw new UncheckedIOException(e);
+        }
+      });
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private boolean woff2(Path p) {
+    final Path fileName;
+    fileName = p.getFileName();
+
+    final String name;
+    name = fileName.toString();
+
+    return name.endsWith(".woff2");
+  }
+
+  // ##################################################################
+  // # END: Plex
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: I/O
   // ##################################################################
 
@@ -1949,40 +2019,9 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   }
 
   private String read(Options options, URI uri, String dest) {
-    final Path target;
-    target = resolveWork(options, dest);
-
-    return read(options, uri, target);
-  }
-
-  private String read(Options options, URI uri, Path target) {
     try {
-      final URL url;
-      url = uri.toURL();
-
-      final URLConnection conn;
-      conn = url.openConnection();
-
-      final Duration connectTimeout;
-      connectTimeout = options.httpConnectTimout.duration();
-
-      conn.setConnectTimeout((int) connectTimeout.toMillis());
-
-      final Duration readTimeout;
-      readTimeout = options.httpRequestTimout.duration();
-
-      conn.setReadTimeout((int) readTimeout.toMillis());
-
-      conn.connect();
-
-      final Path parent;
-      parent = target.getParent();
-
-      Files.createDirectories(parent);
-
-      try (InputStream in = conn.getInputStream()) {
-        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-      }
+      final Path target;
+      target = write(options, uri, dest);
 
       return Files.readString(target, StandardCharsets.UTF_8);
     } catch (IOException e) {
@@ -2005,6 +2044,54 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     workdir = options.workdir.path();
 
     return workdir.resolve(name);
+  }
+
+  private Path write(Options options, Option opt, String dest) {
+    try {
+      final String location;
+      location = opt.string();
+
+      final URI uri;
+      uri = URI.create(location);
+
+      return write(options, uri, dest);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private Path write(Options options, URI uri, String dest) throws IOException {
+    final Path target;
+    target = resolveWork(options, dest);
+
+    final URL url;
+    url = uri.toURL();
+
+    final URLConnection conn;
+    conn = url.openConnection();
+
+    final Duration connectTimeout;
+    connectTimeout = options.httpConnectTimout.duration();
+
+    conn.setConnectTimeout((int) connectTimeout.toMillis());
+
+    final Duration readTimeout;
+    readTimeout = options.httpRequestTimout.duration();
+
+    conn.setReadTimeout((int) readTimeout.toMillis());
+
+    conn.connect();
+
+    final Path parent;
+    parent = target.getParent();
+
+    Files.createDirectories(parent);
+
+    try (InputStream in = conn.getInputStream()) {
+      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    return target;
   }
 
   // ##################################################################
