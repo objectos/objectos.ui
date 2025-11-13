@@ -28,6 +28,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -74,8 +75,6 @@ final class XCarbonGen {
   private final Options options = new Options();
 
   private Playwright playwright;
-
-  private XWget wget;
 
   XCarbonGen(Path basedir) {
     this.basedir = basedir.toAbsolutePath();
@@ -316,13 +315,13 @@ final class XCarbonGen {
       }
     });
 
-    final Option httpConnectTimout = duration("--http-connect-timeout", opt -> {
+    final Option httpConnectTimeout = duration("--http-connect-timeout", opt -> {
       if (opt.unset()) {
         opt.set(Duration.ofSeconds(10));
       }
     });
 
-    final Option httpRequestTimout = duration("--http-request-timeout", opt -> {
+    final Option httpRequestTimeout = duration("--http-request-timeout", opt -> {
       if (opt.unset()) {
         opt.set(Duration.ofMinutes(1));
       }
@@ -434,8 +433,6 @@ final class XCarbonGen {
 
       browser = chromium.launch(launchOptions);
     }
-
-    wget = new XWget(options.httpConnectTimout.duration(), options.httpRequestTimout.duration());
   }
 
   // ##################################################################
@@ -2011,7 +2008,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     zip = resolveWork(dir + ".zip");
 
     // download zip
-    wget.downloadTo(location, zip);
+    downloadTo(location, zip);
 
     final List<PlexCss> faces;
     faces = new ArrayList<>();
@@ -2081,6 +2078,34 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
         case '@', '}' -> {
           sb.append(trimmed);
           sb.append('\n');
+        }
+
+        case 'f' -> {
+          sb.append("  ");
+          sb.append(trimmed);
+          sb.append('\n');
+
+          if (weight != 0) {
+            break;
+          }
+
+          final int colon;
+          colon = trimmed.indexOf(':');
+
+          final String property;
+          property = trimmed.substring(0, colon);
+
+          if (!property.equals("font-weight")) {
+            break;
+          }
+
+          final int semi;
+          semi = trimmed.indexOf(';', colon);
+
+          final String value;
+          value = trimmed.substring(colon + 1, semi).strip();
+
+          weight = Integer.parseInt(value);
         }
 
         default -> {
@@ -2192,6 +2217,58 @@ final class CarbonPlex implements Css.Library {
     }
   }
 
+  private void downloadTo(String location, Path target) {
+    final URI uri;
+    uri = URI.create(location);
+
+    final URL url;
+
+    try {
+      url = uri.toURL();
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Failed to obtain an URL from URI", e);
+    }
+
+    final URLConnection conn;
+
+    try {
+      conn = url.openConnection();
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to open an URL connection", e);
+    }
+
+    final Duration connectTimeout;
+    connectTimeout = options.httpConnectTimeout.duration();
+
+    conn.setConnectTimeout((int) connectTimeout.toMillis());
+
+    final Duration requestTimeout;
+    requestTimeout = options.httpRequestTimeout.duration();
+
+    conn.setReadTimeout((int) requestTimeout.toMillis());
+
+    try {
+      conn.connect();
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to connect to the URL", e);
+    }
+
+    final Path parent;
+    parent = target.getParent();
+
+    try {
+      Files.createDirectories(parent);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to create parent directories", e);
+    }
+
+    try (InputStream in = conn.getInputStream()) {
+      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to write to target file", e);
+    }
+  }
+
   private Page newPage() {
     final Page page;
     page = browser.newPage();
@@ -2251,12 +2328,12 @@ final class CarbonPlex implements Css.Library {
     conn = url.openConnection();
 
     final Duration connectTimeout;
-    connectTimeout = options.httpConnectTimout.duration();
+    connectTimeout = options.httpConnectTimeout.duration();
 
     conn.setConnectTimeout((int) connectTimeout.toMillis());
 
     final Duration readTimeout;
-    readTimeout = options.httpRequestTimout.duration();
+    readTimeout = options.httpRequestTimeout.duration();
 
     conn.setReadTimeout((int) readTimeout.toMillis());
 

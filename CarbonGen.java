@@ -27,10 +27,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -50,6 +53,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
@@ -59,13 +63,15 @@ final class XCarbonGen {
 
   private Browser browser;
 
-  private Clock clock;
+  private final Clock clock = Clock.systemDefaultZone();
 
   private final Set<String> colors = new HashSet<>();
 
   private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-  private Appendable logger;
+  private final Appendable logger = System.out;
+
+  private final Options options = new Options();
 
   private Playwright playwright;
 
@@ -101,17 +107,20 @@ final class XCarbonGen {
     startTime = System.currentTimeMillis();
 
     try {
-      final Options options;
-      options = options(args);
+      options.parse(args);
 
-      init(options);
+      init();
 
       if (!options.cdsSkip.bool()) {
-        cds(options);
+        cds();
       }
 
       if (!options.c4pSkip.bool()) {
-        c4p(options);
+        c4p();
+      }
+
+      if (!options.plexSkip.bool()) {
+        plex();
       }
     } finally {
       if (playwright != null) {
@@ -133,7 +142,7 @@ final class XCarbonGen {
   // # BEGIN: Options
   // ##################################################################
 
-  private static final class Option {
+  static final class Option {
 
     enum Kind {
 
@@ -194,12 +203,26 @@ final class XCarbonGen {
       return value(Kind.DURATION);
     }
 
-    final Path path() {
-      return value(Kind.PATH);
+    final Path path(Path basedir) {
+      final Path p;
+      p = value(Kind.PATH);
+
+      if (p.isAbsolute()) {
+        return p;
+      } else {
+        return basedir.resolve(p);
+      }
     }
 
     final String string() {
       return value(Kind.STRING);
+    }
+
+    final URI uri() {
+      final String location;
+      location = string();
+
+      return URI.create(location);
     }
 
     @SuppressWarnings("unchecked")
@@ -224,7 +247,7 @@ final class XCarbonGen {
   }
 
   // ad-hoc enum so instances can be GC'ed after use.
-  private class Options {
+  static final class Options {
 
     // these must come first
     final Map<String, Option> byName = new LinkedHashMap<>();
@@ -275,13 +298,29 @@ final class XCarbonGen {
       }
     });
 
-    final Option httpConnectTimout = duration("--http-connect-timeout", opt -> {
+    final Option plexSkip = bool("--plex-skip", opt -> {
+      if (opt.unset()) {
+        opt.set(Boolean.FALSE);
+      }
+    });
+
+    final Option plexSans = string("--plex-sans", opt -> {
+      if (opt.unset()) {
+        if (!plexSkip.bool()) {
+          throw new IllegalArgumentException("The option --plex-sans is required");
+        } else {
+          opt.set("");
+        }
+      }
+    });
+
+    final Option httpConnectTimeout = duration("--http-connect-timeout", opt -> {
       if (opt.unset()) {
         opt.set(Duration.ofSeconds(10));
       }
     });
 
-    final Option httpRequestTimout = duration("--http-request-timeout", opt -> {
+    final Option httpRequestTimeout = duration("--http-request-timeout", opt -> {
       if (opt.unset()) {
         opt.set(Duration.ofMinutes(1));
       }
@@ -290,10 +329,40 @@ final class XCarbonGen {
     final Option workdir = path("--workdir", opt -> {
       if (opt.unset()) {
         opt.set(
-            basedir.resolve("work/carbon-gen")
+            Path.of("work/carbon-gen")
         );
       }
     });
+
+    public final void parse(String... args) {
+      int idx;
+      idx = 0;
+
+      while (idx < args.length) {
+        final String name;
+        name = args[idx++];
+
+        final Option option;
+        option = byName.get(name);
+
+        if (option == null) {
+          throw new IllegalArgumentException("Unknown option " + name);
+        }
+
+        if (idx >= args.length) {
+          throw new IllegalArgumentException("No value for option " + name);
+        }
+
+        try {
+          final String rawValue;
+          rawValue = args[idx++];
+
+          option.parse("CLI", rawValue);
+        } catch (RuntimeException parseException) {
+          throw new UnsupportedOperationException("Implement me", parseException);
+        }
+      }
+    }
 
     final Iterable<Option> values() {
       return byName.values();
@@ -328,44 +397,6 @@ final class XCarbonGen {
 
   }
 
-  private Options options(String[] args) {
-    final Options options;
-    options = new Options();
-
-    int idx;
-    idx = 0;
-
-    while (idx < args.length) {
-      final String name;
-      name = args[idx++];
-
-      final Map<String, Option> byName;
-      byName = options.byName;
-
-      final Option option;
-      option = byName.get(name);
-
-      if (option == null) {
-        throw new IllegalArgumentException("Unknown option " + name);
-      }
-
-      if (idx >= args.length) {
-        throw new IllegalArgumentException("No value for option " + name);
-      }
-
-      try {
-        final String rawValue;
-        rawValue = args[idx++];
-
-        option.parse("CLI", rawValue);
-      } catch (RuntimeException parseException) {
-        throw new UnsupportedOperationException("Implement me", parseException);
-      }
-    }
-
-    return options;
-  }
-
   // ##################################################################
   // # END: Options
   // ##################################################################
@@ -374,17 +405,9 @@ final class XCarbonGen {
   // # BEGIN: Init
   // ##################################################################
 
-  private void init(Options options) {
+  private void init() {
     for (Option opt : options.values()) {
       opt.validate();
-    }
-
-    if (clock == null) {
-      clock = Clock.systemDefaultZone();
-    }
-
-    if (logger == null) {
-      logger = System.out;
     }
 
     logInfo("Objectos UI carbon-gen");
@@ -419,7 +442,7 @@ final class XCarbonGen {
   // # BEGIN: CDS
   // ##################################################################
 
-  private void cds(Options options) {
+  private void cds() {
     final Option iframe;
     iframe = options.cdsIframe;
 
@@ -430,7 +453,7 @@ final class XCarbonGen {
     iframeUri = URI.create(iframeLocation);
 
     final String html;
-    html = read(options, iframeUri, "carbon.html");
+    html = read(iframeUri, "carbon.html");
 
     final String cssPath;
     cssPath = cdsCssPath(html);
@@ -439,7 +462,7 @@ final class XCarbonGen {
     cssUri = resolveUri(options.cdsIframe, cssPath);
 
     final String cssSource;
-    cssSource = read(options, cssUri, "carbon.css");
+    cssSource = read(cssUri, "carbon.css");
 
     final CssResult cssResult;
     cssResult = css(
@@ -471,7 +494,7 @@ final class XCarbonGen {
     jsPath = cdsJsPath(html);
 
     final String cdsVersion;
-    cdsVersion = cdsJsVersion(options, jsPath);
+    cdsVersion = cdsJsVersion(jsPath);
 
     cdsWrite(cdsVersion, cssResult);
 
@@ -533,12 +556,12 @@ final class XCarbonGen {
     throw error("Could not find path for CDS JS file");
   }
 
-  private String cdsJsVersion(Options options, String pathJs) {
+  private String cdsJsVersion(String pathJs) {
     final URI uri;
     uri = resolveUri(options.cdsIframe, pathJs);
 
     final String s;
-    s = read(options, uri, "carbon.js");
+    s = read(uri, "carbon.js");
 
     int mark;
     mark = s.length() - 1;
@@ -742,7 +765,7 @@ final class XCarbonGen {
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      throw error("Failed to create directory for CarbonStyles.java", e);
+      throw error("Failed to create directory for CarbonStylesGenerated.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -901,7 +924,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // # BEGIN: C4P
   // ##################################################################
 
-  private void c4p(Options options) {
+  private void c4p() {
     final Option iframe;
     iframe = options.c4pIframe;
 
@@ -912,16 +935,16 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     iframeUri = URI.create(iframeLocation);
 
     final String html;
-    html = read(options, iframeUri, "c4p.html");
+    html = read(iframeUri, "c4p.html");
 
     final String jsPath;
     jsPath = c4pJsPath(html);
 
     final String version;
-    version = c4pJsVersion(options, jsPath);
+    version = c4pJsVersion(jsPath);
 
     final String cssSource;
-    cssSource = c4pCssSource(options);
+    cssSource = c4pCssSource();
 
     final CssResult cssResult;
     cssResult = css(
@@ -996,12 +1019,12 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // We're looking for:
   //
   // const y$e="Carbon for IBM Products",w$e="2.73.0-rc.0",x$e={description:y$e,version:w$e}
-  private String c4pJsVersion(Options options, String jsPath) {
+  private String c4pJsVersion(String jsPath) {
     final URI uri;
     uri = resolveUri(options.c4pIframe, jsPath);
 
     final String s;
-    s = read(options, uri, "c4p.js");
+    s = read(uri, "c4p.js");
 
     for (int idx = 0, len = s.length(); idx < len; idx++) {
       final char c;
@@ -1047,7 +1070,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     throw error("Failed to find C4P JS version");
   }
 
-  private String c4pCssSource(Options options) {
+  private String c4pCssSource() {
     try (Page page = newPage()) {
       final Option opt;
       opt = options.c4pIframe;
@@ -1935,8 +1958,315 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Plex
+  // ##################################################################
+
+  private record PlexCss(int weight, String value) implements Comparable<PlexCss> {
+    @Override
+    public final int compareTo(PlexCss o) {
+      return Integer.compare(weight, o.weight);
+    }
+  }
+
+  private enum PlexFamily {
+
+    SANS("ibm-plex-sans");
+
+    final String dir;
+
+    private PlexFamily(String dir) {
+      this.dir = dir;
+    }
+
+  }
+
+  private record PlexResult(PlexFamily family, Set<String> names, String css) {}
+
+  private void plex() {
+    final PlexResult sans;
+    sans = plex(PlexFamily.SANS, options.plexSans);
+
+    plexWrite(sans);
+  }
+
+  private PlexResult plex(PlexFamily family, Option option) {
+    // zip remote location
+    final String location;
+    location = option.string();
+
+    // local target file
+    final String dir;
+    dir = family.dir;
+
+    final Path targetDir;
+    targetDir = basedir.resolve("main-resources", dir);
+
+    createDirectories(targetDir);
+
+    final Path zip;
+    zip = resolveWork(dir + ".zip");
+
+    // download zip
+    downloadTo(location, zip);
+
+    final List<PlexCss> faces;
+    faces = new ArrayList<>();
+
+    final Set<String> names;
+    names = new HashSet<>();
+
+    // process zip
+    try (FileSystem fs = FileSystems.newFileSystem(zip)) {
+      final Path woff2;
+      woff2 = fs.getPath(dir, "fonts", "split", "woff2");
+
+      Files.walk(woff2).forEach(p -> {
+        final String fileName;
+        fileName = p.getFileName().toString();
+
+        if (fileName.endsWith(".woff2")) {
+          names.add(fileName);
+
+          final Path target;
+          target = targetDir.resolve(fileName);
+
+          copy(p, target);
+        }
+
+        else if (fileName.endsWith(".css")) {
+          final PlexCss parsed;
+          parsed = plexParse(p);
+
+          faces.add(parsed);
+        }
+      });
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    final String css;
+    css = faces.stream().sorted().map(x -> x.value).collect(Collectors.joining());
+
+    return new PlexResult(family, names, css);
+  }
+
+  private PlexCss plexParse(Path p) {
+    int weight;
+    weight = 0;
+
+    final StringBuilder sb;
+    sb = new StringBuilder();
+
+    final List<String> lines;
+    lines = readAllLines(p);
+
+    for (String line : lines) {
+      final String trimmed;
+      trimmed = line.strip();
+
+      if (trimmed.isEmpty()) {
+        continue;
+      }
+
+      final char first;
+      first = trimmed.charAt(0);
+
+      switch (first) {
+        case '/' -> {}
+
+        case '@', '}' -> {
+          sb.append(trimmed);
+          sb.append('\n');
+        }
+
+        case 'f' -> {
+          sb.append("  ");
+          sb.append(trimmed);
+          sb.append('\n');
+
+          if (weight != 0) {
+            break;
+          }
+
+          final int colon;
+          colon = trimmed.indexOf(':');
+
+          final String property;
+          property = trimmed.substring(0, colon);
+
+          if (!property.equals("font-weight")) {
+            break;
+          }
+
+          final int semi;
+          semi = trimmed.indexOf(';', colon);
+
+          final String value;
+          value = trimmed.substring(colon + 1, semi).strip();
+
+          weight = Integer.parseInt(value);
+        }
+
+        default -> {
+          sb.append("  ");
+          sb.append(trimmed);
+          sb.append('\n');
+        }
+      }
+    }
+
+    final String value;
+    value = sb.toString();
+
+    return new PlexCss(weight, value);
+  }
+
+  private void plexWrite(PlexResult... items) {
+    final Path path;
+    path = Path.of("main", "objectos", "ui", "CarbonPlex.java");
+
+    final Path file;
+    file = basedir.resolve(path);
+
+    final Path parent;
+    parent = file.getParent();
+
+    try {
+      Files.createDirectories(parent);
+    } catch (IOException e) {
+      throw error("Failed to create directory for CarbonPlex.java", e);
+    }
+
+    try (BufferedWriter w = Files.newBufferedWriter(
+        file, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+    )) {
+      w.write("""
+/*
+ * This file is part of Objectos UI.
+ * Copyright (C) 2025 Objectos Software LTDA.
+ *
+ * Objectos UI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Objectos UI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package objectos.ui;
+
+import objectos.way.Css;
+
+final class CarbonPlex implements Css.Library {
+
+  @Override
+  public final void configure(Css.Library.Options opts) {
+""");
+      for (PlexResult item : items) {
+        w.write("    opts.theme(\"\"\"\n");
+
+        final String css;
+        css = item.css;
+
+        final String formatted;
+        formatted = css.indent(4);
+
+        w.write(formatted);
+
+        w.write("    \"\"\");\n");
+      }
+
+      w.write("""
+  }
+
+}
+      """);
+
+    } catch (IOException e) {
+      throw error("Failed to generate CarbonPlex.java", e);
+    }
+  }
+
+  // ##################################################################
+  // # END: Plex
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: I/O
   // ##################################################################
+
+  private void copy(Path src, Path dest) {
+    try {
+      Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to copy a file", e);
+    }
+  }
+
+  private void createDirectories(Path dir) {
+    try {
+      Files.createDirectories(dir);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to create directory for " + dir.getFileName(), e);
+    }
+  }
+
+  private void downloadTo(String location, Path target) {
+    final URI uri;
+    uri = URI.create(location);
+
+    final URL url;
+
+    try {
+      url = uri.toURL();
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Failed to obtain an URL from URI", e);
+    }
+
+    final URLConnection conn;
+
+    try {
+      conn = url.openConnection();
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to open an URL connection", e);
+    }
+
+    final Duration connectTimeout;
+    connectTimeout = options.httpConnectTimeout.duration();
+
+    conn.setConnectTimeout((int) connectTimeout.toMillis());
+
+    final Duration requestTimeout;
+    requestTimeout = options.httpRequestTimeout.duration();
+
+    conn.setReadTimeout((int) requestTimeout.toMillis());
+
+    try {
+      conn.connect();
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to connect to the URL", e);
+    }
+
+    final Path parent;
+    parent = target.getParent();
+
+    try {
+      Files.createDirectories(parent);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to create parent directories", e);
+    }
+
+    try (InputStream in = conn.getInputStream()) {
+      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to write to target file", e);
+    }
+  }
 
   private Page newPage() {
     final Page page;
@@ -1947,43 +2277,20 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     return page;
   }
 
-  private String read(Options options, URI uri, String dest) {
-    final Path target;
-    target = resolveWork(options, dest);
-
-    return read(options, uri, target);
-  }
-
-  private String read(Options options, URI uri, Path target) {
+  private String read(URI uri, String dest) {
     try {
-      final URL url;
-      url = uri.toURL();
-
-      final URLConnection conn;
-      conn = url.openConnection();
-
-      final Duration connectTimeout;
-      connectTimeout = options.httpConnectTimout.duration();
-
-      conn.setConnectTimeout((int) connectTimeout.toMillis());
-
-      final Duration readTimeout;
-      readTimeout = options.httpRequestTimout.duration();
-
-      conn.setReadTimeout((int) readTimeout.toMillis());
-
-      conn.connect();
-
-      final Path parent;
-      parent = target.getParent();
-
-      Files.createDirectories(parent);
-
-      try (InputStream in = conn.getInputStream()) {
-        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-      }
+      final Path target;
+      target = write(uri, dest);
 
       return Files.readString(target, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private List<String> readAllLines(Path p) {
+    try {
+      return Files.readAllLines(p, StandardCharsets.UTF_8);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -1999,11 +2306,48 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     return uri.resolve(name);
   }
 
-  private Path resolveWork(Options options, String name) {
+  private Path resolveWork(String name) {
+    final Option option;
+    option = options.workdir;
+
     final Path workdir;
-    workdir = options.workdir.path();
+    workdir = option.path(basedir);
 
     return workdir.resolve(name);
+  }
+
+  private Path write(URI uri, String dest) throws IOException {
+    final Path target;
+    target = resolveWork(dest);
+
+    final URL url;
+    url = uri.toURL();
+
+    final URLConnection conn;
+    conn = url.openConnection();
+
+    final Duration connectTimeout;
+    connectTimeout = options.httpConnectTimeout.duration();
+
+    conn.setConnectTimeout((int) connectTimeout.toMillis());
+
+    final Duration readTimeout;
+    readTimeout = options.httpRequestTimeout.duration();
+
+    conn.setReadTimeout((int) readTimeout.toMillis());
+
+    conn.connect();
+
+    final Path parent;
+    parent = target.getParent();
+
+    Files.createDirectories(parent);
+
+    try (InputStream in = conn.getInputStream()) {
+      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    return target;
   }
 
   // ##################################################################
@@ -2044,11 +2388,11 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     }
   }
 
-  private RuntimeException error(String message) {
+  private static RuntimeException error(String message) {
     return new RuntimeException(message);
   }
 
-  private RuntimeException error(String message, IOException e) {
+  private static RuntimeException error(String message, IOException e) {
     return new UncheckedIOException(message, e);
   }
 
