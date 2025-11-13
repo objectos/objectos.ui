@@ -53,6 +53,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
@@ -1964,6 +1965,13 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // # BEGIN: Plex
   // ##################################################################
 
+  private record PlexCss(int weight, String value) implements Comparable<PlexCss> {
+    @Override
+    public final int compareTo(PlexCss o) {
+      return Integer.compare(weight, o.weight);
+    }
+  }
+
   private enum PlexFamily {
 
     SANS("ibm-plex-sans");
@@ -1976,11 +1984,16 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
 
   }
 
+  private record PlexResult(PlexFamily family, Set<String> names, String css) {}
+
   private void plex() {
-    plex(PlexFamily.SANS, options.plexSans);
+    final PlexResult sans;
+    sans = plex(PlexFamily.SANS, options.plexSans);
+
+    plexWrite(sans);
   }
 
-  private void plex(PlexFamily family, Option option) {
+  private PlexResult plex(PlexFamily family, Option option) {
     // zip remote location
     final String location;
     location = option.string();
@@ -1999,6 +2012,9 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
 
     // download zip
     wget.downloadTo(location, zip);
+
+    final List<PlexCss> faces;
+    faces = new ArrayList<>();
 
     final Set<String> names;
     names = new HashSet<>();
@@ -2020,9 +2036,135 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
 
           copy(p, target);
         }
+
+        else if (fileName.endsWith(".css")) {
+          final PlexCss parsed;
+          parsed = plexParse(p);
+
+          faces.add(parsed);
+        }
       });
     } catch (IOException e) {
       throw new UncheckedIOException(e);
+    }
+
+    final String css;
+    css = faces.stream().sorted().map(x -> x.value).collect(Collectors.joining());
+
+    return new PlexResult(family, names, css);
+  }
+
+  private PlexCss plexParse(Path p) {
+    int weight;
+    weight = 0;
+
+    final StringBuilder sb;
+    sb = new StringBuilder();
+
+    final List<String> lines;
+    lines = readAllLines(p);
+
+    for (String line : lines) {
+      final String trimmed;
+      trimmed = line.strip();
+
+      if (trimmed.isEmpty()) {
+        continue;
+      }
+
+      final char first;
+      first = trimmed.charAt(0);
+
+      switch (first) {
+        case '/' -> {}
+
+        case '@', '}' -> {
+          sb.append(trimmed);
+          sb.append('\n');
+        }
+
+        default -> {
+          sb.append("  ");
+          sb.append(trimmed);
+          sb.append('\n');
+        }
+      }
+    }
+
+    final String value;
+    value = sb.toString();
+
+    return new PlexCss(weight, value);
+  }
+
+  private void plexWrite(PlexResult... items) {
+    final Path path;
+    path = Path.of("main", "objectos", "ui", "CarbonPlex.java");
+
+    final Path file;
+    file = basedir.resolve(path);
+
+    final Path parent;
+    parent = file.getParent();
+
+    try {
+      Files.createDirectories(parent);
+    } catch (IOException e) {
+      throw error("Failed to create directory for CarbonPlex.java", e);
+    }
+
+    try (BufferedWriter w = Files.newBufferedWriter(
+        file, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
+    )) {
+      w.write("""
+/*
+ * This file is part of Objectos UI.
+ * Copyright (C) 2025 Objectos Software LTDA.
+ *
+ * Objectos UI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Objectos UI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package objectos.ui;
+
+import objectos.way.Css;
+
+final class CarbonPlex implements Css.Library {
+
+  @Override
+  public final void configure(Css.Library.Options opts) {
+""");
+      for (PlexResult item : items) {
+        w.write("    opts.theme(\"\"\"\n");
+
+        final String css;
+        css = item.css;
+
+        final String formatted;
+        formatted = css.indent(4);
+
+        w.write(formatted);
+
+        w.write("    \"\"\");\n");
+      }
+
+      w.write("""
+  }
+
+}
+      """);
+
+    } catch (IOException e) {
+      throw error("Failed to generate CarbonPlex.java", e);
     }
   }
 
@@ -2065,6 +2207,14 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
       target = write(uri, dest);
 
       return Files.readString(target, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private List<String> readAllLines(Path p) {
+    try {
+      return Files.readAllLines(p, StandardCharsets.UTF_8);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
