@@ -65,6 +65,11 @@ final class YProject implements Y.Project {
   }
 
   @Override
+  public final Path basedir() {
+    return basedir;
+  }
+
+  @Override
   public final void close() {
     if (server != null) {
       try {

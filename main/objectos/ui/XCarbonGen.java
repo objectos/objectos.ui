@@ -74,6 +74,8 @@ final class XCarbonGen {
 
   private Playwright playwright;
 
+  private XWget wget;
+
   XCarbonGen(Path basedir) {
     this.basedir = basedir.toAbsolutePath();
   }
@@ -215,6 +217,13 @@ final class XCarbonGen {
 
     final String string() {
       return value(Kind.STRING);
+    }
+
+    final URI uri() {
+      final String location;
+      location = string();
+
+      return URI.create(location);
     }
 
     @SuppressWarnings("unchecked")
@@ -424,6 +433,8 @@ final class XCarbonGen {
 
       browser = chromium.launch(launchOptions);
     }
+
+    wget = new XWget(options.httpConnectTimout.duration(), options.httpRequestTimout.duration());
   }
 
   // ##################################################################
@@ -1953,56 +1964,66 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // # BEGIN: Plex
   // ##################################################################
 
-  private void plex() {
-    plexSans();
-  }
+  private enum PlexFamily {
 
-  private void plexSans() {
-    final Path targetPath;
-    targetPath = Path.of("main-resources", "ibm-plex-sans");
+    SANS("ibm-plex-sans");
 
-    final Path targetDir;
-    targetDir = basedir.resolve(targetPath);
+    final String dir;
 
-    try {
-      Files.createDirectories(targetDir);
-    } catch (IOException e) {
-      throw error("Failed to create directory for ibm-plex-sans", e);
+    private PlexFamily(String dir) {
+      this.dir = dir;
     }
 
-    final Path zipPath;
-    zipPath = write(options.plexSans, "ibm-plex-sans.zip");
+  }
 
-    try (FileSystem plexSans = FileSystems.newFileSystem(zipPath)) {
+  private void plex() {
+    plex(PlexFamily.SANS, options.plexSans);
+  }
+
+  private void plex(PlexFamily family, Option option) {
+    // zip remote location
+    final String location;
+    location = option.string();
+
+    // local target file
+    final String dir;
+    dir = family.dir;
+
+    final Path targetDir;
+    targetDir = basedir.resolve("main-resources", dir);
+
+    createDirectories(targetDir);
+
+    final Path zip;
+    zip = resolveWork(dir + ".zip");
+
+    // download zip
+    wget.downloadTo(location, zip);
+
+    final Set<String> names;
+    names = new HashSet<>();
+
+    // process zip
+    try (FileSystem fs = FileSystems.newFileSystem(zip)) {
       final Path woff2;
-      woff2 = plexSans.getPath("ibm-plex-sans", "fonts", "split", "woff2");
+      woff2 = fs.getPath(dir, "fonts", "split", "woff2");
 
-      Files.walk(woff2).filter(p -> woff2(p)).forEach(p -> {
-        try {
-          final String fileName;
-          fileName = p.getFileName().toString();
+      Files.walk(woff2).forEach(p -> {
+        final String fileName;
+        fileName = p.getFileName().toString();
+
+        if (fileName.endsWith(".woff2")) {
+          names.add(fileName);
 
           final Path target;
           target = targetDir.resolve(fileName);
 
-          Files.copy(p, target);
-        } catch (IOException e) {
-          throw new UncheckedIOException(e);
+          copy(p, target);
         }
       });
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  private boolean woff2(Path p) {
-    final Path fileName;
-    fileName = p.getFileName();
-
-    final String name;
-    name = fileName.toString();
-
-    return name.endsWith(".woff2");
   }
 
   // ##################################################################
@@ -2012,6 +2033,22 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
   // ##################################################################
   // # BEGIN: I/O
   // ##################################################################
+
+  private void copy(Path src, Path dest) {
+    try {
+      Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to copy a file", e);
+    }
+  }
+
+  private void createDirectories(Path dir) {
+    try {
+      Files.createDirectories(dir);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to create directory for " + dir.getFileName(), e);
+    }
+  }
 
   private Page newPage() {
     final Page page;
@@ -2051,20 +2088,6 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     workdir = option.path(basedir);
 
     return workdir.resolve(name);
-  }
-
-  private Path write(Option opt, String dest) {
-    try {
-      final String location;
-      location = opt.string();
-
-      final URI uri;
-      uri = URI.create(location);
-
-      return write(uri, dest);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
   }
 
   private Path write(URI uri, String dest) throws IOException {
@@ -2139,11 +2162,11 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     }
   }
 
-  private RuntimeException error(String message) {
+  private static RuntimeException error(String message) {
     return new RuntimeException(message);
   }
 
-  private RuntimeException error(String message, IOException e) {
+  private static RuntimeException error(String message, IOException e) {
     return new UncheckedIOException(message, e);
   }
 

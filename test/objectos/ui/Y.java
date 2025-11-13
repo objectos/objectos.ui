@@ -304,6 +304,8 @@ public final class Y implements ISuiteListener {
       return Files.exists(maybe);
     }
 
+    Path basedir();
+
     Path resolve(String relativePath);
 
     URI resolveWeb(String relativePath);
