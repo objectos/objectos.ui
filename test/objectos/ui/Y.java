@@ -70,7 +70,7 @@ public final class Y implements ISuiteListener {
     private static NextPath create() {
       try {
         final Path root;
-        root = Files.createTempDirectory("objectos-start-testing-");
+        root = Files.createTempDirectory("objectos-ui-testing-");
 
         final NextPath nextPath;
         nextPath = new NextPath(root);

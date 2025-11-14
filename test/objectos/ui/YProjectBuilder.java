@@ -110,7 +110,7 @@ final class YProjectBuilder implements Y.Project.Options {
         opts.bufferSize(8192, 8192);
 
         opts.handler(Http.Handler.of(routing -> {
-          routing.path("/{}", webResources::handlePath);
+          routing.handler(webResources);
 
           routing.handler(Http.Handler.notFound());
         }));
