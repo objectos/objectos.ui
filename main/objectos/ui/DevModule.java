@@ -23,6 +23,7 @@ import objectos.way.App;
 import objectos.way.Http;
 import objectos.way.Media;
 import objectos.way.Script;
+import objectos.way.Web;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
@@ -51,6 +52,11 @@ public class DevModule implements Http.Routing.Module {
     routing.path("/dev-stop", path -> {
       path.allow(Http.Method.GET, http -> http.ok(Media.Bytes.textPlain("ok\n")));
     });
+
+    final Web.Resources webResources;
+    webResources = injector.getInstance(Web.Resources.class);
+
+    routing.handler(webResources);
 
     routing.handler(Http.Handler.notFound());
   }

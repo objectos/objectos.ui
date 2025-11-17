@@ -146,6 +146,10 @@ public final class DevStart extends App.Bootstrap {
     try {
       webResources = Web.Resources.create(opts -> {
         opts.include(plex);
+
+        opts.contentTypes("""
+        .woff2: font/woff2
+        """);
       });
     } catch (IOException e) {
       throw App.serviceFailed("Web.Resources", e);

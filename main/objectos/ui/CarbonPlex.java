@@ -18,7 +18,6 @@
 package objectos.ui;
 
 import java.util.Objects;
-import objectos.ui.Carbon.Plex;
 import objectos.way.Css;
 import objectos.way.Web;
 
@@ -33,7 +32,7 @@ final class CarbonPlex extends CarbonPlexGenerated implements Carbon.Plex {
       prefix = Objects.requireNonNull(value);
     }
 
-    final Plex build() {
+    final Carbon.Plex build() {
       return new CarbonPlex(prefix);
     }
 
@@ -46,6 +45,12 @@ final class CarbonPlex extends CarbonPlexGenerated implements Carbon.Plex {
   @Override
   public final void configure(Css.Library.Options opts) {
     sans(opts);
+
+    opts.theme("""
+    :root {
+      --default-font-family: 'IBM Plex Sans', var(--font-sans, initial);
+    }
+    """);
   }
 
   @Override

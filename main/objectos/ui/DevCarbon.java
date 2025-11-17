@@ -50,8 +50,6 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     carbon.subpath("/textinput/{id}/{theme}", GET, this::textInput);
 
     carbon.subpath("/styles.css", GET, this::styles);
-
-    carbon.handler(Http.Handler.notFound());
   }
 
   static final Html.Id BTN = Html.Id.of("btn");
