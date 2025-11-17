@@ -68,6 +68,9 @@ COMPILE_DEPS += $(PLAYWRIGHT)
 COMPILE_OPTS := --add-modules playwright
 COMPILE_OPTS += --add-reads objectos.ui=playwright
 
+## resources
+RESOURCES := main-resources
+
 include make/java-compile.mk
 
 #

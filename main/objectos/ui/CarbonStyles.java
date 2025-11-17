@@ -19,7 +19,7 @@ package objectos.ui;
 
 import objectos.way.Css;
 
-final class CarbonStyles extends CarbonStylesGenerated {
+final class CarbonStyles extends CarbonStylesGenerated implements Carbon.Styles {
 
   @Override
   public final void configure(Css.Library.Options opts) {

@@ -20,12 +20,18 @@ package objectos.ui;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import objectos.way.App;
+import objectos.way.Css;
 import objectos.way.Http;
+import objectos.way.Lang;
 import objectos.way.Note;
+import objectos.way.Web;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
 public final class DevStart extends App.Bootstrap {
+
+  static final Lang.Key<Css.Library> CARBON_PLEX = Lang.Key.of("Carbon.Plex");
+  static final Lang.Key<Css.Library> CARBON_STYLES = Lang.Key.of("Carbon.Styles");
 
   public static final int TESTING_HTTP_PORT = 8007;
 
@@ -119,6 +125,35 @@ public final class DevStart extends App.Bootstrap {
     shutdownHook.registerIfPossible(noteSink);
 
     ctx.putInstance(App.ShutdownHook.class, shutdownHook);
+
+    // Carbon.Styles
+    final Carbon.Styles carbon;
+    carbon = Carbon.Styles.create();
+
+    ctx.putInstance(CARBON_STYLES, carbon);
+
+    // Carbon.Plex
+    final Carbon.Plex plex;
+    plex = Carbon.Plex.create(opts -> {
+      opts.prefix("/carbon/fonts");
+    });
+
+    ctx.putInstance(CARBON_PLEX, plex);
+
+    // Web.Resources
+    final Web.Resources webResources;
+
+    try {
+      webResources = Web.Resources.create(opts -> {
+        opts.include(plex);
+      });
+    } catch (IOException e) {
+      throw App.serviceFailed("Web.Resources", e);
+    }
+
+    shutdownHook.register(webResources);
+
+    ctx.putInstance(Web.Resources.class, webResources);
   }
 
   private record Reloader(App.Injector injector) implements App.Reloader.HandlerFactory {

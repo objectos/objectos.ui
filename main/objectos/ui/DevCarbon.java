@@ -415,7 +415,15 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
       opts.scanDirectory(classOutput);
 
-      Carbon.configureStyleSheet(opts);
+      final Css.Library styles;
+      styles = injector.getInstance(DevStart.CARBON_STYLES);
+
+      opts.include(styles);
+
+      final Css.Library plex;
+      plex = injector.getInstance(DevStart.CARBON_PLEX);
+
+      opts.include(plex);
     }));
   }
 

@@ -17,10 +17,27 @@
  */
 package objectos.ui;
 
+import java.util.Objects;
+import objectos.ui.Carbon.Plex;
 import objectos.way.Css;
 import objectos.way.Web;
 
-final class CarbonPlex extends CarbonPlexGenerated {
+final class CarbonPlex extends CarbonPlexGenerated implements Carbon.Plex {
+
+  static final class Builder implements Carbon.Plex.Options {
+
+    private String prefix = "/fonts";
+
+    @Override
+    public final void prefix(String value) {
+      prefix = Objects.requireNonNull(value);
+    }
+
+    final Plex build() {
+      return new CarbonPlex(prefix);
+    }
+
+  }
 
   CarbonPlex(String prefix) {
     super(prefix);

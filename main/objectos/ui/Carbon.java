@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import objectos.way.Css;
 import objectos.way.Html;
 import objectos.way.Script;
+import objectos.way.Web;
 
 /// The **Objectos Carbon** main class.
 /// Objectos Carbon is an implementation of IBM's Carbon Design System for Objectos Way applications.
@@ -295,6 +296,46 @@ public final class Carbon {
   // ##################################################################
 
   // ##################################################################
+  // # BEGIN: Plex
+  // ##################################################################
+
+  /// Provides the IBM Plex font family.
+  public sealed interface Plex
+      extends Css.Library, Web.Resources.Library
+      permits CarbonPlex {
+
+    /// Configures the creation of a `Plex` instance.
+    sealed interface Options permits CarbonPlex.Builder {
+
+      /// Sets the path prefix on which to serve the font files.
+      /// The prefix value must start with a '/' character and it must not end with a '/' character.
+      ///
+      /// @param value the path prefix
+      void prefix(String value);
+
+    }
+
+    /// Creates a new `Plex` instance with the specified options.
+    ///
+    /// @param options allows for setting the options
+    ///
+    /// @return a new `Plex` instance
+    static Plex create(Consumer<? super Options> options) {
+      final CarbonPlex.Builder builder;
+      builder = new CarbonPlex.Builder();
+
+      options.accept(builder);
+
+      return builder.build();
+    }
+
+  }
+
+  // ##################################################################
+  // # END: Plex
+  // ##################################################################
+
+  // ##################################################################
   // # BEGIN: Spacing
   // ##################################################################
 
@@ -394,6 +435,26 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Stack
+  // ##################################################################
+
+  // ##################################################################
+  // # BEGIN: Styles
+  // ##################################################################
+
+  /// Provides the Objectos Carbon `Css.StyleSheet` configuration.
+  public sealed interface Styles extends Css.Library permits CarbonStyles {
+
+    /// Creates a new `Styles` instance with the default options.
+    ///
+    /// @return a new `Styles` instance.
+    static Styles create() {
+      return new CarbonStyles();
+    }
+
+  }
+
+  // ##################################################################
+  // # END: Styles
   // ##################################################################
 
   // ##################################################################
@@ -568,11 +629,5 @@ public final class Carbon {
   // ##################################################################
   // # END: Theme
   // ##################################################################
-
-  public static void configureStyleSheet(Css.StyleSheet.Options opts) {
-    opts.include(
-        new CarbonStyles()
-    );
-  }
 
 }
