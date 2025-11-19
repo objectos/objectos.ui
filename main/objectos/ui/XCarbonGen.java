@@ -2161,7 +2161,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
 
   private void plexWrite(PlexResult... items) {
     final Path path;
-    path = Path.of("main", "objectos", "ui", "CarbonPlexGenerated.java");
+    path = Path.of("main", "objectos", "ui", "impl", "CarbonPlexGenerated.java");
 
     final Path file;
     file = basedir.resolve(path);
@@ -2196,7 +2196,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

@@ -133,8 +133,8 @@ public final class DevStart extends App.Bootstrap {
     ctx.putInstance(CARBON_STYLES, carbon);
 
     // Carbon.Plex
-    final Carbon.Plex plex;
-    plex = Carbon.Plex.create(opts -> {
+    final Plex plex;
+    plex = Plex.create(opts -> {
       opts.prefix("/carbon/fonts");
     });
 

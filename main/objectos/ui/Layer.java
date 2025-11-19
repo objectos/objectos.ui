@@ -34,6 +34,11 @@ public sealed interface Layer extends Html.Component permits CarbonLayer {
 
   }
 
+  /// Creates a new layer with the specified options.
+  ///
+  /// @param layer allows for setting the options
+  ///
+  /// @return a newly created layer with the specified options
   static Layer create(Consumer<? super Options> layer) {
     final CarbonLayer pojo;
     pojo = new CarbonLayer();

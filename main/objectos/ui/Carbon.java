@@ -26,7 +26,6 @@ import objectos.ui.impl.CarbonTextInput;
 import objectos.way.Css;
 import objectos.way.Html;
 import objectos.way.Script;
-import objectos.way.Web;
 
 /// The **Objectos Carbon** main class.
 /// Objectos Carbon is an implementation of IBM's Carbon Design System for Objectos Way applications.
@@ -174,46 +173,6 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Page
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Plex
-  // ##################################################################
-
-  /// Provides the IBM Plex font family.
-  public sealed interface Plex
-      extends Css.Library, Web.Resources.Library
-      permits CarbonPlex {
-
-    /// Configures the creation of a `Plex` instance.
-    sealed interface Options permits CarbonPlex.Builder {
-
-      /// Sets the path prefix on which to serve the font files.
-      /// The prefix value must start with a '/' character and it must not end with a '/' character.
-      ///
-      /// @param value the path prefix
-      void prefix(String value);
-
-    }
-
-    /// Creates a new `Plex` instance with the specified options.
-    ///
-    /// @param options allows for setting the options
-    ///
-    /// @return a new `Plex` instance
-    static Plex create(Consumer<? super Options> options) {
-      final CarbonPlex.Builder builder;
-      builder = new CarbonPlex.Builder();
-
-      options.accept(builder);
-
-      return builder.build();
-    }
-
-  }
-
-  // ##################################################################
-  // # END: Plex
   // ##################################################################
 
   // ##################################################################

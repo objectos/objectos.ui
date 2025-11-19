@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
-import java.util.Objects;
-import objectos.way.Css;
-import objectos.way.Web;
+import module java.base;
+import module objectos.way;
+import module objectos.ui;
 
-final class CarbonPlex extends CarbonPlexGenerated implements Carbon.Plex {
+public final class CarbonPlex extends CarbonPlexGenerated implements Plex {
 
-  static final class Builder implements Carbon.Plex.Options {
+  public static final class Builder implements Plex.Options {
 
     private String prefix = "/fonts";
 
@@ -32,13 +32,13 @@ final class CarbonPlex extends CarbonPlexGenerated implements Carbon.Plex {
       prefix = Objects.requireNonNull(value);
     }
 
-    final Carbon.Plex build() {
+    public final Plex build() {
       return new CarbonPlex(prefix);
     }
 
   }
 
-  CarbonPlex(String prefix) {
+  public CarbonPlex(String prefix) {
     super(prefix);
   }
 

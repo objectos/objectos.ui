@@ -59,14 +59,14 @@ public sealed interface Button extends Html.Component permits CarbonButton {
 
   /// Creates a new button with the specified options.
   ///
-  /// @param button allows for setting the options
+  /// @param btn allows for setting the options
   ///
   /// @return a newly created button with the specified options
-  static Button create(Consumer<? super Options> button) {
+  static Button create(Consumer<? super Options> btn) {
     final CarbonButton pojo;
     pojo = new CarbonButton();
 
-    button.accept(pojo);
+    btn.accept(pojo);
 
     return pojo;
   }

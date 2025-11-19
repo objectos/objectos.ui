@@ -106,7 +106,7 @@ public class XCarbonGenTest {
       );
 
       final Path generatedFile;
-      generatedFile = proj.resolve("main/objectos/ui/CarbonPlexGenerated.java");
+      generatedFile = proj.resolve("main/objectos/ui/impl/CarbonPlexGenerated.java");
 
       assertEquals(
           Files.readString(generatedFile),
@@ -129,7 +129,7 @@ public class XCarbonGenTest {
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
