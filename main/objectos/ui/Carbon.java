@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 import objectos.ui.impl.CarbonButton;
 import objectos.ui.impl.CarbonFormGroup;
 import objectos.ui.impl.CarbonIcon;
-import objectos.ui.impl.CarbonLayer;
 import objectos.ui.impl.CarbonTearsheet;
 import objectos.ui.impl.CarbonTextInput;
 import objectos.way.Css;
@@ -128,33 +127,6 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Icon
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Layer
-  // ##################################################################
-
-  /// Configures the creation of a layer.
-  public sealed interface Layer permits CarbonLayer {
-
-    /// Adds a child component to the end of this layer.
-    ///
-    /// @param value the child component
-    void add(Html.Component value);
-
-  }
-
-  public static Html.Component layer(Consumer<? super Layer> layer) {
-    final CarbonLayer pojo;
-    pojo = new CarbonLayer();
-
-    layer.accept(pojo);
-
-    return pojo;
-  }
-
-  // ##################################################################
-  // # END: Layer
   // ##################################################################
 
   // ##################################################################

@@ -17,13 +17,11 @@
  */
 package objectos.ui.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import objectos.ui.Carbon;
-import objectos.way.Html;
+import module java.base;
+import module objectos.way;
+import module objectos.ui;
 
-public final class CarbonLayer extends CarbonComponent implements Carbon.Layer {
+public final class CarbonLayer extends CarbonComponent implements Layer, Layer.Options {
 
   static final Html.ClassName LAYER_0 = Html.ClassName.of("carbon-layer-0");
   static final Html.ClassName LAYER_1 = Html.ClassName.of("carbon-layer-1");

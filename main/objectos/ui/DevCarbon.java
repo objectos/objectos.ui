@@ -19,15 +19,9 @@ package objectos.ui;
 
 import static objectos.way.Http.Method.GET;
 
-import java.nio.file.Path;
-import java.util.function.Consumer;
+import module java.base;
+import module objectos.way;
 import objectos.ui.impl.CarbonTheme;
-import objectos.way.App;
-import objectos.way.Css;
-import objectos.way.Html;
-import objectos.way.Http;
-import objectos.way.Note;
-import objectos.way.Script;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
@@ -176,10 +170,10 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
             m.c(test),
 
-            m.c(Carbon.layer(l1 -> {
+            m.c(Layer.create(l1 -> {
               l1.add(test);
 
-              l1.add(Carbon.layer(l2 -> {
+              l1.add(Layer.create(l2 -> {
                 l2.add(test);
               }));
             })),
