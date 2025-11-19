@@ -128,7 +128,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Form Group - Default",
 
-          Carbon.formGroup(g -> {
+          FormGroup.create(g -> {
             g.css("""
             display:flex
             flex-direction:column
@@ -265,7 +265,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
                   m.h3("Main content heading"),
 
-                  m.c(Carbon.formGroup(g -> {
+                  m.c(FormGroup.create(g -> {
                     g.css("""
                     display:flex
                     flex-direction:column

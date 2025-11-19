@@ -19,7 +19,6 @@ package objectos.ui;
 
 import java.util.function.Consumer;
 import objectos.ui.impl.CarbonButton;
-import objectos.ui.impl.CarbonFormGroup;
 import objectos.ui.impl.CarbonIcon;
 import objectos.ui.impl.CarbonTearsheet;
 import objectos.ui.impl.CarbonTextInput;
@@ -34,53 +33,8 @@ public final class Carbon {
   private Carbon() {}
 
   // ##################################################################
-  // # BEGIN: Form
-  // ##################################################################
-
-  sealed interface FormBuilder {
-
-    void add(Html.Component value);
-
-    /// Adds a text input with the specified options.
-    /// @param textInput allows for setting the text input options
-    default void textInput(Consumer<? super TextInput> textInput) {
-      add(Carbon.textInput(textInput));
-    }
-
-  }
-
-  // ##################################################################
-  // # END: Form
-  // ##################################################################
-
-  // ##################################################################
   // # BEGIN: Form Group
   // ##################################################################
-
-  /// Configures the creation of a form group.
-  public sealed interface FormGroup extends FormBuilder permits CarbonFormGroup {
-
-    /// Adds the specified component to the form group.
-    /// @param value the component to add
-    @Override
-    void add(Html.Component value);
-
-    /// Class name to be applied to the `fieldset` element.
-    /// @param value the class name
-    void css(String value);
-
-    void legendText(String value);
-
-  }
-
-  public static Html.Component formGroup(Consumer<? super FormGroup> group) {
-    final CarbonFormGroup pojo;
-    pojo = new CarbonFormGroup();
-
-    group.accept(pojo);
-
-    return pojo;
-  }
 
   // ##################################################################
   // # END: Form Group

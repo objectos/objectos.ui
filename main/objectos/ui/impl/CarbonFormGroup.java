@@ -20,10 +20,10 @@ package objectos.ui.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import objectos.ui.Carbon;
+import objectos.ui.FormGroup;
 import objectos.way.Html;
 
-public final class CarbonFormGroup extends CarbonComponent implements Carbon.FormGroup {
+public final class CarbonFormGroup extends CarbonComponent implements FormGroup, FormGroup.Options {
 
   private List<Html.Component> components = List.of();
 
