@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.util.Objects;
+import objectos.ui.Carbon;
 import objectos.way.Html;
 
-final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput {
+public final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput {
 
   private boolean focus;
 

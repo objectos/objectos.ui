@@ -17,6 +17,13 @@
  */
 package objectos.ui;
 
+import objectos.ui.impl.CarbonButton;
+import objectos.ui.impl.CarbonButtonKind;
+import objectos.ui.impl.CarbonButtonSize;
+import objectos.ui.impl.CarbonFormGroup;
+import objectos.ui.impl.CarbonLayer;
+import objectos.ui.impl.CarbonTearsheet;
+import objectos.ui.impl.CarbonTextInput;
 import objectos.way.Css;
 
 final class CarbonStyles extends CarbonStylesGenerated implements Carbon.Styles {
@@ -27,6 +34,8 @@ final class CarbonStyles extends CarbonStylesGenerated implements Carbon.Styles 
 
     opts.scanClasses(
         CarbonButton.class,
+        CarbonButtonKind.class,
+        CarbonButtonSize.class,
         CarbonFormGroup.class,
         CarbonLayer.class,
         CarbonPage.class,

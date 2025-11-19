@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.List;
 import java.util.Objects;
+import objectos.ui.impl.CarbonComponent;
 import objectos.way.Html;
 
 final class CarbonStack extends CarbonComponent implements Carbon.Stack {

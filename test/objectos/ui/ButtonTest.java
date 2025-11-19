@@ -23,7 +23,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(Y.class)
-public class CarbonButtonTest extends CarbonTest {
+public class ButtonTest extends CarbonTest {
 
   private final List<Html.Id> buttons = List.of(
       DevCarbon.BTN,

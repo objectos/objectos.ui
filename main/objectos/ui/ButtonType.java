@@ -17,22 +17,18 @@
  */
 package objectos.ui;
 
-import objectos.way.Html;
+import objectos.ui.impl.CarbonButtonType;
 
-final class CarbonMarkup extends Html.Markup.OfHtml {
+/// Represents a value of the `<button>` element `type` attribute.
+public sealed interface ButtonType permits CarbonButtonType {
 
-  private int id;
+  /// The `button` button type.
+  ButtonType BUTTON = CarbonButtonType.BUTTON;
 
-  private int layer;
+  /// The `reset` button type.
+  ButtonType RESET = CarbonButtonType.RESET;
 
-  CarbonMarkup() {}
-
-  public final String nextId() {
-    return "id-" + ++id;
-  }
-
-  public final int nextLayer() {
-    return ++layer;
-  }
+  /// The `submit` button type.
+  ButtonType SUBMIT = CarbonButtonType.SUBMIT;
 
 }

@@ -15,14 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import objectos.ui.Carbon;
 import objectos.way.Html;
 
-final class CarbonFormGroup extends CarbonComponent implements Carbon.FormGroup {
+public final class CarbonFormGroup extends CarbonComponent implements Carbon.FormGroup {
 
   private List<Html.Component> components = List.of();
 

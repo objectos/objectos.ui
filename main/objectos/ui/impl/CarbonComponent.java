@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import objectos.way.Html;
 
-abstract class CarbonComponent implements Html.Component {
+public abstract class CarbonComponent implements Html.Component {
 
   enum MessageLevel {
     NONE,

@@ -66,7 +66,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Button - Default",
 
-          button(Carbon.Button.PRIMARY)
+          button(ButtonKind.PRIMARY)
       );
 
       case "secondary" -> ok(
@@ -74,7 +74,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Button - Secondary",
 
-          button(Carbon.Button.SECONDARY)
+          button(ButtonKind.SECONDARY)
       );
 
       case "ghost" -> ok(
@@ -82,46 +82,46 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Button - Ghost",
 
-          button(Carbon.Button.GHOST)
+          button(ButtonKind.GHOST)
       );
     }
   }
 
-  private Html.Component button(Carbon.Button.Kind kind) {
+  private Html.Component button(ButtonKind kind) {
     return Carbon.stack(
         Carbon.SPACING_04,
 
-        Carbon.button(b -> {
+        Button.create(b -> {
           b.id(BTN);
           b.kind(kind);
           b.text("Button");
         }),
 
-        Carbon.button(b -> {
+        Button.create(b -> {
           b.id(BTN_SM);
           b.kind(kind);
-          b.size(Carbon.Button.SM);
+          b.size(ButtonSize.SM);
           b.text("Button");
         }),
 
-        Carbon.button(b -> {
+        Button.create(b -> {
           b.id(BTN_MD);
           b.kind(kind);
-          b.size(Carbon.Button.MD);
+          b.size(ButtonSize.MD);
           b.text("Button");
         }),
 
-        Carbon.button(b -> {
+        Button.create(b -> {
           b.id(BTN_XL);
           b.kind(kind);
-          b.size(Carbon.Button.XL);
+          b.size(ButtonSize.XL);
           b.text("Button");
         }),
 
-        Carbon.button(b -> {
+        Button.create(b -> {
           b.id(BTN_X2L);
           b.kind(kind);
-          b.size(Carbon.Button.X2L);
+          b.size(ButtonSize.X2);
           b.text("Button");
         })
     );
@@ -248,7 +248,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
         page.title("Tearsheet - Default");
 
         page.main(
-            Carbon.button(b -> {
+            Button.create(b -> {
               b.dataOnClick(Carbon.Tearsheet.openAction(TEARSHEET));
               b.text("Open Tearsheet");
             }),
@@ -295,17 +295,17 @@ public final class DevCarbon implements Http.RoutingPath.Module {
               t.actions(
                   a -> {
                     a.dataOnClick(Carbon.Tearsheet.close(TEARSHEET));
-                    a.kind(Carbon.Button.GHOST);
+                    a.kind(ButtonKind.GHOST);
                     a.text("Cancel");
                   },
 
                   a -> {
-                    a.kind(Carbon.Button.SECONDARY);
+                    a.kind(ButtonKind.SECONDARY);
                     a.text("Back");
                   },
 
                   a -> {
-                    a.kind(Carbon.Button.PRIMARY);
+                    a.kind(ButtonKind.PRIMARY);
                     a.text("Replace");
                   }
               );

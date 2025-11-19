@@ -15,18 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
+import objectos.ui.Carbon;
 import objectos.way.Css;
 import objectos.way.Html;
 import objectos.way.Script;
 
-final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet, Html.Component {
+public final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet, Html.Component {
 
   enum Kind {
     NARROW,
@@ -409,7 +410,7 @@ final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet,
         style = style.narrow();
       }
 
-      next.size(CarbonButton.Size.NOOP);
+      next.size(CarbonButtonSize.NOOP);
 
       next.internalStyle(style);
 
