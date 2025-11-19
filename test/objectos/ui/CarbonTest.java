@@ -21,6 +21,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
+import objectos.ui.impl.CarbonTheme;
 import objectos.way.Html;
 import objectos.way.Http;
 import org.testng.annotations.DataProvider;
@@ -37,8 +38,8 @@ public abstract class CarbonTest {
   private static final Set<CarbonTheme> THEMES = EnumSet.allOf(CarbonTheme.class);
 
   @DataProvider
-  public final Iterator<Carbon.Theme> themes() {
-    return THEMES.stream().map(Carbon.Theme.class::cast).iterator();
+  public final Iterator<Theme> themes() {
+    return THEMES.stream().map(Theme.class::cast).iterator();
   }
 
   static Html.Component page(Http.Exchange http, Consumer<? super Carbon.Page> more) {
@@ -54,11 +55,11 @@ public abstract class CarbonTest {
     });
   }
 
-  private static Carbon.Theme theme(Http.Exchange http) {
+  private static Theme theme(Http.Exchange http) {
     final String themeName;
     themeName = http.pathParam("theme");
 
-    return Carbon.Theme.of(themeName);
+    return Theme.of(themeName);
   }
 
 }

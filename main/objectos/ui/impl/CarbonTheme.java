@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import java.util.Locale;
+import objectos.ui.Theme;
 
-@Listeners(Y.class)
-public class CarbonPageTest extends CarbonTest {
+public enum CarbonTheme implements Theme {
 
-  @Test(dataProvider = "themes")
-  public void testCase01(Theme theme) {
-    try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/page", theme);
+  WHITE,
 
-      tab.screenshot();
-    }
-  }
+  G10,
+
+  G90,
+
+  G100;
+
+  public final String className = "carbon-" + name().toLowerCase(Locale.US);
 
 }

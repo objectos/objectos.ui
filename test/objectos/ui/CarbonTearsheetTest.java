@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 public class CarbonTearsheetTest extends CarbonTest {
 
   @Test(enabled = false)
-  public void testCase01(Carbon.Theme theme, Y.ScreenSize screen) {
+  public void testCase01(Theme theme, Y.ScreenSize screen) {
     try (Y.Tab tab = Y.tabDev(screen)) {
       tab.navigate("/carbon/tearsheet/tc01", theme);
 

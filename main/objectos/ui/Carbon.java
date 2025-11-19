@@ -17,7 +17,6 @@
  */
 package objectos.ui;
 
-import java.util.Locale;
 import java.util.function.Consumer;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -601,33 +600,6 @@ public final class Carbon {
 
   // ##################################################################
   // # END: TextInput
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Theme
-  // ##################################################################
-
-  public sealed interface Theme permits CarbonTheme {
-
-    Theme WHITE = CarbonTheme.WHITE;
-
-    Theme G10 = CarbonTheme.G10;
-
-    Theme G90 = CarbonTheme.G90;
-
-    Theme G100 = CarbonTheme.G100;
-
-    static Theme of(String name) {
-      final String upper;
-      upper = name.toUpperCase(Locale.US);
-
-      return CarbonTheme.valueOf(upper);
-    }
-
-  }
-
-  // ##################################################################
-  // # END: Theme
   // ##################################################################
 
 }

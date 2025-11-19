@@ -18,17 +18,34 @@
 package objectos.ui;
 
 import java.util.Locale;
+import objectos.ui.impl.CarbonTheme;
 
-enum CarbonTheme implements Carbon.Theme {
+/// A theme provides a set of pre-defined colors and styles.
+public sealed interface Theme permits CarbonTheme {
 
-  WHITE,
+  /// The White theme.
+  Theme WHITE = CarbonTheme.WHITE;
 
-  G10,
+  /// The Gray 10 theme.
+  Theme G10 = CarbonTheme.G10;
 
-  G90,
+  /// The Gray 90 Theme.
+  Theme G90 = CarbonTheme.G90;
 
-  G100;
+  /// The Gray 100 Theme.
+  Theme G100 = CarbonTheme.G100;
 
-  final String className = "carbon-" + name().toLowerCase(Locale.US);
+  /// Returns the `Theme` instance with the specified name.
+  ///
+  /// @param name the theme short name, e.g., `g90`.
+  ///
+  /// @return the `Theme` instance
+  /// @throws IllegalArgumentException if there's no `Theme` instance with the specified name
+  static Theme of(String name) {
+    final String upper;
+    upper = name.toUpperCase(Locale.US);
+
+    return CarbonTheme.valueOf(upper);
+  }
 
 }

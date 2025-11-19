@@ -19,6 +19,7 @@ package objectos.ui;
 
 import java.util.List;
 import java.util.Objects;
+import objectos.ui.impl.CarbonTheme;
 import objectos.way.Html;
 
 final class CarbonPage extends CarbonComponent implements Carbon.Page {
@@ -49,7 +50,7 @@ final class CarbonPage extends CarbonComponent implements Carbon.Page {
   }
 
   @Override
-  public final void theme(Carbon.Theme value) {
+  public final void theme(Theme value) {
     theme = (CarbonTheme) Objects.requireNonNull(value, "value == null");
   }
 

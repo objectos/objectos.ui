@@ -140,7 +140,7 @@ final class YTab implements Y.Tab {
   }
 
   @Override
-  public final void navigate(String path, Carbon.Theme theme) {
+  public final void navigate(String path, Theme theme) {
     navigate(path + "/" + theme);
   }
 

@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 public class CarbonTextInputTest extends CarbonTest {
 
   @Test(dataProvider = "themes")
-  public void defaultTest(Carbon.Theme theme) {
+  public void defaultTest(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
       tab.navigate("/carbon/textinput/default", theme);
 
@@ -33,7 +33,7 @@ public class CarbonTextInputTest extends CarbonTest {
   }
 
   @Test(dataProvider = "themes")
-  public void defaultFocus(Carbon.Theme theme) {
+  public void defaultFocus(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
       tab.navigate("/carbon/textinput/default-focus", theme);
       tab.waitForFunction(
@@ -44,7 +44,7 @@ public class CarbonTextInputTest extends CarbonTest {
   }
 
   @Test(dataProvider = "themes")
-  public void invalid(Carbon.Theme theme) {
+  public void invalid(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
       tab.navigate("/carbon/textinput/invalid", theme);
 
@@ -53,7 +53,7 @@ public class CarbonTextInputTest extends CarbonTest {
   }
 
   @Test(dataProvider = "themes")
-  public void invalidFocus(Carbon.Theme theme) {
+  public void invalidFocus(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
       tab.navigate("/carbon/textinput/invalid-focus", theme);
       tab.waitForFunction(

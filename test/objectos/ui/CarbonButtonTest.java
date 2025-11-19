@@ -34,21 +34,21 @@ public class CarbonButtonTest extends CarbonTest {
   );
 
   @Test(dataProvider = "themes")
-  public void defaultTest(Carbon.Theme theme) {
+  public void defaultTest(Theme theme) {
     test("default", theme);
   }
 
   @Test(dataProvider = "themes")
-  public void secondary(Carbon.Theme theme) {
+  public void secondary(Theme theme) {
     test("secondary", theme);
   }
 
   @Test(dataProvider = "themes")
-  public void ghost(Carbon.Theme theme) {
+  public void ghost(Theme theme) {
     test("ghost", theme);
   }
 
-  private void test(String kind, Carbon.Theme theme) {
+  private void test(String kind, Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
       tab.navigate("/carbon/button/" + kind, theme);
 

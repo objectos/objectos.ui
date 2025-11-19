@@ -21,6 +21,7 @@ import static objectos.way.Http.Method.GET;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
+import objectos.ui.impl.CarbonTheme;
 import objectos.way.App;
 import objectos.way.Css;
 import objectos.way.Html;
@@ -425,15 +426,15 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     }));
   }
 
-  private Carbon.Theme theme(Http.Exchange http) {
+  private Theme theme(Http.Exchange http) {
     final String themeName;
     themeName = http.pathParam("theme");
 
-    return Carbon.Theme.of(themeName);
+    return Theme.of(themeName);
   }
 
   private Html.Component themeSwitcher(Http.Exchange http) {
-    final Carbon.Theme theme;
+    final Theme theme;
     theme = theme(http);
 
     final CarbonTheme impl;
