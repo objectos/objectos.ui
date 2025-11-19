@@ -42,8 +42,8 @@ public abstract class CarbonTest {
     return THEMES.stream().map(Theme.class::cast).iterator();
   }
 
-  static Html.Component page(Http.Exchange http, Consumer<? super Carbon.Page> more) {
-    return Carbon.page(page -> {
+  static Html.Component page(Http.Exchange http, Consumer<? super Page.Options> more) {
+    return Page.create(page -> {
       page.theme(theme(http));
 
       page.head(m -> {

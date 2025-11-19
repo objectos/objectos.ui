@@ -185,7 +185,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
   }
 
   private void page(Http.Exchange http) {
-    http.ok(Carbon.page(page -> {
+    http.ok(Page.create(page -> {
       page.theme(theme(http));
 
       page.head(m -> {
@@ -197,8 +197,8 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     }));
   }
 
-  private Html.Component page(Http.Exchange http, Consumer<? super Carbon.Page> more) {
-    return Carbon.page(page -> {
+  private Html.Component page(Http.Exchange http, Consumer<? super Page.Options> more) {
+    return Page.create(page -> {
       page.theme(theme(http));
 
       page.head(m -> {
@@ -370,7 +370,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
   }
 
   private void ok(Http.Exchange http, String title, Html.Component... elements) {
-    http.ok(Carbon.page(page -> {
+    http.ok(Page.create(page -> {
       page.theme(theme(http));
 
       page.title(title);
