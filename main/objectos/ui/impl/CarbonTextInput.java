@@ -19,6 +19,7 @@ package objectos.ui.impl;
 
 import java.util.Objects;
 import objectos.ui.Carbon;
+import objectos.ui.Icon;
 import objectos.way.Html;
 
 public final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput {
@@ -139,7 +140,7 @@ public final class CarbonTextInput extends CarbonComponent implements Carbon.Tex
                 """),
 
                 level == MessageLevel.ERROR
-                    ? m.c(Carbon.icon(icon -> {
+                    ? m.c(Icon.create(icon -> {
                       icon.iconWarningFilled();
                       icon.size16();
                       icon.css("""

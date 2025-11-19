@@ -18,10 +18,10 @@
 package objectos.ui.impl;
 
 import java.util.Objects;
-import objectos.ui.Carbon;
+import objectos.ui.Icon;
 import objectos.way.Html;
 
-public final class CarbonIcon extends CarbonComponent implements Carbon.Icon {
+public final class CarbonIcon extends CarbonComponent implements Icon, Icon.Options {
 
   private String css;
 

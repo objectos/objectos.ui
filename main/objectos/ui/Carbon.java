@@ -19,7 +19,6 @@ package objectos.ui;
 
 import java.util.function.Consumer;
 import objectos.ui.impl.CarbonButton;
-import objectos.ui.impl.CarbonIcon;
 import objectos.ui.impl.CarbonTearsheet;
 import objectos.ui.impl.CarbonTextInput;
 import objectos.way.Css;
@@ -31,56 +30,6 @@ import objectos.way.Script;
 public final class Carbon {
 
   private Carbon() {}
-
-  // ##################################################################
-  // # BEGIN: Form Group
-  // ##################################################################
-
-  // ##################################################################
-  // # END: Form Group
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Icon
-  // ##################################################################
-
-  /// Configures the creation of an icon.
-  public sealed interface Icon permits CarbonIcon {
-
-    /// Applies the specified Objectos CSS to the `<svg>` element.
-    /// @param value the Objectos CSS to apply
-    void css(String value);
-
-    void size16();
-
-    void size20();
-
-    void size24();
-
-    void size32();
-
-    // START generated code
-
-    void iconWarningAlt();
-
-    void iconWarningFilled();
-
-    // END generated code
-
-  }
-
-  public static Html.Component icon(Consumer<? super Icon> icon) {
-    final CarbonIcon pojo;
-    pojo = new CarbonIcon();
-
-    icon.accept(pojo);
-
-    return pojo;
-  }
-
-  // ##################################################################
-  // # END: Icon
-  // ##################################################################
 
   // ##################################################################
   // # BEGIN: Page
