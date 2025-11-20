@@ -155,7 +155,7 @@ $(CARBON_GEN_TEST_SCRIPT): $(CARBON_GEN_TEST_JAVA)
 #
 
 ## dev main class
-DEV_MAIN := objectos.ui.DevStart
+DEV_MAIN := objectos.ui.dev.DevStart
 
 ## dev jvm opts
 ifeq ($(ENABLE_DEBUG),1)
@@ -194,6 +194,9 @@ TEST_ADD_MODULES += java.desktop
 TEST_ADD_MODULES += com.google.gson
 TEST_ADD_MODULES += jdk.unsupported
 
+## test --add-exports
+TEST_ADD_EXPORTS := objectos.ui/objectos.ui.gen=org.testng
+
 ## test --add-reads
 TEST_ADD_READS := objectos.ui=org.testng
 TEST_ADD_READS += objectos.ui=playwright
@@ -228,8 +231,11 @@ include make/java-javadoc.mk
 #
 
 ## do not add dev and script classes
-JAR_EXCLUDES := Dev*.class
-JAR_EXCLUDES += X*.class
+JAR_EXCLUDES := objectos/ui/DevBoot.class
+JAR_EXCLUDES += objectos/ui/dev
+JAR_EXCLUDES += objectos/ui/dev/*
+JAR_EXCLUDES += objectos/ui/gen
+JAR_EXCLUDES += objectos/ui/gen/*
 
 include make/java-jar.mk
 

@@ -26,7 +26,7 @@ public class FormGroupTest extends UiTest {
   @Test(dataProvider = "themes")
   public void testCase01(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/formgroup/default", theme);
+      tab.navigate("/formgroup/default", theme);
 
       tab.screenshot();
     }

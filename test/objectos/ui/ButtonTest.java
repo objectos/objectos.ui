@@ -18,6 +18,7 @@
 package objectos.ui;
 
 import java.util.List;
+import objectos.ui.dev.DevUi;
 import objectos.way.Html;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -26,11 +27,11 @@ import org.testng.annotations.Test;
 public class ButtonTest extends UiTest {
 
   private final List<Html.Id> buttons = List.of(
-      DevCarbon.BTN,
-      DevCarbon.BTN_SM,
-      DevCarbon.BTN_MD,
-      DevCarbon.BTN_XL,
-      DevCarbon.BTN_X2L
+      DevUi.BTN,
+      DevUi.BTN_SM,
+      DevUi.BTN_MD,
+      DevUi.BTN_XL,
+      DevUi.BTN_X2L
   );
 
   @Test(dataProvider = "themes")
@@ -50,7 +51,7 @@ public class ButtonTest extends UiTest {
 
   private void test(String kind, Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/button/" + kind, theme);
+      tab.navigate("/button/" + kind, theme);
 
       tab.screenshot();
 

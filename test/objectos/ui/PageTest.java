@@ -26,7 +26,7 @@ public class PageTest extends UiTest {
   @Test(dataProvider = "themes")
   public void testCase01(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/page", theme);
+      tab.navigate("/page", theme);
 
       tab.screenshot();
     }

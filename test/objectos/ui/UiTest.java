@@ -47,7 +47,7 @@ public abstract class UiTest {
       page.theme(theme(http));
 
       page.head(m -> {
-        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/carbon/styles.css"));
+        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/styles.css"));
         m.script(m.src("/script.js"));
       });
 

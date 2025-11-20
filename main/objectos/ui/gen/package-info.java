@@ -15,5 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-/// Code generation related classes
+/// Code generation related classes.
+/// Not included in the final JAR.
 package objectos.ui.gen;

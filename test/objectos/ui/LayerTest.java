@@ -26,7 +26,7 @@ public class LayerTest extends UiTest {
   @Test(dataProvider = "themes")
   public void testCase01(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/layer/default", theme);
+      tab.navigate("/layer/default", theme);
 
       tab.screenshot();
     }

@@ -26,7 +26,7 @@ public class StackTest extends UiTest {
   @Test(dataProvider = "themes")
   public void testCase01(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/stack/default", theme);
+      tab.navigate("/stack/default", theme);
 
       tab.screenshot();
     }

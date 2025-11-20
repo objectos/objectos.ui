@@ -26,7 +26,7 @@ public class TearsheetTest extends UiTest {
   @Test(enabled = false)
   public void testCase01(Theme theme, Y.ScreenSize screen) {
     try (Y.Tab tab = Y.tabDev(screen)) {
-      tab.navigate("/carbon/tearsheet/tc01", theme);
+      tab.navigate("/tearsheet/tc01", theme);
 
       tab.dev();
     }

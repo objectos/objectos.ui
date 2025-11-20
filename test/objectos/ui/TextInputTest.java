@@ -17,6 +17,7 @@
  */
 package objectos.ui;
 
+import objectos.ui.dev.DevUi;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -26,7 +27,7 @@ public class TextInputTest extends UiTest {
   @Test(dataProvider = "themes")
   public void defaultTest(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/textinput/default", theme);
+      tab.navigate("/textinput/default", theme);
 
       tab.screenshot();
     }
@@ -35,10 +36,10 @@ public class TextInputTest extends UiTest {
   @Test(dataProvider = "themes")
   public void defaultFocus(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/textinput/default-focus", theme);
+      tab.navigate("/textinput/default-focus", theme);
       tab.waitForFunction(
           "id => document.getElementById(id) === document.activeElement",
-          DevCarbon.TEXT_INPUT.attrValue());
+          DevUi.TEXT_INPUT.attrValue());
       tab.screenshot();
     }
   }
@@ -46,7 +47,7 @@ public class TextInputTest extends UiTest {
   @Test(dataProvider = "themes")
   public void invalid(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/textinput/invalid", theme);
+      tab.navigate("/textinput/invalid", theme);
 
       tab.screenshot();
     }
@@ -55,10 +56,10 @@ public class TextInputTest extends UiTest {
   @Test(dataProvider = "themes")
   public void invalidFocus(Theme theme) {
     try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/carbon/textinput/invalid-focus", theme);
+      tab.navigate("/textinput/invalid-focus", theme);
       tab.waitForFunction(
           "id => document.getElementById(id) === document.activeElement",
-          DevCarbon.TEXT_INPUT.attrValue());
+          DevUi.TEXT_INPUT.attrValue());
       tab.screenshot();
     }
   }
