@@ -15,20 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
-import objectos.ui.impl.CarbonButton;
-import objectos.ui.impl.CarbonButtonKind;
-import objectos.ui.impl.CarbonButtonSize;
-import objectos.ui.impl.CarbonFormGroup;
-import objectos.ui.impl.CarbonLayer;
-import objectos.ui.impl.CarbonPage;
-import objectos.ui.impl.CarbonStack;
-import objectos.ui.impl.CarbonTearsheet;
-import objectos.ui.impl.CarbonTextInput;
+import objectos.ui.Styles;
 import objectos.way.Css;
 
-final class CarbonStyles extends CarbonStylesGenerated implements Carbon.Styles {
+public final class CarbonStyles extends CarbonStylesGenerated implements Styles {
 
   @Override
   public final void configure(Css.Library.Options opts) {

@@ -127,8 +127,8 @@ public final class DevStart extends App.Bootstrap {
     ctx.putInstance(App.ShutdownHook.class, shutdownHook);
 
     // Carbon.Styles
-    final Carbon.Styles carbon;
-    carbon = Carbon.Styles.create();
+    final Styles carbon;
+    carbon = Styles.create();
 
     ctx.putInstance(CARBON_STYLES, carbon);
 

@@ -756,7 +756,7 @@ final class XCarbonGen {
 
   private void cdsWrite(String version, CssResult css) {
     final Path path;
-    path = Path.of("main", "objectos", "ui", "CarbonStylesGenerated.java");
+    path = Path.of("main", "objectos", "ui", "impl", "CarbonStylesGenerated.java");
 
     final Path file;
     file = basedir.resolve(path);
@@ -791,7 +791,7 @@ final class XCarbonGen {
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import objectos.way.Css;
 
