@@ -21,44 +21,12 @@ import objectos.way.Css;
 
 sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles {
 
-  static final String VERSION = "1.95.0";
+  static final String VERSION = "1.96.0";
 
   @Override
   public void configure(Css.Library.Options opts) {
     opts.theme("""
     :root {
-      --carbon-fluid-spacing-01: 0;
-      --carbon-fluid-spacing-02: 2vw;
-      --carbon-fluid-spacing-03: 5vw;
-      --carbon-fluid-spacing-04: 10vw;
-      --carbon-grid-columns: 4;
-      --carbon-grid-gutter: 2rem;
-      --carbon-grid-margin: 0;
-      --carbon-layout-density-padding-inline-condensed: 0.5rem;
-      --carbon-layout-density-padding-inline-max: 999999999px;
-      --carbon-layout-density-padding-inline-min: 0px;
-      --carbon-layout-density-padding-inline-normal: 1rem;
-      --carbon-layout-size-height-2xl: 5rem;
-      --carbon-layout-size-height-lg: 3rem;
-      --carbon-layout-size-height-max: 999999999px;
-      --carbon-layout-size-height-md: 2.5rem;
-      --carbon-layout-size-height-min: 0px;
-      --carbon-layout-size-height-sm: 2rem;
-      --carbon-layout-size-height-xl: 4rem;
-      --carbon-layout-size-height-xs: 1.5rem;
-      --carbon-spacing-01: 0.125rem;
-      --carbon-spacing-02: 0.25rem;
-      --carbon-spacing-03: 0.5rem;
-      --carbon-spacing-04: 0.75rem;
-      --carbon-spacing-05: 1rem;
-      --carbon-spacing-06: 1.5rem;
-      --carbon-spacing-07: 2rem;
-      --carbon-spacing-08: 2.5rem;
-      --carbon-spacing-09: 3rem;
-      --carbon-spacing-10: 4rem;
-      --carbon-spacing-11: 5rem;
-      --carbon-spacing-12: 6rem;
-      --carbon-spacing-13: 10rem;
       --color-ai-aura-end: rgba(255, 255, 255, 0);
       --color-ai-aura-hover-background: #edf5ff;
       --color-ai-aura-hover-end: rgba(255, 255, 255, 0);
@@ -234,7 +202,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --color-notification-background-info: #edf5ff;
       --color-notification-background-success: #defbe6;
       --color-notification-background-warning: #fcf4d6;
-      --color-overlay: rgba(22, 22, 22, 0.5);
+      --color-overlay: rgba(0, 0, 0, 0.6);
       --color-shadow: rgba(0, 0, 0, 0.3);
       --color-skeleton-background: #e8e8e8;
       --color-skeleton-element: #c6c6c6;
@@ -545,30 +513,62 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --type-quotation-02-font-weight: 300;
       --type-quotation-02-letter-spacing: 0;
       --type-quotation-02-line-height: 1.25;
+      --ui-fluid-spacing-01: 0;
+      --ui-fluid-spacing-02: 2vw;
+      --ui-fluid-spacing-03: 5vw;
+      --ui-fluid-spacing-04: 10vw;
+      --ui-grid-columns: 4;
+      --ui-grid-gutter: 2rem;
+      --ui-grid-margin: 0;
+      --ui-layout-density-padding-inline-condensed: 0.5rem;
+      --ui-layout-density-padding-inline-max: 999999999px;
+      --ui-layout-density-padding-inline-min: 0px;
+      --ui-layout-density-padding-inline-normal: 1rem;
+      --ui-layout-size-height-2xl: 5rem;
+      --ui-layout-size-height-lg: 3rem;
+      --ui-layout-size-height-max: 999999999px;
+      --ui-layout-size-height-md: 2.5rem;
+      --ui-layout-size-height-min: 0px;
+      --ui-layout-size-height-sm: 2rem;
+      --ui-layout-size-height-xl: 4rem;
+      --ui-layout-size-height-xs: 1.5rem;
+      --ui-spacing-01: 0.125rem;
+      --ui-spacing-02: 0.25rem;
+      --ui-spacing-03: 0.5rem;
+      --ui-spacing-04: 0.75rem;
+      --ui-spacing-05: 1rem;
+      --ui-spacing-06: 1.5rem;
+      --ui-spacing-07: 2rem;
+      --ui-spacing-08: 2.5rem;
+      --ui-spacing-09: 3rem;
+      --ui-spacing-10: 4rem;
+      --ui-spacing-11: 5rem;
+      --ui-spacing-12: 6rem;
+      --ui-spacing-13: 10rem;
     }
     """);
 
     opts.theme("""
     :root { @media(min-width: 42rem) {
-      --carbon-grid-columns: 8;
-      --carbon-grid-margin: 1rem;
+      --ui-grid-columns: 8;
+      --ui-grid-margin: 1rem;
     }}
     """);
 
     opts.theme("""
     :root { @media(min-width: 66rem) {
-      --carbon-grid-columns: 16;
+      --ui-grid-columns: 16;
     }}
     """);
 
     opts.theme("""
     :root { @media(min-width: 99rem) {
-      --carbon-grid-margin: 1.5rem;
+      --ui-grid-margin: 1.5rem;
     }}
     """);
 
     opts.theme("""
-    .carbon-white {
+    .ui-white {
       --color-ai-aura-end: rgba(255, 255, 255, 0);
       --color-ai-aura-hover-background: #edf5ff;
       --color-ai-aura-hover-end: rgba(255, 255, 255, 0);
@@ -729,7 +729,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --color-notification-background-info: #edf5ff;
       --color-notification-background-success: #defbe6;
       --color-notification-background-warning: #fcf4d6;
-      --color-overlay: rgba(22, 22, 22, 0.5);
+      --color-overlay: rgba(0, 0, 0, 0.6);
       --color-shadow: rgba(0, 0, 0, 0.3);
       --color-skeleton-background: #e8e8e8;
       --color-skeleton-element: #c6c6c6;
@@ -809,7 +809,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.theme("""
-    .carbon-g10 {
+    .ui-g10 {
       --color-ai-aura-end: rgba(255, 255, 255, 0);
       --color-ai-aura-hover-background: #edf5ff;
       --color-ai-aura-hover-end: rgba(255, 255, 255, 0);
@@ -970,7 +970,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --color-notification-background-info: #edf5ff;
       --color-notification-background-success: #defbe6;
       --color-notification-background-warning: #fcf4d6;
-      --color-overlay: rgba(22, 22, 22, 0.5);
+      --color-overlay: rgba(0, 0, 0, 0.6);
       --color-shadow: rgba(0, 0, 0, 0.3);
       --color-skeleton-background: #e8e8e8;
       --color-skeleton-element: #c6c6c6;
@@ -1050,7 +1050,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.theme("""
-    .carbon-g90 {
+    .ui-g90 {
       --color-ai-aura-end: rgba(0, 0, 0, 0);
       --color-ai-aura-hover-background: #474747;
       --color-ai-aura-hover-end: rgba(0, 0, 0, 0);
@@ -1210,7 +1210,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --color-notification-background-info: #393939;
       --color-notification-background-success: #393939;
       --color-notification-background-warning: #393939;
-      --color-overlay: rgba(0, 0, 0, 0.65);
+      --color-overlay: rgba(0, 0, 0, 0.6);
       --color-shadow: rgba(0, 0, 0, 0.8);
       --color-skeleton-background: #333333;
       --color-skeleton-element: #525252;
@@ -1290,7 +1290,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.theme("""
-    .carbon-g100 {
+    .ui-g100 {
       --color-ai-aura-end: rgba(0, 0, 0, 0);
       --color-ai-aura-hover-background: #333333;
       --color-ai-aura-hover-end: rgba(0, 0, 0, 0);
@@ -1450,7 +1450,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --color-notification-background-info: #262626;
       --color-notification-background-success: #262626;
       --color-notification-background-warning: #262626;
-      --color-overlay: rgba(0, 0, 0, 0.65);
+      --color-overlay: rgba(0, 0, 0, 0.6);
       --color-shadow: rgba(0, 0, 0, 0.8);
       --color-skeleton-background: #292929;
       --color-skeleton-element: #393939;
@@ -1555,7 +1555,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.components("""
-    .carbon-layer-0 {
+    .ui-layer-0 {
       --color-border-strong: var(--color-border-strong-01, #8d8d8d);
       --color-border-subtle: var(--color-border-subtle-00, #e0e0e0);
       --color-border-subtle-selected: var(--color-border-subtle-selected-01, #c6c6c6);
@@ -1575,7 +1575,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.components("""
-    .carbon-layer-1 {
+    .ui-layer-1 {
       --color-border-strong: var(--color-border-strong-02, #8d8d8d);
       --color-border-subtle: var(--color-border-subtle-01, #c6c6c6);
       --color-border-subtle-selected: var(--color-border-subtle-selected-02, #c6c6c6);
@@ -1595,7 +1595,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.components("""
-    .carbon-layer-2 {
+    .ui-layer-2 {
       --color-border-strong: var(--color-border-strong-03, #8d8d8d);
       --color-border-subtle: var(--color-border-subtle-02, #e0e0e0);
       --color-border-subtle-selected: var(--color-border-subtle-selected-03, #c6c6c6);

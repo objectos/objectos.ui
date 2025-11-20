@@ -15,21 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.impl;
+package objectos.ui.gen;
 
-import java.util.Locale;
-import objectos.ui.Theme;
+import static org.testng.Assert.assertEquals;
 
-public enum UiTheme implements Theme {
+import org.testng.annotations.Test;
 
-  WHITE,
+public class XUiGenTest00Options {
 
-  G10,
+  @Test
+  public void testCase01() {
+    final XUiGen.Options options;
+    options = new XUiGen.Options();
 
-  G90,
+    options.parse(
+        "--cds-iframe", "https://example.com/cds.html",
+        "--c4p-iframe", "https://example.com/c4p.html",
+        "--plex-sans", "https://example.com/plex-sans.zip"
+    );
 
-  G100;
-
-  public final String className = "ui-" + name().toLowerCase(Locale.US);
+    assertEquals(options.cdsIframe.string(), "https://example.com/cds.html");
+    assertEquals(options.c4pIframe.string(), "https://example.com/c4p.html");
+    assertEquals(options.plexSans.string(), "https://example.com/plex-sans.zip");
+  }
 
 }

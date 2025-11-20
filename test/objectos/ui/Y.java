@@ -309,7 +309,7 @@ public final class Y implements ISuiteListener {
 
     URI resolveWeb(String relativePath);
 
-    void carbonGen(String... args);
+    void gen(String... args);
 
   }
 

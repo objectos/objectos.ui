@@ -15,28 +15,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
-
-import static org.testng.Assert.assertEquals;
-
-import org.testng.annotations.Test;
-
-public class XCarbonGenTest00Options {
-
-  @Test
-  public void testCase01() {
-    final XCarbonGen.Options options;
-    options = new XCarbonGen.Options();
-
-    options.parse(
-        "--cds-iframe", "https://example.com/cds.html",
-        "--c4p-iframe", "https://example.com/c4p.html",
-        "--plex-sans", "https://example.com/plex-sans.zip"
-    );
-
-    assertEquals(options.cdsIframe.string(), "https://example.com/cds.html");
-    assertEquals(options.c4pIframe.string(), "https://example.com/c4p.html");
-    assertEquals(options.plexSans.string(), "https://example.com/plex-sans.zip");
-  }
-
-}
+/// Code generation related classes
+package objectos.ui.gen;

@@ -15,21 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.impl;
+package objectos.ui.gen;
 
-import java.util.Locale;
-import objectos.ui.Theme;
+import com.microsoft.playwright.Browser;
+import java.nio.file.Path;
 
-public enum UiTheme implements Theme {
+public final class XUi {
 
-  WHITE,
+  private XUi() {}
 
-  G10,
+  public static void gen(Path basedir, Browser browser, String... args) {
+    final XUiGen gen;
+    gen = new XUiGen(basedir, browser);
 
-  G90,
-
-  G100;
-
-  public final String className = "ui-" + name().toLowerCase(Locale.US);
+    gen.execute(args);
+  }
 
 }

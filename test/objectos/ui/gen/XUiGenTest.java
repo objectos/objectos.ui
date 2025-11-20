@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.gen;
 
 import static org.testng.Assert.assertEquals;
 
@@ -26,9 +26,10 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import objectos.ui.Y;
 import org.testng.annotations.Test;
 
-public class XCarbonGenTest {
+public class XUiGenTest {
 
   @Test
   public void cds() {
@@ -36,7 +37,7 @@ public class XCarbonGenTest {
       final URI iframe;
       iframe = proj.resolveWeb("iframe.html");
 
-      proj.carbonGen(
+      proj.gen(
           "--cds-iframe", iframe.toString(),
           "--cds-html-filter", "button--default",
           "--c4p-skip", "true",
@@ -55,7 +56,7 @@ public class XCarbonGenTest {
       final URI iframe;
       iframe = proj.resolveWeb("iframe.html");
 
-      proj.carbonGen(
+      proj.gen(
           "--c4p-iframe", iframe.toString(),
           "--c4p-html-filter", "tearsheet--tearsheet",
           "--cds-skip", "true",
@@ -73,7 +74,7 @@ public class XCarbonGenTest {
       final URI sans;
       sans = proj.resolveWeb("ibm-plex-sans-min.zip");
 
-      proj.carbonGen(
+      proj.gen(
           "--cds-skip", "true",
           "--c4p-skip", "true",
           "--plex-sans", sans.toString()

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
+package objectos.ui.gen; // SED_REMOVE
 
 import static java.lang.System.Logger.Level.INFO;
 
@@ -58,7 +59,7 @@ import java.util.stream.Collectors;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
-final class XCarbonGen {
+final class XUiGen {
 
   private final Path basedir;
 
@@ -76,11 +77,11 @@ final class XCarbonGen {
 
   private Playwright playwright;
 
-  XCarbonGen(Path basedir) {
+  XUiGen(Path basedir) {
     this.basedir = basedir.toAbsolutePath();
   }
 
-  XCarbonGen(Path basedir, Browser browser) {
+  XUiGen(Path basedir, Browser browser) {
     this.basedir = basedir.toAbsolutePath();
 
     this.browser = browser;
@@ -93,8 +94,8 @@ final class XCarbonGen {
     final Path basedir;
     basedir = Path.of(userDir);
 
-    final XCarbonGen gen;
-    gen = new XCarbonGen(basedir);
+    final XUiGen gen;
+    gen = new XUiGen(basedir);
 
     gen.execute(args);
   }
@@ -330,7 +331,7 @@ final class XCarbonGen {
     final Option workdir = path("--workdir", opt -> {
       if (opt.unset()) {
         opt.set(
-            Path.of("work/carbon-gen")
+            Path.of("work/gen")
         );
       }
     });
@@ -411,7 +412,7 @@ final class XCarbonGen {
       opt.validate();
     }
 
-    logInfo("Objectos UI carbon-gen");
+    logInfo("Objectos UI gen");
 
     final String format;
     format = "(%3s) %-" + options.maxLength + "s %s";
@@ -470,14 +471,14 @@ final class XCarbonGen {
         cssSource,
 
         css(CFG_THEME, EXACT, ":root", null),
-        css(CFG_THEME, EXACT, ".cds--white", ".carbon-white"),
-        css(CFG_THEME, EXACT, ".cds--g10", ".carbon-g10"),
-        css(CFG_THEME, EXACT, ".cds--g90", ".carbon-g90"),
-        css(CFG_THEME, EXACT, ".cds--g100", ".carbon-g100"),
+        css(CFG_THEME, EXACT, ".cds--white", ".ui-white"),
+        css(CFG_THEME, EXACT, ".cds--g10", ".ui-g10"),
+        css(CFG_THEME, EXACT, ".cds--g90", ".ui-g90"),
+        css(CFG_THEME, EXACT, ".cds--g100", ".ui-g100"),
 
-        css(CFG_COMPONENTS, EXACT, ".cds--layer-one", ".carbon-layer-0"),
-        css(CFG_COMPONENTS, EXACT, ".cds--layer-two", ".carbon-layer-1"),
-        css(CFG_COMPONENTS, EXACT, ".cds--layer-three", ".carbon-layer-2"),
+        css(CFG_COMPONENTS, EXACT, ".cds--layer-one", ".ui-layer-0"),
+        css(CFG_COMPONENTS, EXACT, ".cds--layer-two", ".ui-layer-1"),
+        css(CFG_COMPONENTS, EXACT, ".cds--layer-three", ".ui-layer-2"),
 
         css(COMPONENT, STARTS_WITH, ".cds--btn", "button"),
         css(COMPONENT, STARTS_WITH, ".cds--fieldset", "formgroup"),
@@ -755,7 +756,7 @@ final class XCarbonGen {
 
   private void cdsWrite(String version, CssResult css) {
     final Path path;
-    path = Path.of("main", "objectos", "ui", "CarbonStylesGenerated.java");
+    path = Path.of("main", "objectos", "ui", "impl", "UiStylesGenerated.java");
 
     final Path file;
     file = basedir.resolve(path);
@@ -766,7 +767,7 @@ final class XCarbonGen {
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      throw error("Failed to create directory for CarbonStylesGenerated.java", e);
+      throw error("Failed to create directory for UiStylesGenerated.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -790,11 +791,11 @@ final class XCarbonGen {
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import objectos.way.Css;
 
-sealed abstract class CarbonStylesGenerated implements Css.Library permits CarbonStyles {
+sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles {
 
   static final String VERSION = "%s";
 
@@ -836,7 +837,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
       """);
 
     } catch (IOException e) {
-      throw error("Failed to generate CarbonStylesGenerated.java", e);
+      throw error("Failed to generate UiStylesGenerated.java", e);
     }
   }
 
@@ -1406,7 +1407,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      throw error("Failed to create directory for CarbonStyles.java", e);
+      throw error("Failed to create directory for UiStyles.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -1459,7 +1460,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
         }
       }
     } catch (IOException e) {
-      throw error("Failed to generate CarbonStyleSheet.java", e);
+      throw error("Failed to generate UiStyles.java", e);
     }
 
   }
@@ -1527,7 +1528,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
           ) {
             n = "--type-" + name;
           } else {
-            n = "--carbon-" + name;
+            n = "--ui-" + name;
           }
 
           v = val0;
@@ -1546,7 +1547,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
           ) {
             n = "--type-" + name;
           } else {
-            n = "--carbon-" + name;
+            n = "--ui-" + name;
           }
 
           v = val0;
@@ -2160,7 +2161,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
 
   private void plexWrite(PlexResult... items) {
     final Path path;
-    path = Path.of("main", "objectos", "ui", "CarbonPlexGenerated.java");
+    path = Path.of("main", "objectos", "ui", "impl", "UiPlexGenerated.java");
 
     final Path file;
     file = basedir.resolve(path);
@@ -2171,7 +2172,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
     try {
       Files.createDirectories(parent);
     } catch (IOException e) {
-      throw error("Failed to create directory for CarbonPlexGenerated.java", e);
+      throw error("Failed to create directory for UiPlexGenerated.java", e);
     }
 
     try (BufferedWriter w = Files.newBufferedWriter(
@@ -2195,7 +2196,7 @@ sealed abstract class CarbonStylesGenerated implements Css.Library permits Carbo
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -2203,13 +2204,13 @@ import objectos.way.Css;
 import objectos.way.Web;
 
 /*
- * Do not edit: this class was generated by XCarbonGen.java
+ * Do not edit: this class was generated by XUiGen.java
  */
-sealed abstract class CarbonPlexGenerated permits CarbonPlex {
+sealed abstract class UiPlexGenerated permits UiPlex {
 
   private final String prefix;
 
-  CarbonPlexGenerated(String prefix) {
+  UiPlexGenerated(String prefix) {
     this.prefix = prefix;
   }
 
@@ -2289,7 +2290,7 @@ sealed abstract class CarbonPlexGenerated permits CarbonPlex {
       """);
 
     } catch (IOException e) {
-      throw error("Failed to generate CarbonPlexGenerated.java", e);
+      throw error("Failed to generate UiPlexGenerated.java", e);
     }
   }
 

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
+package objectos.ui.gen; // SED_REMOVE
 
 import static java.lang.System.Logger.Level.INFO;
 
@@ -42,7 +43,7 @@ import java.util.function.Consumer;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
-final class XCarbonGenRes {
+final class XUiGenRes {
 
   private Browser browser;
 
@@ -55,8 +56,8 @@ final class XCarbonGenRes {
   private Playwright playwright;
 
   public static void main(String[] args) {
-    final XCarbonGenRes gen;
-    gen = new XCarbonGenRes();
+    final XUiGenRes gen;
+    gen = new XUiGenRes();
 
     gen.execute(args);
   }

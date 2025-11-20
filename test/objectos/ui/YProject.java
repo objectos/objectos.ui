@@ -21,6 +21,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import objectos.ui.gen.XUi;
 import objectos.way.Note;
 
 final class YProject implements Y.Project {
@@ -102,11 +103,8 @@ final class YProject implements Y.Project {
   }
 
   @Override
-  public final void carbonGen(String... args) {
-    final XCarbonGen gen;
-    gen = new XCarbonGen(basedir, Y.BrowserHolder.BROWSER);
-
-    gen.execute(args);
+  public final void gen(String... args) {
+    XUi.gen(basedir, Y.BrowserHolder.BROWSER, args);
   }
 
 }

@@ -74,23 +74,23 @@ RESOURCES := main-resources
 include make/java-compile.mk
 
 #
-# ui@carbon-gen
+# ui@gen
 #
 
-## carbon-gen dependencies
-CARBON_GEN_DEPS := $(PLAYWRIGHT)
+## gen dependencies
+GEN_DEPS := $(PLAYWRIGHT)
 
-## carbon-gen resolution files
-CARBON_GEN_RESOLUTION_FILES := $(call to-resolution-files,$(CARBON_GEN_DEPS))
+## gen resolution files
+GEN_RESOLUTION_FILES := $(call to-resolution-files,$(GEN_DEPS))
 
-## carbon-gen path
-CARBON_GEN_PATH := $(WORK)/carbon-gen-path
+## gen path
+GEN_PATH := $(WORK)/gen-path
 
-## carbon-gen target 
-CARBON_GEN_SCRIPT := CarbonGen.java
+## gen target 
+GEN_SCRIPT := UiGen.java
 
-## carbon-gen src
-CARBON_GEN_JAVA := main/objectos/ui/XCarbonGen.java
+## gen src
+GEN_JAVA := main/objectos/ui/gen/XUiGen.java
 
 ## html page (cds)
 CARBON_CDS := https://react.carbondesignsystem.com/iframe.html
@@ -102,26 +102,26 @@ CARBON_C4P := https://ibm-products.carbondesignsystem.com/iframe.html
 carbon_plex_sans := https://github.com/IBM/plex/releases/download/%40ibm%2Fplex-sans%401.1.0/ibm-plex-sans.zip
 
 ## carbon gen command
-CARBON_GENX := $(JAVA)
-CARBON_GENX += -cp @$(CARBON_GEN_PATH)
-CARBON_GENX += $(CARBON_GEN_SCRIPT)
-CARBON_GENX += --cds-iframe $(CARBON_CDS) 
-CARBON_GENX += --c4p-iframe $(CARBON_C4P) 
-CARBON_GENX += --plex-sans $(carbon_plex_sans) 
+GENX := $(JAVA)
+GENX += -cp @$(GEN_PATH)
+GENX += $(GEN_SCRIPT)
+GENX += --cds-iframe $(CARBON_CDS) 
+GENX += --c4p-iframe $(CARBON_C4P) 
+GENX += --plex-sans $(carbon_plex_sans) 
 
-.PHONY: carbon-gen
-carbon-gen: $(CARBON_GEN_SCRIPT) $(CARBON_GEN_PATH)
-	$(CARBON_GENX)
+.PHONY: gen
+gen: $(GEN_SCRIPT) $(GEN_PATH)
+	$(GENX)
 
-.PHONY: carbon-gen-clean
-carbon-gen-clean:
-	rm -f $(CARBON_GEN_SCRIPT) $(CARBON_GEN_PATH)
+.PHONY: gen-clean
+gen-clean:
+	rm -f $(GEN_SCRIPT) $(GEN_PATH)
 	
-$(CARBON_GEN_SCRIPT): $(CARBON_GEN_JAVA)
+$(GEN_SCRIPT): $(GEN_JAVA)
 	sed '/\/\/ SED_REMOVE/d' $< > $@
 
-$(CARBON_GEN_PATH): $(CARBON_GEN_RESOLUTION_FILES) | $(WORK)
-	$(call uniq-resolution-files,$(CARBON_GEN_RESOLUTION_FILES)) > $@.tmp
+$(GEN_PATH): $(GEN_RESOLUTION_FILES) | $(WORK)
+	$(call uniq-resolution-files,$(GEN_RESOLUTION_FILES)) > $@.tmp
 	cat $@.tmp | paste --delimiter='$(CLASS_PATH_SEPARATOR)' --serial > $@
 
 #
