@@ -21,7 +21,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(Y.class)
-public class CarbonTextInputTest extends CarbonTest {
+public class CarbonTextInputTest extends UiTest {
 
   @Test(dataProvider = "themes")
   public void defaultTest(Theme theme) {

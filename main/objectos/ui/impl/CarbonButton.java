@@ -20,14 +20,14 @@ package objectos.ui.impl;
 import java.util.Objects;
 import java.util.function.Consumer;
 import objectos.ui.Button;
-import objectos.ui.Carbon;
 import objectos.ui.ButtonKind;
 import objectos.ui.ButtonSize;
 import objectos.ui.ButtonType;
+import objectos.ui.Tearsheet;
 import objectos.way.Html;
 import objectos.way.Script;
 
-public final class CarbonButton extends CarbonComponent implements Button, Button.Options, Carbon.Tearsheet.Action {
+public final class CarbonButton extends CarbonComponent implements Button, Button.Options, Tearsheet.Action {
 
   static final Html.ClassName BASE = Html.ClassName.ofText("""
   cursor:pointer

@@ -18,12 +18,9 @@
 package objectos.ui;
 
 import java.util.function.Consumer;
-import objectos.ui.impl.CarbonButton;
-import objectos.ui.impl.CarbonTearsheet;
 import objectos.ui.impl.CarbonTextInput;
 import objectos.way.Css;
 import objectos.way.Html;
-import objectos.way.Script;
 
 /// The **Objectos Carbon** main class.
 /// Objectos Carbon is an implementation of IBM's Carbon Design System for Objectos Way applications.
@@ -54,88 +51,6 @@ public final class Carbon {
   // ##################################################################
   // # BEGIN: Tearsheet
   // ##################################################################
-
-  /// Configures the creation of a tearsheet.
-  public sealed interface Tearsheet permits CarbonTearsheet {
-
-    /// Configures the creation of a tearsheet action.
-    sealed interface Action permits CarbonButton {
-
-      /// Sets the `data-on-click` attribute value to the specified script.
-      /// @param value the Objectos Script to execute
-      void dataOnClick(Consumer<? super Script> value);
-
-      /// Sets the `id` attribute for the `<button>` element.
-      /// @param value the `id` attribute value
-      void id(Html.Id value);
-
-      /// Sets the kind of this button, defaults to `[PRIMARY][#PRIMARY]` when not specified.
-      /// @param value the kind of this button
-      void kind(ButtonKind value);
-
-      /// Sets the single text node to be rendered as a child of this button.
-      /// @param value the text value
-      void text(String value);
-
-      /// Sets the type of this button, defaults to `[BUTTON][#BUTTON]` when not specified.
-      /// @param value the type of this button
-      void type(ButtonType value);
-
-    }
-
-    static Consumer<? super Script> close(Html.Id id) {
-      return CarbonTearsheet.closeImpl(id);
-    }
-
-    static Consumer<? super Script> openAction(Html.Id id) {
-      return CarbonTearsheet.openImpl(id);
-    }
-
-    void actions(Consumer<? super Action> action);
-
-    void actions(Consumer<? super Action> action1, Consumer<? super Action> action2);
-
-    void actions(Consumer<? super Action> action1, Consumer<? super Action> action2, Consumer<? super Action> action3);
-
-    /// A description of the flow, displayed in the header area of the tearsheet.
-    /// @param value the tearsheet description
-    void description(String value);
-
-    /// Sets the `id` attribute for the `<dialog>` element.
-    /// @param value the `id` attribute value
-    void id(Html.Id value);
-
-    /// The HTML component to be rendered as the main section of the tearsheet.
-    /// @param value the HTML component
-    void main(Html.Component value);
-
-    /// Specifies whether the tearsheet is currently open.
-    /// @param value `true` if the tearsheet is currently open; `false` otherwise
-    void open(boolean value);
-
-    /// The main title of the tearsheet, displayed in the header area.
-    /// @param value the title value
-    void title(String value);
-
-  }
-
-  /// Creates a new tearsheet with the specified options.
-  ///
-  /// A tearsheet is a mostly full-screen type of dialog that keeps users
-  /// in-context and focused by bringing actionable content front and center
-  /// while revealing parts of the UI behind it.
-  ///
-  /// @param tearsheet allows for setting the options
-  ///
-  /// @return a newly created tearsheet with the specified options
-  public static Html.Component tearsheet(Consumer<? super Tearsheet> tearsheet) {
-    final CarbonTearsheet pojo;
-    pojo = new CarbonTearsheet();
-
-    tearsheet.accept(pojo);
-
-    return pojo;
-  }
 
   // ##################################################################
   // # END: Tearsheet

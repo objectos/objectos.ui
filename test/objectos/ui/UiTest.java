@@ -26,9 +26,9 @@ import objectos.way.Html;
 import objectos.way.Http;
 import org.testng.annotations.DataProvider;
 
-public abstract class CarbonTest {
+public abstract class UiTest {
 
-  CarbonTest() {}
+  UiTest() {}
 
   @DataProvider
   public final Iterator<Object[]> all() {

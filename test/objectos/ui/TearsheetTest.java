@@ -21,7 +21,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(Y.class)
-public class CarbonTearsheetTest extends CarbonTest {
+public class TearsheetTest extends UiTest {
 
   @Test(enabled = false)
   public void testCase01(Theme theme, Y.ScreenSize screen) {

@@ -17,17 +17,10 @@
  */
 package objectos.ui.impl;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.function.Consumer;
-import objectos.ui.Carbon;
-import objectos.way.Css;
-import objectos.way.Html;
-import objectos.way.Script;
+import module java.base;
+import module objectos.ui;
 
-public final class CarbonTearsheet extends CarbonComponent implements Carbon.Tearsheet, Html.Component {
+public final class CarbonTearsheet extends CarbonComponent implements Tearsheet, Tearsheet.Options {
 
   enum Kind {
     NARROW,

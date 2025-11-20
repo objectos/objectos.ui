@@ -43,7 +43,7 @@ public sealed interface Stack extends Html.Component permits CarbonStack {
   /// @param stack allows for setting the options
   ///
   /// @return a newly created stack with the specified options
-  static Html.Component create(Consumer<? super Options> stack) {
+  static Stack create(Consumer<? super Options> stack) {
     final CarbonStack pojo;
     pojo = new CarbonStack();
 
@@ -58,7 +58,7 @@ public sealed interface Stack extends Html.Component permits CarbonStack {
   /// @param elements the components of the main section of the stack
   ///
   /// @return a newly created stack with the specified options
-  static Html.Component of(Spacing gap, Html.Component... elements) {
+  static Stack of(Spacing gap, Html.Component... elements) {
     return create(s -> {
       s.gap(gap);
 

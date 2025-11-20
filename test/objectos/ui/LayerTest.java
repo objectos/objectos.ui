@@ -21,7 +21,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(Y.class)
-public class LayerTest extends CarbonTest {
+public class LayerTest extends UiTest {
 
   @Test(dataProvider = "themes")
   public void testCase01(Theme theme) {

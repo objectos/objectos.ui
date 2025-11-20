@@ -244,11 +244,11 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
         page.main(
             Button.create(b -> {
-              b.dataOnClick(Carbon.Tearsheet.openAction(TEARSHEET));
+              b.dataOnClick(Tearsheet.openScript(TEARSHEET));
               b.text("Open Tearsheet");
             }),
 
-            Carbon.tearsheet(t -> {
+            Tearsheet.create(t -> {
               t.id(TEARSHEET);
 
               t.title("Title of the tearsheet");
@@ -289,7 +289,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
               t.actions(
                   a -> {
-                    a.dataOnClick(Carbon.Tearsheet.close(TEARSHEET));
+                    a.dataOnClick(Tearsheet.closeScript(TEARSHEET));
                     a.kind(ButtonKind.GHOST);
                     a.text("Cancel");
                   },
