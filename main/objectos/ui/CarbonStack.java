@@ -20,6 +20,7 @@ package objectos.ui;
 import java.util.List;
 import java.util.Objects;
 import objectos.ui.impl.CarbonComponent;
+import objectos.ui.impl.CarbonSpacing;
 import objectos.way.Html;
 
 final class CarbonStack extends CarbonComponent implements Carbon.Stack {
@@ -48,7 +49,7 @@ final class CarbonStack extends CarbonComponent implements Carbon.Stack {
   private List<Html.Component> main = List.of();
 
   @Override
-  public final void gap(Carbon.Spacing value) {
+  public final void gap(Spacing value) {
     gap = (CarbonSpacing) Objects.requireNonNull(value, "value == null");
   }
 

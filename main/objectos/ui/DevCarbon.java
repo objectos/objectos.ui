@@ -21,6 +21,7 @@ import static objectos.way.Http.Method.GET;
 
 import module java.base;
 import module objectos.way;
+import objectos.ui.impl.CarbonSpacing;
 import objectos.ui.impl.CarbonTheme;
 
 /// This class is not part of the Objectos UI JAR file.
@@ -83,7 +84,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
   private Html.Component button(ButtonKind kind) {
     return Carbon.stack(
-        Carbon.SPACING_04,
+        Spacing.SPACING_04,
 
         Button.create(b -> {
           b.id(BTN);

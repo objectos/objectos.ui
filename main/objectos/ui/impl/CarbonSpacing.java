@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
-enum CarbonSpacing implements Carbon.Spacing {
+import objectos.ui.Spacing;
+
+public enum CarbonSpacing implements Spacing {
 
   SPACING_00,
   SPACING_01,
