@@ -319,7 +319,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "TextInput - Default",
 
-          Carbon.textInput(t -> {
+          TextInput.create(t -> {
             t.helperText("Helper text");
             t.labelText("Label text");
             t.placeholder("Placeholder text");
@@ -331,7 +331,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "TextInput - Default (Focus)",
 
-          Carbon.textInput(t -> {
+          TextInput.create(t -> {
             t.focus();
             t.helperText("Helper text");
             t.id(TEXT_INPUT);
@@ -345,7 +345,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "TextInput - Invalid",
 
-          Carbon.textInput(t -> {
+          TextInput.create(t -> {
             t.invalidText("Error message goes here");
 
             t.labelText("Label text");
@@ -359,7 +359,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "TextInput - Invalid (Focus)",
 
-          Carbon.textInput(t -> {
+          TextInput.create(t -> {
             t.focus();
             t.id(TEXT_INPUT);
             t.invalidText("Error message goes here");

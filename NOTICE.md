@@ -6,7 +6,7 @@ Objectos UI uses third-party code.
 
 [link](https://github.com/carbon-design-system/carbon)
 
-Classes whose name begin with objectos.ui.Carbon* may use code from the Carbon Design System project,
+Classes from Objectos UI uses code from the Carbon Design System project,
 licensed under the Apache 2.0 license:
 
     Copyright IBM Corp. 2016, 2023

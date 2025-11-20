@@ -17,12 +17,10 @@
  */
 package objectos.ui.impl;
 
-import java.util.Objects;
-import objectos.ui.Carbon;
-import objectos.ui.Icon;
-import objectos.way.Html;
+import module java.base;
+import module objectos.ui;
 
-public final class CarbonTextInput extends CarbonComponent implements Carbon.TextInput {
+public final class CarbonTextInput extends CarbonComponent implements TextInput, TextInput.Options {
 
   private boolean focus;
 

@@ -17,10 +17,7 @@
  */
 package objectos.ui;
 
-import java.util.function.Consumer;
-import objectos.ui.impl.CarbonTextInput;
 import objectos.way.Css;
-import objectos.way.Html;
 
 /// The **Objectos Carbon** main class.
 /// Objectos Carbon is an implementation of IBM's Carbon Design System for Objectos Way applications.
@@ -46,70 +43,6 @@ public final class Carbon {
 
   // ##################################################################
   // # END: Styles
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Tearsheet
-  // ##################################################################
-
-  // ##################################################################
-  // # END: Tearsheet
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: TextInput
-  // ##################################################################
-
-  /// Configures the creation of a text input.
-  public sealed interface TextInput permits CarbonTextInput {
-
-    /// Adds a script that causes the focus to be set on this `<input>` upon loading.
-    void focus();
-
-    /// Provide text that is used alongside the control label for additional help.
-    /// @param value the helper text value
-    void helperText(String value);
-
-    /// Specify a custom `id` for the `<input>`.
-    /// @param value the `id` value
-    void id(Html.Id value);
-
-    /// Sets this control in the invalid state and displays the specified value as the error message.
-    /// @param value the error message to be displayed
-    void invalidText(String value);
-
-    /// Provide the text that will be read by a screen reader when visiting this control.
-    /// @param value the label text value
-    void labelText(String value);
-
-    /// Specify the placeholder attribute for the `<input>`
-    /// @param value the placeholder text value
-    void placeholder(String value);
-
-    /// Specify the value of the `<input>`.
-    /// @param value the value of the `<input>`
-    void value(String value);
-
-  }
-
-  /// Creates a new text input with the specified options.
-  ///
-  /// Text inputs enable users to enter free-form text data.
-  ///
-  /// @param textInput allows for setting the options
-  ///
-  /// @return a newly created text input with the specified options
-  public static Html.Component textInput(Consumer<? super TextInput> textInput) {
-    final CarbonTextInput pojo;
-    pojo = new CarbonTextInput();
-
-    textInput.accept(pojo);
-
-    return pojo;
-  }
-
-  // ##################################################################
-  // # END: TextInput
   // ##################################################################
 
 }

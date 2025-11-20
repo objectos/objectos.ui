@@ -18,7 +18,6 @@
 package objectos.ui;
 
 import java.util.function.Consumer;
-import objectos.ui.Carbon.TextInput;
 import objectos.way.Html;
 
 sealed interface FormBuilder permits FormGroup.Options {
@@ -27,8 +26,8 @@ sealed interface FormBuilder permits FormGroup.Options {
 
   /// Adds a text input with the specified options.
   /// @param textInput allows for setting the text input options
-  default void textInput(Consumer<? super TextInput> textInput) {
-    add(Carbon.textInput(textInput));
+  default void textInput(Consumer<? super TextInput.Options> textInput) {
+    add(TextInput.create(textInput));
   }
 
 }
