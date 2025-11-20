@@ -20,7 +20,7 @@ package objectos.ui.impl;
 import module java.base;
 import module objectos.ui;
 
-public final class CarbonTearsheet extends CarbonComponent implements Tearsheet, Tearsheet.Options {
+public final class UiTearsheet extends UiComponent implements Tearsheet, Tearsheet.Options {
 
   enum Kind {
     NARROW,
@@ -28,7 +28,7 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
     WIDE;
   }
 
-  private List<CarbonButton> actions = List.of();
+  private List<UiButton> actions = List.of();
 
   private String description = "";
 
@@ -61,16 +61,16 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
     );
   }
 
-  private List<CarbonButton> actions(CarbonButton... btns) {
+  private List<UiButton> actions(UiButton... btns) {
     return List.of(btns);
   }
 
-  private CarbonButton action(Consumer<? super Action> action, String message) {
+  private UiButton action(Consumer<? super Action> action, String message) {
     final Consumer<? super Action> a;
     a = Objects.requireNonNull(action, message);
 
-    final CarbonButton btn;
-    btn = new CarbonButton();
+    final UiButton btn;
+    btn = new UiButton();
 
     a.accept(btn);
 
@@ -194,7 +194,7 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
 
         // header-content
         m.div(
-            CarbonLayer.LAYER_1,
+            UiLayer.LAYER_1,
 
             m.css("""
             display:flex
@@ -371,7 +371,7 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
     }
   }
 
-  private class Buttons implements Iterable<CarbonButton>, Iterator<CarbonButton> {
+  private class Buttons implements Iterable<UiButton>, Iterator<UiButton> {
 
     private int cursor;
 
@@ -381,7 +381,7 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
     }
 
     @Override
-    public final CarbonButton next() {
+    public final UiButton next() {
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
@@ -389,7 +389,7 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
       final int idx;
       idx = cursor++;
 
-      final CarbonButton next;
+      final UiButton next;
       next = actions.get(idx);
 
       ButtonStyle style;
@@ -403,7 +403,7 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
         style = style.narrow();
       }
 
-      next.size(CarbonButtonSize.NOOP);
+      next.size(UiButtonSize.NOOP);
 
       next.internalStyle(style);
 
@@ -411,13 +411,13 @@ public final class CarbonTearsheet extends CarbonComponent implements Tearsheet,
     }
 
     @Override
-    public final Iterator<CarbonButton> iterator() {
+    public final Iterator<UiButton> iterator() {
       return this;
     }
 
   }
 
-  private Iterable<CarbonButton> buttons() {
+  private Iterable<UiButton> buttons() {
     return new Buttons();
   }
 

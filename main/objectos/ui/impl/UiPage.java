@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import module objectos.ui;
 
-public final class CarbonPage extends CarbonComponent implements Page, Page.Options {
+public final class UiPage extends UiComponent implements Page, Page.Options {
 
   private String css;
 
@@ -29,7 +29,7 @@ public final class CarbonPage extends CarbonComponent implements Page, Page.Opti
 
   private List<Html.Component> main = List.of();
 
-  private CarbonTheme theme = CarbonTheme.WHITE;
+  private UiTheme theme = UiTheme.WHITE;
 
   private String title = "";
 
@@ -50,7 +50,7 @@ public final class CarbonPage extends CarbonComponent implements Page, Page.Opti
 
   @Override
   public final void theme(Theme value) {
-    theme = (CarbonTheme) Objects.requireNonNull(value, "value == null");
+    theme = (UiTheme) Objects.requireNonNull(value, "value == null");
   }
 
   @Override

@@ -20,7 +20,7 @@ package objectos.ui.impl;
 import module java.base;
 import module objectos.ui;
 
-public final class CarbonTextInput extends CarbonComponent implements TextInput, TextInput.Options {
+public final class UiTextInput extends UiComponent implements TextInput, TextInput.Options {
 
   private boolean focus;
 

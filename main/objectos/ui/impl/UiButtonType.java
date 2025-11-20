@@ -18,18 +18,27 @@
 package objectos.ui.impl;
 
 import java.util.Locale;
-import objectos.ui.Theme;
+import objectos.ui.ButtonType;
+import objectos.way.Html;
 
-public enum CarbonTheme implements Theme {
+public enum UiButtonType implements ButtonType, Html.AttributeObject {
 
-  WHITE,
+  BUTTON,
 
-  G10,
+  RESET,
 
-  G90,
+  SUBMIT;
 
-  G100;
+  private final String value = name().toLowerCase(Locale.US);
 
-  public final String className = "carbon-" + name().toLowerCase(Locale.US);
+  @Override
+  public final Html.AttributeName attrName() {
+    return Html.AttributeName.TYPE;
+  }
+
+  @Override
+  public final String attrValue() {
+    return value;
+  }
 
 }

@@ -19,7 +19,7 @@ package objectos.ui.impl;
 
 import objectos.ui.Spacing;
 
-public enum CarbonSpacing implements Spacing {
+public enum UiSpacing implements Spacing {
 
   SPACING_00,
   SPACING_01,

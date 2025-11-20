@@ -17,7 +17,7 @@
  */
 package objectos.ui.impl;
 
-public class CarbonSpacingGen {
+public class UiSpacingGen {
 
   static final int[] VALUES = {
       0,
@@ -42,7 +42,7 @@ public class CarbonSpacingGen {
   private final StringBuilder fields = new StringBuilder();
 
   public static void main(String[] args) {
-    System.out.println(new CarbonSpacingGen());
+    System.out.println(new UiSpacingGen());
   }
 
   @Override

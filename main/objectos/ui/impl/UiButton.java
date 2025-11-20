@@ -27,7 +27,7 @@ import objectos.ui.Tearsheet;
 import objectos.way.Html;
 import objectos.way.Script;
 
-public final class CarbonButton extends CarbonComponent implements Button, Button.Options, Tearsheet.Action {
+public final class UiButton extends UiComponent implements Button, Button.Options, Tearsheet.Action {
 
   static final Html.ClassName BASE = Html.ClassName.ofText("""
   cursor:pointer
@@ -67,15 +67,15 @@ public final class CarbonButton extends CarbonComponent implements Button, Butto
 
   private Html.Instruction id = Html.Instruction.noop();
 
-  private CarbonButtonKind kind = CarbonButtonKind.PRIMARY;
+  private UiButtonKind kind = UiButtonKind.PRIMARY;
 
-  private CarbonButtonSize size = CarbonButtonSize.LG;
+  private UiButtonSize size = UiButtonSize.LG;
 
-  private Html.AttributeObject style = CarbonButtonSize.NOOP;
+  private Html.AttributeObject style = UiButtonSize.NOOP;
 
   private String text;
 
-  private Html.AttributeObject type = CarbonButtonType.BUTTON;
+  private Html.AttributeObject type = UiButtonType.BUTTON;
 
   @Override
   public final void dataOnClick(Consumer<? super Script> value) {
@@ -94,12 +94,12 @@ public final class CarbonButton extends CarbonComponent implements Button, Butto
 
   @Override
   public final void kind(ButtonKind value) {
-    kind = (CarbonButtonKind) Objects.requireNonNull(value, "value == null");
+    kind = (UiButtonKind) Objects.requireNonNull(value, "value == null");
   }
 
   @Override
   public final void size(ButtonSize value) {
-    size = (CarbonButtonSize) Objects.requireNonNull(value, "value == null");
+    size = (UiButtonSize) Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -109,7 +109,7 @@ public final class CarbonButton extends CarbonComponent implements Button, Butto
 
   @Override
   public final void type(ButtonType value) {
-    type = (CarbonButtonType) Objects.requireNonNull(value, "value == null");
+    type = (UiButtonType) Objects.requireNonNull(value, "value == null");
   }
 
   @Override

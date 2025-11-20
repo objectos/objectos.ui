@@ -19,14 +19,14 @@ package objectos.ui;
 
 import module java.base;
 import module objectos.way;
-import objectos.ui.impl.CarbonButton;
+import objectos.ui.impl.UiButton;
 
 /// Buttons are used to initialize an action.
 /// Button labels express what action will occur when the user interacts with it.
-public sealed interface Button extends Html.Component permits CarbonButton {
+public sealed interface Button extends Html.Component permits UiButton {
 
   /// Configures the creation of a button.
-  sealed interface Options permits CarbonButton {
+  sealed interface Options permits UiButton {
 
     /// Sets the `data-on-click` attribute value to the specified script.
     /// @param value the Objectos Script to execute
@@ -63,8 +63,8 @@ public sealed interface Button extends Html.Component permits CarbonButton {
   ///
   /// @return a newly created button with the specified options
   static Button create(Consumer<? super Options> btn) {
-    final CarbonButton pojo;
-    pojo = new CarbonButton();
+    final UiButton pojo;
+    pojo = new UiButton();
 
     btn.accept(pojo);
 

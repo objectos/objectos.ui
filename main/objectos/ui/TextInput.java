@@ -17,15 +17,15 @@
  */
 package objectos.ui;
 
-import objectos.ui.impl.CarbonTextInput;
+import objectos.ui.impl.UiTextInput;
 import module java.base;
 import module objectos.way;
 
 /// Text inputs enable users to enter free-form text data.
-public sealed interface TextInput extends Html.Component permits CarbonTextInput {
+public sealed interface TextInput extends Html.Component permits UiTextInput {
 
   /// Configures the creation of a text input.
-  sealed interface Options permits CarbonTextInput {
+  sealed interface Options permits UiTextInput {
 
     /// Adds a script that causes the focus to be set on this `<input>` upon loading.
     void focus();
@@ -62,8 +62,8 @@ public sealed interface TextInput extends Html.Component permits CarbonTextInput
   ///
   /// @return a newly created text input with the specified options
   static Html.Component create(Consumer<? super Options> textInput) {
-    final CarbonTextInput pojo;
-    pojo = new CarbonTextInput();
+    final UiTextInput pojo;
+    pojo = new UiTextInput();
 
     textInput.accept(pojo);
 

@@ -20,7 +20,7 @@ package objectos.ui.impl;
 import objectos.ui.ButtonKind;
 import objectos.way.Html;
 
-public enum CarbonButtonKind implements ButtonKind, Html.AttributeObject {
+public enum UiButtonKind implements ButtonKind, Html.AttributeObject {
 
   PRIMARY("""
   background-color:var(--color-button-primary)
@@ -58,7 +58,7 @@ public enum CarbonButtonKind implements ButtonKind, Html.AttributeObject {
 
   private final String attrValue;
 
-  private CarbonButtonKind(String css) {
+  private UiButtonKind(String css) {
     attrValue = Html.formatAttrValue(css);
   }
 

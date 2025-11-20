@@ -21,8 +21,8 @@ import static objectos.way.Http.Method.GET;
 
 import module java.base;
 import module objectos.way;
-import objectos.ui.impl.CarbonSpacing;
-import objectos.ui.impl.CarbonTheme;
+import objectos.ui.impl.UiSpacing;
+import objectos.ui.impl.UiTheme;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
@@ -215,8 +215,8 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     final int raw;
     raw = http.queryParamAsInt("gap", 0);
 
-    final CarbonSpacing gap;
-    gap = 0 <= raw && raw <= 13 ? CarbonSpacing.values()[raw] : CarbonSpacing.SPACING_00;
+    final UiSpacing gap;
+    gap = 0 <= raw && raw <= 13 ? UiSpacing.values()[raw] : UiSpacing.SPACING_00;
 
     switch (http.pathParam("id")) {
       case "default" -> ok(
@@ -432,19 +432,19 @@ public final class DevCarbon implements Http.RoutingPath.Module {
     final Theme theme;
     theme = theme(http);
 
-    final CarbonTheme impl;
-    impl = (CarbonTheme) theme;
+    final UiTheme impl;
+    impl = (UiTheme) theme;
 
-    final CarbonTheme[] values;
-    values = CarbonTheme.values();
+    final UiTheme[] values;
+    values = UiTheme.values();
 
     final int ordinal;
     ordinal = impl.ordinal();
 
-    final CarbonTheme prev;
+    final UiTheme prev;
     prev = ordinal == 0 ? null : values[ordinal - 1];
 
-    final CarbonTheme next;
+    final UiTheme next;
     next = ordinal == values.length - 1 ? null : values[ordinal + 1];
 
     return m -> m.div(

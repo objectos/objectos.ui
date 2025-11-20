@@ -19,7 +19,7 @@ package objectos.ui.impl;
 
 import objectos.way.Css;
 
-sealed abstract class CarbonStylesGenerated implements Css.Library permits CarbonStyles {
+sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles {
 
   static final String VERSION = "1.95.0";
 

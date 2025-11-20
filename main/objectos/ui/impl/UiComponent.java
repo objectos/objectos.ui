@@ -20,7 +20,7 @@ package objectos.ui.impl;
 import java.util.concurrent.atomic.AtomicInteger;
 import objectos.way.Html;
 
-public abstract class CarbonComponent implements Html.Component {
+public abstract class UiComponent implements Html.Component {
 
   enum MessageLevel {
     NONE,
@@ -31,10 +31,10 @@ public abstract class CarbonComponent implements Html.Component {
 
   @Override
   public final Html.Markup newHtmlMarkup() {
-    return new CarbonMarkup();
+    return new UiMarkup();
   }
 
-  final Html.Instruction.OfElement icon16(Html.Markup m, CarbonIcon icon) {
+  final Html.Instruction.OfElement icon16(Html.Markup m, UiIcon icon) {
     throw new UnsupportedOperationException("Implement me");
   }
 
@@ -43,7 +43,7 @@ public abstract class CarbonComponent implements Html.Component {
       return userId;
     }
 
-    if (m instanceof CarbonMarkup cm) {
+    if (m instanceof UiMarkup cm) {
       return cm.nextId();
     }
 

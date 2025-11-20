@@ -21,7 +21,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
-import objectos.ui.impl.CarbonTheme;
+import objectos.ui.impl.UiTheme;
 import objectos.way.Html;
 import objectos.way.Http;
 import org.testng.annotations.DataProvider;
@@ -35,7 +35,7 @@ public abstract class UiTest {
     return THEMES.stream().flatMap(t -> Y.SCREEN_SIZES.stream().map(s -> new Object[] {t, s})).iterator();
   }
 
-  private static final Set<CarbonTheme> THEMES = EnumSet.allOf(CarbonTheme.class);
+  private static final Set<UiTheme> THEMES = EnumSet.allOf(UiTheme.class);
 
   @DataProvider
   public final Iterator<Theme> themes() {

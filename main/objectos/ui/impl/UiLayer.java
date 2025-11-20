@@ -21,7 +21,7 @@ import module java.base;
 import module objectos.way;
 import module objectos.ui;
 
-public final class CarbonLayer extends CarbonComponent implements Layer, Layer.Options {
+public final class UiLayer extends UiComponent implements Layer, Layer.Options {
 
   static final Html.ClassName LAYER_0 = Html.ClassName.of("carbon-layer-0");
   static final Html.ClassName LAYER_1 = Html.ClassName.of("carbon-layer-1");
@@ -58,7 +58,7 @@ public final class CarbonLayer extends CarbonComponent implements Layer, Layer.O
     final int layer;
 
     if (level == -1) {
-      if (m instanceof CarbonMarkup c) {
+      if (m instanceof UiMarkup c) {
         layer = c.nextLayer();
       } else {
         layer = 1;

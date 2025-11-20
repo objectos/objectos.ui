@@ -19,13 +19,13 @@ package objectos.ui;
 
 import module java.base;
 import module objectos.way;
-import objectos.ui.impl.CarbonPage;
+import objectos.ui.impl.UiPage;
 
 /// Renders the base page.
-public sealed interface Page extends Html.Component permits CarbonPage {
+public sealed interface Page extends Html.Component permits UiPage {
 
   /// Configures the creation of a page component.
-  sealed interface Options permits CarbonPage {
+  sealed interface Options permits UiPage {
 
     /// Applies the specified Objectos CSS to the `<body>` element of the page.
     /// @param value the Objectos CSS to apply
@@ -55,8 +55,8 @@ public sealed interface Page extends Html.Component permits CarbonPage {
   ///
   /// @return a newly created page with the specified options
   static Page create(Consumer<? super Options> page) {
-    final CarbonPage pojo;
-    pojo = new CarbonPage();
+    final UiPage pojo;
+    pojo = new UiPage();
 
     page.accept(pojo);
 

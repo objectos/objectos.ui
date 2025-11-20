@@ -23,7 +23,7 @@ import java.util.Objects;
 import objectos.ui.FormGroup;
 import objectos.way.Html;
 
-public final class CarbonFormGroup extends CarbonComponent implements FormGroup, FormGroup.Options {
+public final class UiFormGroup extends UiComponent implements FormGroup, FormGroup.Options {
 
   private List<Html.Component> components = List.of();
 

@@ -17,24 +17,24 @@
  */
 package objectos.ui;
 
-import objectos.ui.impl.CarbonButtonSize;
+import objectos.ui.impl.UiButtonSize;
 
 /// Represents the size of a button.
-public sealed interface ButtonSize permits CarbonButtonSize {
+public sealed interface ButtonSize permits UiButtonSize {
 
   /// The Small (`sm`) size.
-  ButtonSize SM = CarbonButtonSize.SM;
+  ButtonSize SM = UiButtonSize.SM;
 
   /// The Medium (`md`) size.
-  ButtonSize MD = CarbonButtonSize.MD;
+  ButtonSize MD = UiButtonSize.MD;
 
   /// The Large (`lg`) size.
-  ButtonSize LG = CarbonButtonSize.LG;
+  ButtonSize LG = UiButtonSize.LG;
 
   /// The Extra-Large (`xl`) size.
-  ButtonSize XL = CarbonButtonSize.XL;
+  ButtonSize XL = UiButtonSize.XL;
 
   /// The Extra-Extra-Large (`x2`) size.
-  ButtonSize X2 = CarbonButtonSize.X2L;
+  ButtonSize X2 = UiButtonSize.X2L;
 
 }

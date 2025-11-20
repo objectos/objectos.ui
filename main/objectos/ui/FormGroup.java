@@ -17,15 +17,15 @@
  */
 package objectos.ui;
 
-import objectos.ui.impl.CarbonFormGroup;
+import objectos.ui.impl.UiFormGroup;
 import module java.base;
 import module objectos.way;
 
 /// A group of related input controls.
-public sealed interface FormGroup extends Html.Component permits CarbonFormGroup {
+public sealed interface FormGroup extends Html.Component permits UiFormGroup {
 
   /// Configures the creation of a form group.
-  sealed interface Options extends FormBuilder permits CarbonFormGroup {
+  sealed interface Options extends FormBuilder permits UiFormGroup {
 
     /// Adds the specified component to the form group.
     /// @param value the component to add
@@ -48,8 +48,8 @@ public sealed interface FormGroup extends Html.Component permits CarbonFormGroup
   ///
   /// @return a newly created form group with the specified options
   static FormGroup create(Consumer<? super Options> group) {
-    final CarbonFormGroup pojo;
-    pojo = new CarbonFormGroup();
+    final UiFormGroup pojo;
+    pojo = new UiFormGroup();
 
     group.accept(pojo);
 

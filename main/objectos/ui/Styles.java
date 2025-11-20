@@ -17,17 +17,17 @@
  */
 package objectos.ui;
 
-import objectos.ui.impl.CarbonStyles;
+import objectos.ui.impl.UiStyles;
 import objectos.way.Css;
 
 /// Provides the Objectos Carbon `Css.StyleSheet` configuration.
-public sealed interface Styles extends Css.Library permits CarbonStyles {
+public sealed interface Styles extends Css.Library permits UiStyles {
 
   /// Creates a new `Styles` instance with the default options.
   ///
   /// @return a new `Styles` instance.
   static Styles create() {
-    return new CarbonStyles();
+    return new UiStyles();
   }
 
 }

@@ -17,15 +17,15 @@
  */
 package objectos.ui;
 
-import objectos.ui.impl.CarbonIcon;
+import objectos.ui.impl.UiIcon;
 import module java.base;
 import module objectos.way;
 
 /// Provides a predefined set of icons.
-public sealed interface Icon extends Html.Component permits CarbonIcon {
+public sealed interface Icon extends Html.Component permits UiIcon {
 
   /// Configures the creation of an icon.
-  sealed interface Options permits CarbonIcon {
+  sealed interface Options permits UiIcon {
 
     /// Applies the specified Objectos CSS to the `<svg>` element.
     /// @param value the Objectos CSS to apply
@@ -59,8 +59,8 @@ public sealed interface Icon extends Html.Component permits CarbonIcon {
   ///
   /// @return a newly created icon with the specified options
   static Icon create(Consumer<? super Options> icon) {
-    final CarbonIcon pojo;
-    pojo = new CarbonIcon();
+    final UiIcon pojo;
+    pojo = new UiIcon();
 
     icon.accept(pojo);
 

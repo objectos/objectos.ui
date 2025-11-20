@@ -18,22 +18,22 @@
 package objectos.ui;
 
 import java.util.Locale;
-import objectos.ui.impl.CarbonTheme;
+import objectos.ui.impl.UiTheme;
 
 /// A theme provides a set of pre-defined colors and styles.
-public sealed interface Theme permits CarbonTheme {
+public sealed interface Theme permits UiTheme {
 
   /// The White theme.
-  Theme WHITE = CarbonTheme.WHITE;
+  Theme WHITE = UiTheme.WHITE;
 
   /// The Gray 10 theme.
-  Theme G10 = CarbonTheme.G10;
+  Theme G10 = UiTheme.G10;
 
   /// The Gray 90 Theme.
-  Theme G90 = CarbonTheme.G90;
+  Theme G90 = UiTheme.G90;
 
   /// The Gray 100 Theme.
-  Theme G100 = CarbonTheme.G100;
+  Theme G100 = UiTheme.G100;
 
   /// Returns the `Theme` instance with the specified name.
   ///
@@ -45,7 +45,7 @@ public sealed interface Theme permits CarbonTheme {
     final String upper;
     upper = name.toUpperCase(Locale.US);
 
-    return CarbonTheme.valueOf(upper);
+    return UiTheme.valueOf(upper);
   }
 
 }

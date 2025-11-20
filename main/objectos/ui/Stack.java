@@ -19,14 +19,14 @@ package objectos.ui;
 
 import module java.base;
 import module objectos.way;
-import objectos.ui.impl.CarbonStack;
+import objectos.ui.impl.UiStack;
 
 /// The `Stack` component allows components to not use margin
 /// and instead delegate the responsibility of positioning and layout to parent components.
-public sealed interface Stack extends Html.Component permits CarbonStack {
+public sealed interface Stack extends Html.Component permits UiStack {
 
   /// Configures the creation of a stack.
-  sealed interface Options permits CarbonStack {
+  sealed interface Options permits UiStack {
 
     /// Sets the gap to the specified spacing.
     /// @param value the spacing to used as gap
@@ -44,8 +44,8 @@ public sealed interface Stack extends Html.Component permits CarbonStack {
   ///
   /// @return a newly created stack with the specified options
   static Stack create(Consumer<? super Options> stack) {
-    final CarbonStack pojo;
-    pojo = new CarbonStack();
+    final UiStack pojo;
+    pojo = new UiStack();
 
     stack.accept(pojo);
 

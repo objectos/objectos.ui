@@ -17,22 +17,45 @@
  */
 package objectos.ui.impl;
 
-import objectos.way.Html;
+import module java.base;
+import module objectos.way;
+import module objectos.ui;
 
-final class CarbonMarkup extends Html.Markup.OfHtml {
+public final class UiPlex extends UiPlexGenerated implements Plex {
 
-  private int id;
+  public static final class Builder implements Plex.Options {
 
-  private int layer;
+    private String prefix = "/fonts";
 
-  CarbonMarkup() {}
+    @Override
+    public final void prefix(String value) {
+      prefix = Objects.requireNonNull(value);
+    }
 
-  public final String nextId() {
-    return "id-" + ++id;
+    public final Plex build() {
+      return new UiPlex(prefix);
+    }
+
   }
 
-  public final int nextLayer() {
-    return ++layer;
+  public UiPlex(String prefix) {
+    super(prefix);
+  }
+
+  @Override
+  public final void configure(Css.Library.Options opts) {
+    sans(opts);
+
+    opts.theme("""
+    :root {
+      --default-font-family: 'IBM Plex Sans', var(--font-sans, initial);
+    }
+    """);
+  }
+
+  @Override
+  public final void configure(Web.Resources.Library.Options opts) {
+    sans(opts);
   }
 
 }

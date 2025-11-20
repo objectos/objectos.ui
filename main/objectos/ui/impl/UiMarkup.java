@@ -15,20 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
-import objectos.ui.impl.UiButtonKind;
+import objectos.way.Html;
 
-/// Represents the kind of a button.
-public sealed interface ButtonKind permits UiButtonKind {
+final class UiMarkup extends Html.Markup.OfHtml {
 
-  /// The primary button kind.
-  ButtonKind PRIMARY = UiButtonKind.PRIMARY;
+  private int id;
 
-  /// The secondary button kind.
-  ButtonKind SECONDARY = UiButtonKind.SECONDARY;
+  private int layer;
 
-  /// The ghost button kind.
-  ButtonKind GHOST = UiButtonKind.GHOST;
+  UiMarkup() {}
+
+  public final String nextId() {
+    return "id-" + ++id;
+  }
+
+  public final int nextLayer() {
+    return ++layer;
+  }
 
 }

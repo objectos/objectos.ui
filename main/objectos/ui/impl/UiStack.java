@@ -21,7 +21,7 @@ import module java.base;
 import module objectos.ui;
 import objectos.ui.Stack;
 
-public final class CarbonStack extends CarbonComponent implements Stack, Stack.Options {
+public final class UiStack extends UiComponent implements Stack, Stack.Options {
 
   private static final String[] ROW_GAPS = {
       "row-gap:0",
@@ -42,13 +42,13 @@ public final class CarbonStack extends CarbonComponent implements Stack, Stack.O
 
   private final Html.ElementName as = Html.ElementName.DIV;
 
-  private CarbonSpacing gap = CarbonSpacing.SPACING_00;
+  private UiSpacing gap = UiSpacing.SPACING_00;
 
   private List<Html.Component> main = List.of();
 
   @Override
   public final void gap(Spacing value) {
-    gap = (CarbonSpacing) Objects.requireNonNull(value, "value == null");
+    gap = (UiSpacing) Objects.requireNonNull(value, "value == null");
   }
 
   @Override

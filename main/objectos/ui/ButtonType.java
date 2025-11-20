@@ -17,18 +17,18 @@
  */
 package objectos.ui;
 
-import objectos.ui.impl.CarbonButtonType;
+import objectos.ui.impl.UiButtonType;
 
 /// Represents a value of the `<button>` element `type` attribute.
-public sealed interface ButtonType permits CarbonButtonType {
+public sealed interface ButtonType permits UiButtonType {
 
   /// The `button` button type.
-  ButtonType BUTTON = CarbonButtonType.BUTTON;
+  ButtonType BUTTON = UiButtonType.BUTTON;
 
   /// The `reset` button type.
-  ButtonType RESET = CarbonButtonType.RESET;
+  ButtonType RESET = UiButtonType.RESET;
 
   /// The `submit` button type.
-  ButtonType SUBMIT = CarbonButtonType.SUBMIT;
+  ButtonType SUBMIT = UiButtonType.SUBMIT;
 
 }

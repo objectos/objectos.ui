@@ -18,17 +18,17 @@
 package objectos.ui;
 
 import java.util.function.Consumer;
-import objectos.ui.impl.CarbonPlex;
+import objectos.ui.impl.UiPlex;
 import objectos.way.Css;
 import objectos.way.Web;
 
 /// Provides the IBM Plex font family.
 public sealed interface Plex
     extends Css.Library, Web.Resources.Library
-    permits CarbonPlex {
+    permits UiPlex {
 
   /// Configures the creation of a `Plex` instance.
-  sealed interface Options permits CarbonPlex.Builder {
+  sealed interface Options permits UiPlex.Builder {
 
     /// Sets the path prefix on which to serve the font files.
     /// The prefix value must start with a '/' character and it must not end with a '/' character.
@@ -44,8 +44,8 @@ public sealed interface Plex
   ///
   /// @return a new `Plex` instance
   static Plex create(Consumer<? super Options> options) {
-    final CarbonPlex.Builder builder;
-    builder = new CarbonPlex.Builder();
+    final UiPlex.Builder builder;
+    builder = new UiPlex.Builder();
 
     options.accept(builder);
 

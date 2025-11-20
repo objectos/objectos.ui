@@ -19,16 +19,16 @@ package objectos.ui;
 
 import module java.base;
 import module objectos.ui;
-import objectos.ui.impl.CarbonButton;
-import objectos.ui.impl.CarbonTearsheet;
+import objectos.ui.impl.UiButton;
+import objectos.ui.impl.UiTearsheet;
 
 /// A tearsheet is a mostly full-screen type of dialog that keeps users
 /// in-context and focused by bringing actionable content front and center
 /// while revealing parts of the UI behind it.
-public sealed interface Tearsheet extends Html.Component permits CarbonTearsheet {
+public sealed interface Tearsheet extends Html.Component permits UiTearsheet {
 
   /// Configures the creation of a tearsheet.
-  sealed interface Options permits CarbonTearsheet {
+  sealed interface Options permits UiTearsheet {
 
     /// Sets the tearsheet's action button.
     /// @param action the single action
@@ -73,8 +73,8 @@ public sealed interface Tearsheet extends Html.Component permits CarbonTearsheet
   ///
   /// @return a newly created tearsheet with the specified options
   static Tearsheet create(Consumer<? super Options> tearsheet) {
-    final CarbonTearsheet pojo;
-    pojo = new CarbonTearsheet();
+    final UiTearsheet pojo;
+    pojo = new UiTearsheet();
 
     tearsheet.accept(pojo);
 
@@ -82,7 +82,7 @@ public sealed interface Tearsheet extends Html.Component permits CarbonTearsheet
   }
 
   /// Configures the creation of a tearsheet action.
-  sealed interface Action permits CarbonButton {
+  sealed interface Action permits UiButton {
 
     /// Sets the `data-on-click` attribute value to the specified script.
     /// @param value the Objectos Script to execute
@@ -110,14 +110,14 @@ public sealed interface Tearsheet extends Html.Component permits CarbonTearsheet
   /// @param id the tearsheet `id` attribute
   /// @return a script that can close the tearsheet
   static Consumer<? super Script> closeScript(Html.Id id) {
-    return CarbonTearsheet.closeImpl(id);
+    return UiTearsheet.closeImpl(id);
   }
 
   /// Returns a script that can open the tearsheet represented by the specified id.
   /// @param id the tearsheet `id` attribute
   /// @return a script that can open the tearsheet
   static Consumer<? super Script> openScript(Html.Id id) {
-    return CarbonTearsheet.openImpl(id);
+    return UiTearsheet.openImpl(id);
   }
 
 }

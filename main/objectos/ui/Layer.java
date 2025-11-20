@@ -19,13 +19,13 @@ package objectos.ui;
 
 import module java.base;
 import module objectos.way;
-import objectos.ui.impl.CarbonLayer;
+import objectos.ui.impl.UiLayer;
 
 /// The `Layer` component is used to render components on different layers.
-public sealed interface Layer extends Html.Component permits CarbonLayer {
+public sealed interface Layer extends Html.Component permits UiLayer {
 
   /// Configures the creation of a layer.
-  sealed interface Options permits CarbonLayer {
+  sealed interface Options permits UiLayer {
 
     /// Adds a child component to the end of this layer.
     ///
@@ -40,8 +40,8 @@ public sealed interface Layer extends Html.Component permits CarbonLayer {
   ///
   /// @return a newly created layer with the specified options
   static Layer create(Consumer<? super Options> layer) {
-    final CarbonLayer pojo;
-    pojo = new CarbonLayer();
+    final UiLayer pojo;
+    pojo = new UiLayer();
 
     layer.accept(pojo);
 

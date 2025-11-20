@@ -17,12 +17,12 @@
  */
 package objectos.ui.impl;
 
-public class CarbonStackGen {
+public class UiStackGen {
 
   private final StringBuilder fields = new StringBuilder();
 
   public static void main(String[] args) {
-    System.out.println(new CarbonStackGen());
+    System.out.println(new UiStackGen());
   }
 
   @Override
@@ -39,7 +39,7 @@ public class CarbonStackGen {
     """);
 
     final int[] values;
-    values = CarbonSpacingGen.VALUES;
+    values = UiSpacingGen.VALUES;
 
     for (int idx = 0, len = values.length; idx < len; idx++) {
       fields.append("    \"row-gap:");

@@ -21,7 +21,7 @@ import java.util.Objects;
 import objectos.ui.Icon;
 import objectos.way.Html;
 
-public final class CarbonIcon extends CarbonComponent implements Icon, Icon.Options {
+public final class UiIcon extends UiComponent implements Icon, Icon.Options {
 
   private String css;
 

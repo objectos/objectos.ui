@@ -20,67 +20,67 @@ package objectos.ui.impl;
 import objectos.ui.ButtonSize;
 import objectos.way.Html;
 
-public enum CarbonButtonSize implements ButtonSize, Html.AttributeObject {
+public enum UiButtonSize implements ButtonSize, Html.AttributeObject {
 
   NOOP(""),
 
-  SM(CarbonButton.PRODUCTIVE, """
+  SM(UiButton.PRODUCTIVE, """
   min-block-size:32rx
   padding-block:6rx
   """),
 
-  SM_EXPRESIVE(CarbonButton.EXPRESSIVE, """
+  SM_EXPRESIVE(UiButton.EXPRESSIVE, """
   min-block-size:32rx
   padding-block:4rx
   """),
 
-  MD(CarbonButton.PRODUCTIVE, """
+  MD(UiButton.PRODUCTIVE, """
   min-block-size:40rx
   padding-block:10rx
   """),
 
-  MD_EXPRESIVE(CarbonButton.EXPRESSIVE, """
+  MD_EXPRESIVE(UiButton.EXPRESSIVE, """
   min-block-size:40rx
   padding-block:8rx
   """),
 
-  LG(CarbonButton.PRODUCTIVE, """
+  LG(UiButton.PRODUCTIVE, """
   min-block-size:48rx
   padding-block:14rx
   """),
 
-  LG_EXPRESIVE(CarbonButton.EXPRESSIVE, """
+  LG_EXPRESIVE(UiButton.EXPRESSIVE, """
   min-block-size:48rx
   padding-block:12rx
   """),
 
-  XL(CarbonButton.PRODUCTIVE, """
+  XL(UiButton.PRODUCTIVE, """
   min-block-size:64rx
   padding-block:14rx
   """),
 
-  XL_EXPRESIVE(CarbonButton.EXPRESSIVE, """
+  XL_EXPRESIVE(UiButton.EXPRESSIVE, """
   min-block-size:64rx
   padding-block:12.7rx
   """),
 
-  X2L(CarbonButton.PRODUCTIVE, """
+  X2L(UiButton.PRODUCTIVE, """
   min-block-size:80rx
   padding-block:14rx
   """),
 
-  X2L_EXPRESIVE(CarbonButton.EXPRESSIVE, """
+  X2L_EXPRESIVE(UiButton.EXPRESSIVE, """
   min-block-size:80rx
   padding-block:12.7rx
   """);
 
   private final String attrValue;
 
-  private CarbonButtonSize(String attrValue) {
+  private UiButtonSize(String attrValue) {
     this.attrValue = attrValue;
   }
 
-  private CarbonButtonSize(String fonts, String css) {
+  private UiButtonSize(String fonts, String css) {
     attrValue = Html.formatAttrValue(fonts + css);
   }
 
@@ -94,7 +94,7 @@ public enum CarbonButtonSize implements ButtonSize, Html.AttributeObject {
     return attrValue;
   }
 
-  final CarbonButtonSize expressive() {
+  final UiButtonSize expressive() {
     return switch (this) {
       case SM -> SM_EXPRESIVE;
       case MD -> MD_EXPRESIVE;

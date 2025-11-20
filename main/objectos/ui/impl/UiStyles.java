@@ -20,22 +20,22 @@ package objectos.ui.impl;
 import objectos.ui.Styles;
 import objectos.way.Css;
 
-public final class CarbonStyles extends CarbonStylesGenerated implements Styles {
+public final class UiStyles extends UiStylesGenerated implements Styles {
 
   @Override
   public final void configure(Css.Library.Options opts) {
     super.configure(opts);
 
     opts.scanClasses(
-        CarbonButton.class,
-        CarbonButtonKind.class,
-        CarbonButtonSize.class,
-        CarbonFormGroup.class,
-        CarbonLayer.class,
-        CarbonPage.class,
-        CarbonStack.class,
-        CarbonTearsheet.class,
-        CarbonTextInput.class
+        UiButton.class,
+        UiButtonKind.class,
+        UiButtonSize.class,
+        UiFormGroup.class,
+        UiLayer.class,
+        UiPage.class,
+        UiStack.class,
+        UiTearsheet.class,
+        UiTextInput.class
     );
 
     opts.theme("""
