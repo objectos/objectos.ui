@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.impl;
 
-import java.util.List;
-import java.util.Objects;
-import objectos.ui.impl.CarbonComponent;
-import objectos.ui.impl.CarbonSpacing;
-import objectos.way.Html;
+import module java.base;
+import module objectos.ui;
+import objectos.ui.Stack;
 
-final class CarbonStack extends CarbonComponent implements Carbon.Stack {
+public final class CarbonStack extends CarbonComponent implements Stack, Stack.Options {
 
   private static final String[] ROW_GAPS = {
       "row-gap:0",

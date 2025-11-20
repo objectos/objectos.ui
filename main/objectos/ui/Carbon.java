@@ -32,63 +32,6 @@ public final class Carbon {
   private Carbon() {}
 
   // ##################################################################
-  // # BEGIN: Spacing
-  // ##################################################################
-
-  // ##################################################################
-  // # END: Spacing
-  // ##################################################################
-
-  // ##################################################################
-  // # BEGIN: Stack
-  // ##################################################################
-
-  /// Configures the creation of a stack.
-  public sealed interface Stack permits CarbonStack {
-
-    /// Sets the gap to the specified spacing.
-    /// @param value the spacing to used as gap
-    void gap(Spacing value);
-
-    /// Sets the components of the main section of this stack.
-    /// @param elements the main section components
-    void main(Html.Component... elements);
-
-  }
-
-  /// Creates a new stack with the specified options.
-  ///
-  /// @param stack allows for setting the options
-  ///
-  /// @return a newly created stack with the specified options
-  public static Html.Component stack(Consumer<? super Stack> stack) {
-    final CarbonStack pojo;
-    pojo = new CarbonStack();
-
-    stack.accept(pojo);
-
-    return pojo;
-  }
-
-  /// Creates a new stack with the specified gap and elements.
-  ///
-  /// @param gap the spacing to be used as gap
-  /// @param elements the components of the main section of the stack
-  ///
-  /// @return a newly created stack with the specified options
-  public static Html.Component stack(Spacing gap, Html.Component... elements) {
-    return stack(s -> {
-      s.gap(gap);
-
-      s.main(elements);
-    });
-  }
-
-  // ##################################################################
-  // # END: Stack
-  // ##################################################################
-
-  // ##################################################################
   // # BEGIN: Styles
   // ##################################################################
 

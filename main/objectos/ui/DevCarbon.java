@@ -83,7 +83,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
   }
 
   private Html.Component button(ButtonKind kind) {
-    return Carbon.stack(
+    return Stack.of(
         Spacing.SPACING_04,
 
         Button.create(b -> {
@@ -224,7 +224,7 @@ public final class DevCarbon implements Http.RoutingPath.Module {
 
           "Stack - Default",
 
-          Carbon.stack(
+          Stack.of(
               gap,
 
               m -> m.div("Item 1"),
