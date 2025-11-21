@@ -479,16 +479,18 @@ final class XUiGen {
         css(CFG_COMPONENTS, EXACT, ".cds--layer-two", ".ui-layer-1"),
         css(CFG_COMPONENTS, EXACT, ".cds--layer-three", ".ui-layer-2"),
 
-        css(COMPONENT, STARTS_WITH, ".cds--btn", "button"),
-        css(COMPONENT, STARTS_WITH, ".cds--fieldset", "formgroup"),
-        css(COMPONENT, STARTS_WITH, ".cds--form", "form"),
-        css(COMPONENT, STARTS_WITH, ".cds--label", "label"),
-        css(COMPONENT, STARTS_WITH, ".cds--layer", "layer"),
-        css(COMPONENT, STARTS_WITH, ".cds--modal", "modal"),
-        css(COMPONENT, STARTS_WITH, ".cds--popover", "popover"),
-        css(COMPONENT, STARTS_WITH, ".cds--stack", "stack"),
-        css(COMPONENT, STARTS_WITH, ".cds--text-input", "textinput"),
-        css(COMPONENT, STARTS_WITH, ".cds--tooltip", "tooltip")
+        css(COMPONENT, CONTAINS, ".cds--btn", "button"),
+        css(COMPONENT, CONTAINS, ".cds--fieldset", "formgroup"),
+        css(COMPONENT, CONTAINS, ".cds--form", "form"),
+        css(COMPONENT, CONTAINS, ".cds--header", "header"),
+        css(COMPONENT, CONTAINS, ".cds--label", "label"),
+        css(COMPONENT, CONTAINS, ".cds--layer", "layer"),
+        css(COMPONENT, CONTAINS, ".cds--modal", "modal"),
+        css(COMPONENT, CONTAINS, ".cds--popover", "popover"),
+        css(COMPONENT, CONTAINS, ".cds--skip-to-content", "skip-to-content"),
+        css(COMPONENT, CONTAINS, ".cds--stack", "stack"),
+        css(COMPONENT, CONTAINS, ".cds--text-input", "textinput"),
+        css(COMPONENT, CONTAINS, ".cds--tooltip", "tooltip")
     );
 
     final String jsPath;
@@ -509,6 +511,7 @@ final class XUiGen {
         html("components-button--default", "#storybook-root"),
         html("components-form--default", "#storybook-root"),
         html("components-formgroup--default", "#storybook-root"),
+        html("components-ui-shell-header--header-w-navigation", "#storybook-root"),
         html("components-layer--default", "#storybook-root"),
         html("components-modal--default", "#storybook-root"),
         html("components-popover--default", "#storybook-root"),
@@ -950,8 +953,8 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     final CssResult cssResult;
     cssResult = css(
         cssSource,
-        css(COMPONENT, STARTS_WITH, ".c4p--action", "action"),
-        css(COMPONENT, STARTS_WITH, ".c4p--tearsheet", "tearsheet")
+        css(COMPONENT, CONTAINS, ".c4p--action", "action"),
+        css(COMPONENT, CONTAINS, ".c4p--tearsheet", "tearsheet")
     );
 
     c4pWrite(version, cssResult);
@@ -1133,13 +1136,13 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     }
   }
 
+  private static final CssMatch CONTAINS = CssMatch.CONTAINS;
   private static final CssMatch EXACT = CssMatch.EXACT;
-  private static final CssMatch STARTS_WITH = CssMatch.STARTS_WITH;
 
   private enum CssMatch {
-    EXACT,
+    CONTAINS,
 
-    STARTS_WITH;
+    EXACT;
   }
 
   private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
@@ -1205,9 +1208,9 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       for (CssTarget target : targets) {
         final boolean res;
         res = switch (target.match) {
-          case EXACT -> name.equals(target.selector);
+          case CONTAINS -> name.contains(target.selector);
 
-          case STARTS_WITH -> name.startsWith(target.selector);
+          case EXACT -> name.equals(target.selector);
 
           default -> false;
         };

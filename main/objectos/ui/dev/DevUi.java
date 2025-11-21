@@ -30,97 +30,14 @@ import objectos.ui.impl.UiTheme;
 @Css.Source
 public final class DevUi implements Http.Routing.Module {
 
-  private final App.Injector injector;
-
-  public DevUi(App.Injector injector) {
-    this.injector = injector;
-  }
-
   @Override
   public final void configure(Http.Routing routing) {
-    routing.path("/button/{id}/{theme}", GET, this::button);
     routing.path("/formgroup/{id}/{theme}", GET, this::formGroup);
     routing.path("/layer/{id}/{theme}", GET, this::layer);
     routing.path("/page/{theme}", GET, this::page);
     routing.path("/stack/{id}/{theme}", GET, this::stack);
     routing.path("/tearsheet/{id}/{theme}", GET, this::tearsheet);
     routing.path("/textinput/{id}/{theme}", GET, this::textInput);
-
-    routing.path("/styles.css", GET, this::styles);
-  }
-
-  public static final Html.Id BTN = Html.Id.of("btn");
-  public static final Html.Id BTN_SM = Html.Id.of("btn-sm");
-  public static final Html.Id BTN_MD = Html.Id.of("btn-md");
-  public static final Html.Id BTN_XL = Html.Id.of("btn-xl");
-  public static final Html.Id BTN_X2L = Html.Id.of("btn-x2l");
-
-  private void button(Http.Exchange http) {
-    switch (http.pathParam("id")) {
-      case "default" -> ok(
-          http,
-
-          "Button - Default",
-
-          button(ButtonKind.PRIMARY)
-      );
-
-      case "secondary" -> ok(
-          http,
-
-          "Button - Secondary",
-
-          button(ButtonKind.SECONDARY)
-      );
-
-      case "ghost" -> ok(
-          http,
-
-          "Button - Ghost",
-
-          button(ButtonKind.GHOST)
-      );
-    }
-  }
-
-  private Html.Component button(ButtonKind kind) {
-    return Stack.of(
-        Spacing.SPACING_04,
-
-        Button.create(b -> {
-          b.id(BTN);
-          b.kind(kind);
-          b.text("Button");
-        }),
-
-        Button.create(b -> {
-          b.id(BTN_SM);
-          b.kind(kind);
-          b.size(ButtonSize.SM);
-          b.text("Button");
-        }),
-
-        Button.create(b -> {
-          b.id(BTN_MD);
-          b.kind(kind);
-          b.size(ButtonSize.MD);
-          b.text("Button");
-        }),
-
-        Button.create(b -> {
-          b.id(BTN_XL);
-          b.kind(kind);
-          b.size(ButtonSize.XL);
-          b.text("Button");
-        }),
-
-        Button.create(b -> {
-          b.id(BTN_X2L);
-          b.kind(kind);
-          b.size(ButtonSize.X2);
-          b.text("Button");
-        })
-    );
   }
 
   private void formGroup(Http.Exchange http) {
@@ -371,7 +288,7 @@ public final class DevUi implements Http.Routing.Module {
     }
   }
 
-  private void ok(Http.Exchange http, String title, Html.Component... elements) {
+  static void ok(Http.Exchange http, String title, Html.Component... elements) {
     http.ok(Page.create(page -> {
       page.theme(theme(http));
 
@@ -398,38 +315,14 @@ public final class DevUi implements Http.Routing.Module {
     }));
   }
 
-  private void styles(Http.Exchange http) {
-    http.ok(Css.StyleSheet.create(opts -> {
-      final Note.Sink noteSink;
-      noteSink = injector.getInstance(Note.Sink.class);
-
-      opts.noteSink(noteSink);
-
-      final Path classOutput;
-      classOutput = Path.of("work", "main");
-
-      opts.scanDirectory(classOutput);
-
-      final Css.Library styles;
-      styles = injector.getInstance(DevStart.CARBON_STYLES);
-
-      opts.include(styles);
-
-      final Css.Library plex;
-      plex = injector.getInstance(DevStart.CARBON_PLEX);
-
-      opts.include(plex);
-    }));
-  }
-
-  private Theme theme(Http.Exchange http) {
+  private static Theme theme(Http.Exchange http) {
     final String themeName;
     themeName = http.pathParam("theme");
 
     return Theme.of(themeName);
   }
 
-  private Html.Component themeSwitcher(Http.Exchange http) {
+  private static Html.Component themeSwitcher(Http.Exchange http) {
     final Theme theme;
     theme = theme(http);
 

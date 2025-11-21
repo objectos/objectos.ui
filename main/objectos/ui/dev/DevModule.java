@@ -19,11 +19,8 @@ package objectos.ui.dev;
 
 import static objectos.way.Http.Method.GET;
 
-import objectos.way.App;
-import objectos.way.Http;
-import objectos.way.Media;
-import objectos.way.Script;
-import objectos.way.Web;
+import module java.base;
+import module objectos.ui;
 
 /// This class is not part of the Objectos UI JAR file.
 /// It is placed in the main source tree to ease its development.
@@ -37,13 +34,15 @@ public class DevModule implements Http.Routing.Module {
 
   @Override
   public final void configure(Http.Routing routing) {
-    routing.install(new DevUi(injector));
+    routing.install(new DevButton());
+    routing.install(new DevHeader());
+    routing.install(new DevUi());
+
+    routing.path("/dev-stop", Http.Method.GET, http -> http.ok(Media.Bytes.textPlain("ok\n")));
 
     routing.path("/script.js", GET, http -> http.ok(Script.Library.of()));
 
-    routing.path("/dev-stop", path -> {
-      path.allow(Http.Method.GET, http -> http.ok(Media.Bytes.textPlain("ok\n")));
-    });
+    routing.path("/styles.css", GET, this::styles);
 
     final Web.Resources webResources;
     webResources = injector.getInstance(Web.Resources.class);
@@ -51,6 +50,30 @@ public class DevModule implements Http.Routing.Module {
     routing.handler(webResources);
 
     routing.handler(Http.Handler.notFound());
+  }
+
+  private void styles(Http.Exchange http) {
+    http.ok(Css.StyleSheet.create(opts -> {
+      final Note.Sink noteSink;
+      noteSink = injector.getInstance(Note.Sink.class);
+
+      opts.noteSink(noteSink);
+
+      final Path classOutput;
+      classOutput = Path.of("work", "main");
+
+      opts.scanDirectory(classOutput);
+
+      final Css.Library styles;
+      styles = injector.getInstance(DevStart.CARBON_STYLES);
+
+      opts.include(styles);
+
+      final Css.Library plex;
+      plex = injector.getInstance(DevStart.CARBON_PLEX);
+
+      opts.include(plex);
+    }));
   }
 
 }

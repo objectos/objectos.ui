@@ -18,7 +18,7 @@
 package objectos.ui;
 
 import java.util.List;
-import objectos.ui.dev.DevUi;
+import objectos.ui.dev.DevButton;
 import objectos.way.Html;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -27,11 +27,11 @@ import org.testng.annotations.Test;
 public class ButtonTest extends UiTest {
 
   private final List<Html.Id> buttons = List.of(
-      DevUi.BTN,
-      DevUi.BTN_SM,
-      DevUi.BTN_MD,
-      DevUi.BTN_XL,
-      DevUi.BTN_X2L
+      DevButton.BTN,
+      DevButton.BTN_SM,
+      DevButton.BTN_MD,
+      DevButton.BTN_XL,
+      DevButton.BTN_X2L
   );
 
   @Test(dataProvider = "themes")
