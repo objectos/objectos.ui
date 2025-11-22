@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.impl;
+package objectos.ui;
 
-import java.util.Locale;
-import objectos.ui.Theme;
+import objectos.ui.impl.UiBreakpoint;
 
-public enum UiTheme implements Theme {
+/// Represents a CSS breakpoint.
+public sealed interface Breakpoint permits UiBreakpoint {
 
-  WHITE,
+  Breakpoint SM = UiBreakpoint.SM;
 
-  G10,
+  Breakpoint MD = UiBreakpoint.MD;
 
-  G90,
+  Breakpoint LG = UiBreakpoint.LG;
 
-  G100;
+  Breakpoint XL = UiBreakpoint.XL;
 
-  public final String className = "theme-" + name().toLowerCase(Locale.US);
+  Breakpoint X2 = UiBreakpoint.X2;
 
 }

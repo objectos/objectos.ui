@@ -470,28 +470,29 @@ final class XUiGen {
     cssResult = css(
         cssSource,
 
-        css(CFG_THEME, EXACT, ":root", null),
-        css(CFG_THEME, EXACT, ".cds--white", ".ui-white"),
-        css(CFG_THEME, EXACT, ".cds--g10", ".ui-g10"),
-        css(CFG_THEME, EXACT, ".cds--g90", ".ui-g90"),
-        css(CFG_THEME, EXACT, ".cds--g100", ".ui-g100"),
+        css(CFG_THEME, CssMatcher.exact(":root"), null),
+        css(CFG_THEME, CssMatcher.exact(".cds--white"), ".theme-white"),
+        css(CFG_THEME, CssMatcher.exact(".cds--g10"), ".theme-g10"),
+        css(CFG_THEME, CssMatcher.exact(".cds--g90"), ".theme-g90"),
+        css(CFG_THEME, CssMatcher.exact(".cds--g100"), ".theme-g100"),
 
-        css(CFG_COMPONENTS, EXACT, ".cds--layer-one", ".ui-layer-0"),
-        css(CFG_COMPONENTS, EXACT, ".cds--layer-two", ".ui-layer-1"),
-        css(CFG_COMPONENTS, EXACT, ".cds--layer-three", ".ui-layer-2"),
+        css(CFG_COMPONENTS, CssMatcher.exact(".cds--layer-one"), ".layer-0"),
+        css(CFG_COMPONENTS, CssMatcher.exact(".cds--layer-two"), ".layer-1"),
+        css(CFG_COMPONENTS, CssMatcher.exact(".cds--layer-three"), ".layer-2"),
 
-        css(COMPONENT, CONTAINS, ".cds--btn", "button"),
-        css(COMPONENT, CONTAINS, ".cds--fieldset", "formgroup"),
-        css(COMPONENT, CONTAINS, ".cds--form", "form"),
-        css(COMPONENT, CONTAINS, ".cds--header", "header"),
-        css(COMPONENT, CONTAINS, ".cds--label", "label"),
-        css(COMPONENT, CONTAINS, ".cds--layer", "layer"),
-        css(COMPONENT, CONTAINS, ".cds--modal", "modal"),
-        css(COMPONENT, CONTAINS, ".cds--popover", "popover"),
-        css(COMPONENT, CONTAINS, ".cds--skip-to-content", "skip-to-content"),
-        css(COMPONENT, CONTAINS, ".cds--stack", "stack"),
-        css(COMPONENT, CONTAINS, ".cds--text-input", "textinput"),
-        css(COMPONENT, CONTAINS, ".cds--tooltip", "tooltip")
+        css(COMPONENT, CssMatcher.contains(".cds--btn"), "button"),
+        css(COMPONENT, CssMatcher.contains(".cds--fieldset"), "formgroup"),
+        css(COMPONENT, CssMatcher.contains(".cds--form"), "form"),
+        css(COMPONENT, CssMatcher.contains(".cds--css-grid", ".cds--subgrid", "--col-"), "grid"),
+        css(COMPONENT, CssMatcher.contains(".cds--header"), "header"),
+        css(COMPONENT, CssMatcher.contains(".cds--label"), "label"),
+        css(COMPONENT, CssMatcher.contains(".cds--layer"), "layer"),
+        css(COMPONENT, CssMatcher.contains(".cds--modal"), "modal"),
+        css(COMPONENT, CssMatcher.contains(".cds--popover"), "popover"),
+        css(COMPONENT, CssMatcher.contains(".cds--skip-to-content"), "skip-to-content"),
+        css(COMPONENT, CssMatcher.contains(".cds--stack"), "stack"),
+        css(COMPONENT, CssMatcher.contains(".cds--text-input"), "textinput"),
+        css(COMPONENT, CssMatcher.contains(".cds--tooltip"), "tooltip")
     );
 
     final String jsPath;
@@ -517,7 +518,8 @@ final class XUiGen {
         html("components-modal--default", "#storybook-root"),
         html("components-popover--default", "#storybook-root"),
         html("components-textinput--default", "#storybook-root"),
-        html("components-tooltip--default", "#storybook-root")
+        html("components-tooltip--default", "#storybook-root"),
+        html("elements-grid--default", "#storybook-root")
     );
   }
 
@@ -868,7 +870,22 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
         w.write("    ");
         w.write(names.get(1));
         w.write(" { ");
-        w.write(names.get(0));
+
+        final String name0;
+        name0 = names.get(0);
+
+        w.write(
+            switch (name0) {
+              case "@media(min-width: 42rem)" -> "@media (width >= 48rem)";
+
+              case "@media(min-width: 66rem)" -> "@media (width >= 64rem)";
+
+              case "@media(min-width: 99rem)" -> "@media (width >= 96rem)";
+
+              default -> name0;
+            }
+        );
+
         w.write(" {\n");
       }
 
@@ -954,8 +971,8 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     final CssResult cssResult;
     cssResult = css(
         cssSource,
-        css(COMPONENT, CONTAINS, ".c4p--action", "action"),
-        css(COMPONENT, CONTAINS, ".c4p--tearsheet", "tearsheet")
+        css(COMPONENT, CssMatcher.contains(".c4p--action"), "action"),
+        css(COMPONENT, CssMatcher.contains(".c4p--tearsheet"), "tearsheet")
     );
 
     c4pWrite(version, cssResult);
@@ -1137,16 +1154,40 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     }
   }
 
-  private static final CssMatch CONTAINS = CssMatch.CONTAINS;
-  private static final CssMatch EXACT = CssMatch.EXACT;
+  @FunctionalInterface
+  private interface CssMatcher {
 
-  private enum CssMatch {
-    CONTAINS,
+    static CssMatcher contains(String value) {
+      return name -> name.contains(value);
+    }
 
-    EXACT;
+    static CssMatcher contains(String value, String... more) {
+      return name -> {
+
+        if (name.contains(value)) {
+          return true;
+        }
+
+        for (String v : more) {
+          if (name.contains(v)) {
+            return true;
+          }
+        }
+
+        return false;
+
+      };
+    }
+
+    static CssMatcher exact(String value) {
+      return name -> name.equals(value);
+    }
+
+    boolean test(String name);
+
   }
 
-  private record CssTarget(CssAction action, CssMatch match, String selector, String name) {}
+  private record CssTarget(CssAction action, CssMatcher matcher, String name) {}
 
   private record CssResult(List<Cfg> cfgs, List<Component> components) {}
 
@@ -1207,14 +1248,11 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
 
     final CssTarget target(String name) {
       for (CssTarget target : targets) {
+        final CssMatcher matcher;
+        matcher = target.matcher;
+
         final boolean res;
-        res = switch (target.match) {
-          case CONTAINS -> name.contains(target.selector);
-
-          case EXACT -> name.equals(target.selector);
-
-          default -> false;
-        };
+        res = matcher.test(name);
 
         if (res) {
           return target;
@@ -1232,8 +1270,8 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     }
   }
 
-  private CssTarget css(CssAction action, CssMatch match, String selector, String name) {
-    return new CssTarget(action, match, selector, name);
+  private CssTarget css(CssAction action, CssMatcher matcher, String name) {
+    return new CssTarget(action, matcher, name);
   }
 
   private CssResult css(String css, CssTarget... targets) {
@@ -1531,7 +1569,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
           ) {
             n = "--type-" + name;
           } else {
-            n = "--ui-" + name;
+            n = "--" + name;
           }
 
           v = val0;
@@ -1550,7 +1588,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
           ) {
             n = "--type-" + name;
           } else {
-            n = "--ui-" + name;
+            n = "--" + name;
           }
 
           v = val0;

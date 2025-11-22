@@ -36,6 +36,10 @@ public sealed interface Stack extends Html.Component permits UiStack {
     /// @param elements the main section components
     void main(Html.Component... elements);
 
+    /// Adds the specified component to the main section of this stack.
+    /// @param value the component to be added to the main section
+    void mainAdd(Html.Component value);
+
   }
 
   /// Creates a new stack with the specified options.

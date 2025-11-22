@@ -276,6 +276,38 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --color-text-primary: #161616;
       --color-text-secondary: #525252;
       --color-toggle-off: #8d8d8d;
+      --fluid-spacing-01: 0;
+      --fluid-spacing-02: 2vw;
+      --fluid-spacing-03: 5vw;
+      --fluid-spacing-04: 10vw;
+      --grid-columns: 4;
+      --grid-gutter: 2rem;
+      --grid-margin: 0;
+      --layout-density-padding-inline-condensed: 0.5rem;
+      --layout-density-padding-inline-max: 999999999px;
+      --layout-density-padding-inline-min: 0px;
+      --layout-density-padding-inline-normal: 1rem;
+      --layout-size-height-2xl: 5rem;
+      --layout-size-height-lg: 3rem;
+      --layout-size-height-max: 999999999px;
+      --layout-size-height-md: 2.5rem;
+      --layout-size-height-min: 0px;
+      --layout-size-height-sm: 2rem;
+      --layout-size-height-xl: 4rem;
+      --layout-size-height-xs: 1.5rem;
+      --spacing-01: 0.125rem;
+      --spacing-02: 0.25rem;
+      --spacing-03: 0.5rem;
+      --spacing-04: 0.75rem;
+      --spacing-05: 1rem;
+      --spacing-06: 1.5rem;
+      --spacing-07: 2rem;
+      --spacing-08: 2.5rem;
+      --spacing-09: 3rem;
+      --spacing-10: 4rem;
+      --spacing-11: 5rem;
+      --spacing-12: 6rem;
+      --spacing-13: 10rem;
       --type-body-01-font-size: 0.875rem;
       --type-body-01-font-weight: 400;
       --type-body-01-letter-spacing: 0.16px;
@@ -513,62 +545,30 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
       --type-quotation-02-font-weight: 300;
       --type-quotation-02-letter-spacing: 0;
       --type-quotation-02-line-height: 1.25;
-      --ui-fluid-spacing-01: 0;
-      --ui-fluid-spacing-02: 2vw;
-      --ui-fluid-spacing-03: 5vw;
-      --ui-fluid-spacing-04: 10vw;
-      --ui-grid-columns: 4;
-      --ui-grid-gutter: 2rem;
-      --ui-grid-margin: 0;
-      --ui-layout-density-padding-inline-condensed: 0.5rem;
-      --ui-layout-density-padding-inline-max: 999999999px;
-      --ui-layout-density-padding-inline-min: 0px;
-      --ui-layout-density-padding-inline-normal: 1rem;
-      --ui-layout-size-height-2xl: 5rem;
-      --ui-layout-size-height-lg: 3rem;
-      --ui-layout-size-height-max: 999999999px;
-      --ui-layout-size-height-md: 2.5rem;
-      --ui-layout-size-height-min: 0px;
-      --ui-layout-size-height-sm: 2rem;
-      --ui-layout-size-height-xl: 4rem;
-      --ui-layout-size-height-xs: 1.5rem;
-      --ui-spacing-01: 0.125rem;
-      --ui-spacing-02: 0.25rem;
-      --ui-spacing-03: 0.5rem;
-      --ui-spacing-04: 0.75rem;
-      --ui-spacing-05: 1rem;
-      --ui-spacing-06: 1.5rem;
-      --ui-spacing-07: 2rem;
-      --ui-spacing-08: 2.5rem;
-      --ui-spacing-09: 3rem;
-      --ui-spacing-10: 4rem;
-      --ui-spacing-11: 5rem;
-      --ui-spacing-12: 6rem;
-      --ui-spacing-13: 10rem;
     }
     """);
 
     opts.theme("""
-    :root { @media(min-width: 42rem) {
-      --ui-grid-columns: 8;
-      --ui-grid-margin: 1rem;
+    :root { @media (width >= 48rem) {
+      --grid-columns: 8;
+      --grid-margin: 1rem;
     }}
     """);
 
     opts.theme("""
-    :root { @media(min-width: 66rem) {
-      --ui-grid-columns: 16;
+    :root { @media (width >= 64rem) {
+      --grid-columns: 16;
     }}
     """);
 
     opts.theme("""
-    :root { @media(min-width: 99rem) {
-      --ui-grid-margin: 1.5rem;
+    :root { @media (width >= 96rem) {
+      --grid-margin: 1.5rem;
     }}
     """);
 
     opts.theme("""
-    .ui-white {
+    .theme-white {
       --color-ai-aura-end: rgba(255, 255, 255, 0);
       --color-ai-aura-hover-background: #edf5ff;
       --color-ai-aura-hover-end: rgba(255, 255, 255, 0);
@@ -809,7 +809,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.theme("""
-    .ui-g10 {
+    .theme-g10 {
       --color-ai-aura-end: rgba(255, 255, 255, 0);
       --color-ai-aura-hover-background: #edf5ff;
       --color-ai-aura-hover-end: rgba(255, 255, 255, 0);
@@ -1050,7 +1050,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.theme("""
-    .ui-g90 {
+    .theme-g90 {
       --color-ai-aura-end: rgba(0, 0, 0, 0);
       --color-ai-aura-hover-background: #474747;
       --color-ai-aura-hover-end: rgba(0, 0, 0, 0);
@@ -1290,7 +1290,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.theme("""
-    .ui-g100 {
+    .theme-g100 {
       --color-ai-aura-end: rgba(0, 0, 0, 0);
       --color-ai-aura-hover-background: #333333;
       --color-ai-aura-hover-end: rgba(0, 0, 0, 0);
@@ -1555,7 +1555,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.components("""
-    .ui-layer-0 {
+    .layer-0 {
       --color-border-strong: var(--color-border-strong-01, #8d8d8d);
       --color-border-subtle: var(--color-border-subtle-00, #e0e0e0);
       --color-border-subtle-selected: var(--color-border-subtle-selected-01, #c6c6c6);
@@ -1575,7 +1575,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.components("""
-    .ui-layer-1 {
+    .layer-1 {
       --color-border-strong: var(--color-border-strong-02, #8d8d8d);
       --color-border-subtle: var(--color-border-subtle-01, #c6c6c6);
       --color-border-subtle-selected: var(--color-border-subtle-selected-02, #c6c6c6);
@@ -1595,7 +1595,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     """);
 
     opts.components("""
-    .ui-layer-2 {
+    .layer-2 {
       --color-border-strong: var(--color-border-strong-03, #8d8d8d);
       --color-border-subtle: var(--color-border-subtle-02, #e0e0e0);
       --color-border-subtle-selected: var(--color-border-subtle-selected-03, #c6c6c6);

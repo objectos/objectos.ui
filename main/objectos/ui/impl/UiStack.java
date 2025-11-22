@@ -44,7 +44,7 @@ public final class UiStack extends UiComponent implements Stack, Stack.Options {
 
   private UiSpacing gap = UiSpacing.SPACING_00;
 
-  private List<Html.Component> main = List.of();
+  private final List<Html.Component> main = new ArrayList<>();
 
   @Override
   public final void gap(Spacing value) {
@@ -53,7 +53,25 @@ public final class UiStack extends UiComponent implements Stack, Stack.Options {
 
   @Override
   public final void main(Html.Component... elements) {
-    main = List.of(elements);
+    main.clear();
+
+    for (int idx = 0; idx < elements.length; idx++) {
+      final Html.Component value;
+      value = elements[idx];
+
+      if (value == null) {
+        throw new NullPointerException("elements[" + idx + "] == null");
+      }
+
+      main.add(value);
+    }
+  }
+
+  @Override
+  public final void mainAdd(Html.Component value) {
+    var c = Objects.requireNonNull(value, "value == null");
+
+    main.add(c);
   }
 
   @Override

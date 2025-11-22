@@ -17,7 +17,7 @@
  */
 package objectos.ui.impl;
 
-import java.util.function.Consumer;
+import module java.base;
 import module objectos.ui;
 
 public final class UiHeader extends UiComponent implements Header, Header.Options {

@@ -17,6 +17,7 @@
  */
 package objectos.ui.dev;
 
+import module java.base;
 import module objectos.ui;
 import objectos.ui.impl.UiTheme;
 
@@ -60,6 +61,19 @@ abstract class AbstractDevUi implements Http.Routing.Module {
           themeSwitcher(http)
       );
     }));
+  }
+
+  final Html.Component page(Http.Exchange http, Consumer<? super Page.Options> more) {
+    return Page.create(page -> {
+      page.theme(theme(http));
+
+      page.head(m -> {
+        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/styles.css"));
+        m.script(m.src("/script.js"));
+      });
+
+      more.accept(page);
+    });
   }
 
   private Theme theme(Http.Exchange http) {

@@ -23,9 +23,9 @@ import module objectos.ui;
 
 public final class UiLayer extends UiComponent implements Layer, Layer.Options {
 
-  static final Html.ClassName LAYER_0 = Html.ClassName.of("ui-layer-0");
-  static final Html.ClassName LAYER_1 = Html.ClassName.of("ui-layer-1");
-  static final Html.ClassName LAYER_2 = Html.ClassName.of("ui-layer-2");
+  static final Html.ClassName LAYER_0 = Html.ClassName.of("layer-0");
+  static final Html.ClassName LAYER_1 = Html.ClassName.of("layer-1");
+  static final Html.ClassName LAYER_2 = Html.ClassName.of("layer-2");
 
   private final Html.ElementName as = Html.ElementName.DIV;
 

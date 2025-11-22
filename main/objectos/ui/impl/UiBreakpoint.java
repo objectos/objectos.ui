@@ -17,19 +17,26 @@
  */
 package objectos.ui.impl;
 
-import java.util.Locale;
-import objectos.ui.Theme;
+import module objectos.ui;
 
-public enum UiTheme implements Theme {
+public enum UiBreakpoint implements Breakpoint {
 
-  WHITE,
+  XS(16),
 
-  G10,
+  SM(4),
 
-  G90,
+  MD(8),
 
-  G100;
+  LG(16),
 
-  public final String className = "theme-" + name().toLowerCase(Locale.US);
+  XL(16),
+
+  X2(16);
+
+  final int gridColumns;
+
+  private UiBreakpoint(int gridColumns) {
+    this.gridColumns = gridColumns;
+  }
 
 }
