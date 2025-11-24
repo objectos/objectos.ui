@@ -479,14 +479,7 @@ public final class UiColumn extends UiComponent implements Column, Column.Option
 
   @Override
   public final void add(Html.Component value) {
-    final Html.Component child;
-    child = Objects.requireNonNull(value, "value == null");
-
-    if (main == EMPTY_MAIN) {
-      main = new ArrayList<>();
-    }
-
-    main.add(child);
+    main = add(main, value);
   }
 
   @Override

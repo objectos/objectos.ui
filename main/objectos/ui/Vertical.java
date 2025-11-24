@@ -56,6 +56,14 @@ public sealed interface Vertical extends Html.Component permits UiVertical {
     return pojo;
   }
 
+  /// Returns the Objectos CSS for a vertical component with the specified gap.
+  /// @param gap the spacing to be used as gap
+  /// @param more additional CSS class names appended to the result
+  /// @return the Objectos CSS
+  static String cssOf(Spacing gap, String... more) {
+    return UiVertical.cssOf0(gap, more);
+  }
+
   /// Creates a new vertical component with the specified gap and children.
   ///
   /// @param gap the spacing to be used as gap

@@ -55,11 +55,9 @@ abstract class AbstractDevUi implements Http.Routing.Module {
       padding:42rx
       """);
 
-      page.main(
-          m -> m.c(elements),
+      page.add(m -> m.c(elements));
 
-          themeSwitcher(http)
-      );
+      page.add(themeSwitcher(http));
     }));
   }
 

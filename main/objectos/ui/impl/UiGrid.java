@@ -18,7 +18,6 @@
 package objectos.ui.impl;
 
 import module java.base;
-import java.util.ArrayList;
 import module objectos.ui;
 
 public final class UiGrid extends UiComponent implements Grid, Grid.Options {
@@ -27,13 +26,11 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
 
   private String css;
 
-  private final List<Html.Component> main = new ArrayList<>();
+  private List<Html.Component> main = EMPTY_MAIN;
 
   @Override
-  public final void column(Consumer<? super Column.Options> col) {
-    main.add(
-        Column.create(col)
-    );
+  public final void add(Html.Component value) {
+    main = add(main, value);
   }
 
   @Override

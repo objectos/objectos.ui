@@ -27,6 +27,10 @@ public sealed interface Page extends Html.Component permits UiPage {
   /// Configures the creation of a page component.
   sealed interface Options permits UiPage {
 
+    /// Adds a child component to the end of the `<body>` element of this page.
+    /// @param value the child component
+    void add(Html.Component value);
+
     /// Applies the specified Objectos CSS to the `<body>` element of the page.
     /// @param value the Objectos CSS to apply
     void css(String value);
@@ -35,11 +39,7 @@ public sealed interface Page extends Html.Component permits UiPage {
     /// @param value the component to apply
     void head(Html.Component value);
 
-    /// Sets the components of the main section of this page, i.e., the `<body>` element.
-    /// @param elements the main section components
-    void main(Html.Component... elements);
-
-    /// Sets the page Carbon theme.
+    /// Sets the page theme.
     /// @param value the page theme
     void theme(Theme value);
 

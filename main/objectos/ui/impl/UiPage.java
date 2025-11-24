@@ -27,11 +27,16 @@ public final class UiPage extends UiComponent implements Page, Page.Options {
 
   private Html.Component head;
 
-  private List<Html.Component> main = List.of();
+  private List<Html.Component> main = EMPTY_MAIN;
 
   private UiTheme theme = UiTheme.WHITE;
 
   private String title = "";
+
+  @Override
+  public final void add(Html.Component value) {
+    main = add(main, value);
+  }
 
   @Override
   public final void css(String value) {
@@ -41,11 +46,6 @@ public final class UiPage extends UiComponent implements Page, Page.Options {
   @Override
   public final void head(Html.Component value) {
     head = Objects.requireNonNull(value, "value == null");
-  }
-
-  @Override
-  public final void main(Html.Component... elements) {
-    main = List.of(elements);
   }
 
   @Override

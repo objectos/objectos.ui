@@ -27,9 +27,9 @@ public sealed interface Grid extends Html.Component permits UiGrid {
   /// Configures the creation of a grid.
   sealed interface Options permits UiGrid {
 
-    /// Adds a column with the specified options.
-    /// @param col allows for setting the options
-    void column(Consumer<? super Column.Options> col);
+    /// Adds a child component to the end of this grid.
+    /// @param value the child component
+    void add(Html.Component value);
 
     /// Applies the specified Objectos CSS to the HTML element of the grid.
     /// @param value the Objectos CSS to apply

@@ -81,7 +81,7 @@ public final class DevUi implements Http.Routing.Module {
       case "default" -> http.ok(page(http, page -> {
         page.title("Layer - Default");
 
-        page.main(m -> m.div(
+        page.add(m -> m.div(
             m.css("padding:32rx sm/max-width:640rx"),
 
             m.c(test),
@@ -133,12 +133,14 @@ public final class DevUi implements Http.Routing.Module {
       case "default" -> http.ok(page(http, page -> {
         page.title("Tearsheet - Default");
 
-        page.main(
+        page.add(
             Button.create(b -> {
               b.dataOnClick(Tearsheet.openScript(TEARSHEET));
               b.text("Open Tearsheet");
-            }),
+            })
+        );
 
+        page.add(
             Tearsheet.create(t -> {
               t.id(TEARSHEET);
 
@@ -280,11 +282,9 @@ public final class DevUi implements Http.Routing.Module {
       padding:42rx
       """);
 
-      page.main(
-          m -> m.c(elements),
+      page.add(m -> m.c(elements));
 
-          themeSwitcher(http)
-      );
+      page.add(themeSwitcher(http));
     }));
   }
 

@@ -18,8 +18,6 @@
 package objectos.ui.impl;
 
 import module java.base;
-import java.util.ArrayList;
-import java.util.List;
 import module objectos.ui;
 import objectos.ui.Spacing;
 import objectos.ui.Vertical;
@@ -27,7 +25,12 @@ import objectos.way.Html.Component;
 
 public final class UiVertical extends UiComponent implements Vertical, Vertical.Options {
 
-  private static final String[] ROW_GAPS = {
+  private static final String CSS = """
+  display:grid
+  grid-auto-flow:row
+  """;
+
+  private static final String[] GAPS = {
       "row-gap:0",
       "row-gap:2rx",
       "row-gap:4rx",
@@ -48,7 +51,7 @@ public final class UiVertical extends UiComponent implements Vertical, Vertical.
 
   private UiSpacing gap = UiSpacing.SPACING_00;
 
-  private List<Html.Component> main = List.of();
+  private List<Html.Component> main = EMPTY_MAIN;
 
   public UiVertical() {}
 
@@ -58,15 +61,35 @@ public final class UiVertical extends UiComponent implements Vertical, Vertical.
     this.main = main;
   }
 
-  @Override
-  public final void add(Html.Component value) {
-    var c = Objects.requireNonNull(value, "value == null");
+  public static String cssOf0(Spacing gap, String... more) {
+    final StringBuilder sb;
+    sb = new StringBuilder(CSS);
 
-    if (main.isEmpty()) {
-      main = new ArrayList<>();
+    final UiSpacing impl;
+    impl = (UiSpacing) gap;
+
+    final int gapIdx;
+    gapIdx = impl.ordinal();
+
+    final String cn;
+    cn = GAPS[gapIdx];
+
+    sb.append(cn);
+
+    for (String v : more) {
+      sb.append(' ');
+
+      sb.append(
+          Objects.requireNonNull(v)
+      );
     }
 
-    main.add(c);
+    return sb.toString();
+  }
+
+  @Override
+  public final void add(Html.Component value) {
+    main = add(main, value);
   }
 
   @Override
@@ -85,15 +108,12 @@ public final class UiVertical extends UiComponent implements Vertical, Vertical.
     gapIdx = gap.ordinal();
 
     final String cn;
-    cn = ROW_GAPS[gapIdx];
+    cn = GAPS[gapIdx];
 
     m.elem(
         as,
 
-        m.css("""
-        display:grid
-        grid-auto-flow:row
-        """),
+        m.css(CSS),
 
         m.className(cn),
 

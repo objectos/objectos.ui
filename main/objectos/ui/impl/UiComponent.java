@@ -36,6 +36,23 @@ public abstract class UiComponent implements Html.Component {
     return new UiMarkup();
   }
 
+  final List<Html.Component> add(List<Html.Component> list, Html.Component value) {
+    final Html.Component child;
+    child = Objects.requireNonNull(value, "value == null");
+
+    final List<Html.Component> main;
+
+    if (list == EMPTY_MAIN) {
+      main = new ArrayList<>();
+    } else {
+      main = list;
+    }
+
+    main.add(child);
+
+    return main;
+  }
+
   final Html.Instruction.OfElement icon16(Html.Markup m, UiIcon icon) {
     throw new UnsupportedOperationException("Implement me");
   }

@@ -29,20 +29,13 @@ public final class UiLayer extends UiComponent implements Layer, Layer.Options {
 
   private final Html.ElementName as = Html.ElementName.DIV;
 
-  private List<Html.Component> components = List.of();
+  private List<Html.Component> main = EMPTY_MAIN;
 
   private int level = -1;
 
   @Override
   public final void add(Html.Component value) {
-    final Html.Component c;
-    c = Objects.requireNonNull(value, "value == null");
-
-    if (components.isEmpty()) {
-      components = new ArrayList<>();
-    }
-
-    components.add(c);
+    main = add(main, value);
   }
 
   public final void level(int value) {
@@ -74,7 +67,7 @@ public final class UiLayer extends UiComponent implements Layer, Layer.Options {
       default -> LAYER_2;
     };
 
-    m.elem(as, cn, m.c(components));
+    m.elem(as, cn, m.c(main));
   }
 
 }

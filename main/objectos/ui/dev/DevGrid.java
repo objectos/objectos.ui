@@ -26,6 +26,18 @@ final class DevGrid extends AbstractDevUi {
     super("grid");
   }
 
+  private static final String GRID_DEFAULT = """
+  min-block-size:80rx
+  outline:1px_dashed_var(--color-border-strong)
+  """;
+
+  private static final String COLUMN = """
+  layer-0
+  background-color:var(--color-layer)
+  box-shadow:0_0_0_1px_var(--color-border-strong)
+  min-block-size:80rx
+  """;
+
   @Override
   final void handle(Http.Exchange http) {
     switch (http.pathParam("id")) {
@@ -33,166 +45,108 @@ final class DevGrid extends AbstractDevUi {
           page(http, page -> {
             page.title("Grid - Default");
 
-            page.css("""
-            padding:16rx
-            """);
+            page.css(Vertical.cssOf(Spacing.SPACING_07, "padding:32rx_0"));
 
-            page.main(
-                Vertical.of(
-                    Spacing.SPACING_07,
+            page.add(
+                Grid.create(grid -> {
+                  grid.css(GRID_DEFAULT);
 
-                    Grid.create(grid -> {
-                      grid.css("""
-                      layer-0
-                      background-color:var(--color-layer)
-                      min-block-size:80rx
-                      outline:1px_dashed_var(--color-border-strong)
-                      """);
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  }));
 
-                        col.span(4);
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  }));
 
-                        col.span(4);
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  }));
 
-                        col.span(4);
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  }));
+                })
+            );
 
-                        col.span(4);
-                      });
-                    }),
+            page.add(
+                Grid.create(grid -> {
+                  grid.css(GRID_DEFAULT);
 
-                    Grid.create(grid -> {
-                      grid.css("""
-                      layer-0
-                      background-color:var(--color-layer)
-                      min-block-size:80rx
-                      outline:1px_dashed_var(--color-border-strong)
-                      """);
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(2);
+                    col.span(Breakpoint.MD, 4);
+                    col.span(Breakpoint.LG, 6);
+                    col.add(m -> {
+                      m.p("Small: Span 2 of 4");
+                      m.p("Medium: Span 4 of 8");
+                      m.p("Large: Span 6 of 16");
+                    });
+                  }));
 
-                        col.span(2);
-                        col.span(Breakpoint.MD, 4);
-                        col.span(Breakpoint.LG, 6);
-                        col.add(m -> {
-                          m.p("Small: Span 2 of 4");
-                          m.p("Medium: Span 4 of 8");
-                          m.p("Large: Span 6 of 16");
-                        });
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(2);
+                    col.span(Breakpoint.MD, 2);
+                    col.span(Breakpoint.LG, 3);
+                    col.add(m -> {
+                      m.p("Small: Span 2 of 4");
+                      m.p("Medium: Span 2 of 8");
+                      m.p("Large: Span 3 of 16");
+                    });
+                  }));
 
-                        col.span(2);
-                        col.span(Breakpoint.MD, 2);
-                        col.span(Breakpoint.LG, 3);
-                        col.add(m -> {
-                          m.p("Small: Span 2 of 4");
-                          m.p("Medium: Span 2 of 8");
-                          m.p("Large: Span 3 of 16");
-                        });
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(0);
+                    col.span(Breakpoint.MD, 2);
+                    col.span(Breakpoint.LG, 3);
+                    col.add(m -> {
+                      m.p("Small: Span 0 of 4");
+                      m.p("Medium: Span 2 of 8");
+                      m.p("Large: Span 3 of 16");
+                    });
+                  }));
 
-                        col.span(0);
-                        col.span(Breakpoint.MD, 2);
-                        col.span(Breakpoint.LG, 3);
-                        col.add(m -> {
-                          m.p("Small: Span 0 of 4");
-                          m.p("Medium: Span 2 of 8");
-                          m.p("Large: Span 3 of 16");
-                        });
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(0);
+                    col.span(Breakpoint.MD, 0);
+                    col.span(Breakpoint.LG, 4);
+                    col.add(m -> {
+                      m.p("Small: Span 0 of 4");
+                      m.p("Medium: Span 0 of 8");
+                      m.p("Large: Span 4 of 16");
+                    });
+                  }));
 
-                        col.span(0);
-                        col.span(Breakpoint.MD, 0);
-                        col.span(Breakpoint.LG, 4);
-                        col.add(m -> {
-                          m.p("Small: Span 0 of 4");
-                          m.p("Medium: Span 0 of 8");
-                          m.p("Large: Span 4 of 16");
-                        });
-                      });
+                  grid.add(Column.create(col -> {
+                    col.css(COLUMN);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
-
-                        col.span(1);
-                        col.span(Breakpoint.MD, 4);
-                        col.span(Breakpoint.LG, 12);
-                        col.add(m -> {
-                          m.p("Small: Span 25%");
-                          m.p("Medium: Span 50%");
-                          m.p("Large: Span 75%");
-                        });
-                      });
-                    })
-                ));
+                    col.span(1);
+                    col.span(Breakpoint.MD, 4);
+                    col.span(Breakpoint.LG, 12);
+                    col.add(m -> {
+                      m.p("Small: Span 25%");
+                      m.p("Medium: Span 50%");
+                      m.p("Large: Span 75%");
+                    });
+                  }));
+                })
+            );
           })
       );
     }
