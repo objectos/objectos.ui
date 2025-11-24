@@ -38,7 +38,7 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
         UiHeaderSkipToContent.class,
         UiLayer.class,
         UiPage.class,
-        UiStack.class,
+        UiVertical.class,
         UiTearsheet.class,
         UiTextInput.class
     );

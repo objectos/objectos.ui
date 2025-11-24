@@ -15,20 +15,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui;
+package objectos.ui.dev;
 
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import module objectos.ui;
+import objectos.ui.impl.UiSpacing;
 
-@Listeners(Y.class)
-public class StackTest extends UiTest {
+public final class DevVertical extends AbstractDevUi {
 
-  @Test(dataProvider = "themes")
-  public void testCase01(Theme theme) {
-    try (Y.Tab tab = Y.tabDev()) {
-      tab.navigate("/stack/default", theme);
+  DevVertical() {
+    super("vertical");
+  }
 
-      tab.screenshot();
+  @Override
+  final void handle(Http.Exchange http) {
+    final int raw;
+    raw = http.queryParamAsInt("gap", 0);
+
+    final UiSpacing gap;
+    gap = 0 <= raw && raw <= 13 ? UiSpacing.values()[raw] : UiSpacing.SPACING_00;
+
+    switch (http.pathParam("id")) {
+      case "default" -> ok(
+          http,
+
+          "Vertical - Default",
+
+          Vertical.of(
+              gap,
+
+              m -> m.div("Item 1"),
+              m -> m.div("Item 2"),
+              m -> m.div("Item 3")
+          )
+      );
     }
   }
 

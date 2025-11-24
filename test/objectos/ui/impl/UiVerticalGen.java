@@ -17,12 +17,12 @@
  */
 package objectos.ui.impl;
 
-public class UiStackGen {
+public class UiVerticalGen {
 
   private final StringBuilder fields = new StringBuilder();
 
   public static void main(String[] args) {
-    System.out.println(new UiStackGen());
+    System.out.println(new UiVerticalGen());
   }
 
   @Override

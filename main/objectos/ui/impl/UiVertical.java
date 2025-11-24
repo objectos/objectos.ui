@@ -18,10 +18,14 @@
 package objectos.ui.impl;
 
 import module java.base;
+import java.util.ArrayList;
+import java.util.List;
 import module objectos.ui;
-import objectos.ui.Stack;
+import objectos.ui.Spacing;
+import objectos.ui.Vertical;
+import objectos.way.Html.Component;
 
-public final class UiStack extends UiComponent implements Stack, Stack.Options {
+public final class UiVertical extends UiComponent implements Vertical, Vertical.Options {
 
   private static final String[] ROW_GAPS = {
       "row-gap:0",
@@ -40,38 +44,39 @@ public final class UiStack extends UiComponent implements Stack, Stack.Options {
       "row-gap:160rx"
   };
 
-  private final Html.ElementName as = Html.ElementName.DIV;
+  private Html.ElementName as = Html.ElementName.DIV;
 
   private UiSpacing gap = UiSpacing.SPACING_00;
 
-  private final List<Html.Component> main = new ArrayList<>();
+  private List<Html.Component> main = List.of();
+
+  public UiVertical() {}
+
+  public UiVertical(Spacing gap, List<Component> main) {
+    this.gap = (UiSpacing) gap;
+
+    this.main = main;
+  }
+
+  @Override
+  public final void add(Html.Component value) {
+    var c = Objects.requireNonNull(value, "value == null");
+
+    if (main.isEmpty()) {
+      main = new ArrayList<>();
+    }
+
+    main.add(c);
+  }
+
+  @Override
+  public final void as(Html.ElementName value) {
+    as = Objects.requireNonNull(value, "value == null");
+  }
 
   @Override
   public final void gap(Spacing value) {
     gap = (UiSpacing) Objects.requireNonNull(value, "value == null");
-  }
-
-  @Override
-  public final void main(Html.Component... elements) {
-    main.clear();
-
-    for (int idx = 0; idx < elements.length; idx++) {
-      final Html.Component value;
-      value = elements[idx];
-
-      if (value == null) {
-        throw new NullPointerException("elements[" + idx + "] == null");
-      }
-
-      main.add(value);
-    }
-  }
-
-  @Override
-  public final void mainAdd(Html.Component value) {
-    var c = Objects.requireNonNull(value, "value == null");
-
-    main.add(c);
   }
 
   @Override

@@ -61,7 +61,7 @@ public final class DevButton extends AbstractDevUi {
   }
 
   private Html.Component button(ButtonKind kind) {
-    return Stack.of(
+    return Vertical.of(
         Spacing.SPACING_04,
 
         Button.create(b -> {

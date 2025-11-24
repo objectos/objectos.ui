@@ -21,8 +21,6 @@ import static objectos.way.Http.Method.GET;
 
 import module java.base;
 import module objectos.ui;
-import objectos.ui.Stack;
-import objectos.ui.impl.UiSpacing;
 import objectos.ui.impl.UiTheme;
 
 /// This class is not part of the Objectos UI JAR file.
@@ -35,7 +33,6 @@ public final class DevUi implements Http.Routing.Module {
     routing.path("/formgroup/{id}/{theme}", GET, this::formGroup);
     routing.path("/layer/{id}/{theme}", GET, this::layer);
     routing.path("/page/{theme}", GET, this::page);
-    routing.path("/stack/{id}/{theme}", GET, this::stack);
     routing.path("/tearsheet/{id}/{theme}", GET, this::tearsheet);
     routing.path("/textinput/{id}/{theme}", GET, this::textInput);
   }
@@ -127,30 +124,6 @@ public final class DevUi implements Http.Routing.Module {
 
       more.accept(page);
     });
-  }
-
-  private void stack(Http.Exchange http) {
-    final int raw;
-    raw = http.queryParamAsInt("gap", 0);
-
-    final UiSpacing gap;
-    gap = 0 <= raw && raw <= 13 ? UiSpacing.values()[raw] : UiSpacing.SPACING_00;
-
-    switch (http.pathParam("id")) {
-      case "default" -> ok(
-          http,
-
-          "Stack - Default",
-
-          Stack.of(
-              gap,
-
-              m -> m.div("Item 1"),
-              m -> m.div("Item 2"),
-              m -> m.div("Item 3")
-          )
-      );
-    }
   }
 
   static final Html.Id TEARSHEET = Html.Id.of("ts");

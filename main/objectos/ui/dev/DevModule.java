@@ -38,6 +38,7 @@ public class DevModule implements Http.Routing.Module {
     routing.install(new DevGrid());
     routing.install(new DevHeader());
     routing.install(new DevUi());
+    routing.install(new DevVertical());
 
     routing.path("/dev-stop", Http.Method.GET, http -> http.ok(Media.Bytes.textPlain("ok\n")));
 
