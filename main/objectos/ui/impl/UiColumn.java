@@ -473,7 +473,21 @@ public final class UiColumn extends UiComponent implements Column, Column.Option
 
   private String css;
 
+  private List<Html.Component> main = EMPTY_MAIN;
+
   private final Map<UiBreakpoint, Html.ClassName> span = new EnumMap<>(UiBreakpoint.class);
+
+  @Override
+  public final void add(Html.Component value) {
+    final Html.Component child;
+    child = Objects.requireNonNull(value, "value == null");
+
+    if (main == EMPTY_MAIN) {
+      main = new ArrayList<>();
+    }
+
+    main.add(child);
+  }
 
   @Override
   public final void css(String value) {
@@ -494,10 +508,7 @@ public final class UiColumn extends UiComponent implements Column, Column.Option
   }
 
   private void span0(UiBreakpoint impl, int value) {
-    final int max;
-    max = impl.gridColumns;
-
-    checkSpan(max, value);
+    checkSpan(impl, value);
 
     final List<Html.ClassName> list;
     list = SPANS.get(impl);
@@ -508,7 +519,10 @@ public final class UiColumn extends UiComponent implements Column, Column.Option
     span.put(impl, style);
   }
 
-  private void checkSpan(int max, int value) {
+  private void checkSpan(UiBreakpoint impl, int value) {
+    final int max;
+    max = impl.gridColumns;
+
     if (0 <= value && value <= max) {
       return;
     }
@@ -531,7 +545,9 @@ public final class UiColumn extends UiComponent implements Column, Column.Option
 
         css != null ? m.css(css) : m.noop(),
 
-        m.flatten(span.values())
+        m.flatten(span.values()),
+
+        m.c(main)
     );
   }
 

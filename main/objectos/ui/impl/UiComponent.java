@@ -17,10 +17,12 @@
  */
 package objectos.ui.impl;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import objectos.way.Html;
+import module java.base;
+import module objectos.ui;
 
 public abstract class UiComponent implements Html.Component {
+
+  static final List<Html.Component> EMPTY_MAIN = List.of();
 
   enum MessageLevel {
     NONE,

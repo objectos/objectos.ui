@@ -22,14 +22,19 @@ import objectos.ui.impl.UiBreakpoint;
 /// Represents a CSS breakpoint.
 public sealed interface Breakpoint permits UiBreakpoint {
 
+  /// The `sm` breakpoint: minimum width 40rem (640px).
   Breakpoint SM = UiBreakpoint.SM;
 
+  /// The `md` breakpoint: minimum width 48rem (768px).
   Breakpoint MD = UiBreakpoint.MD;
 
+  /// The `lg` breakpoint: minimum width 64rem (1024px).
   Breakpoint LG = UiBreakpoint.LG;
 
+  /// The `xl` breakpoint: minimum width 80rem (1280px).
   Breakpoint XL = UiBreakpoint.XL;
 
+  /// The `x2` breakpoint: minimum width 96rem (1536px).
   Breakpoint X2 = UiBreakpoint.X2;
 
 }

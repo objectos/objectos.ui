@@ -27,6 +27,10 @@ public sealed interface Column extends Html.Component permits UiColumn {
   /// Configures the creation of a column.
   sealed interface Options permits UiColumn {
 
+    /// Adds a child component to the end of this column.
+    /// @param value the child component
+    void add(Html.Component value);
+
     /// Applies the specified Objectos CSS to the HTML element of the column.
     /// @param value the Objectos CSS to apply
     void css(String value);
