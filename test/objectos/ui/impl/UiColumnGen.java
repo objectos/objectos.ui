@@ -45,19 +45,19 @@ public class UiColumnGen {
     spans.put(
         UiBreakpoint.%s,
         List.of(
-            \"""
+            cn(\"""
             %sdisplay:none
-            \"""\
+            \""")\
     """.formatted(enumName, variant));
 
     for (int span = 1; span <= max; span++) {
       code.append("""
     ,
-            \"""
+            cn(\"""
             %1$s--grid-columns:%2$d
             %1$sdisplay:block
             %1$sgrid-column:span_%2$d/span_%2$d
-            \"""\
+            \""")\
     """.formatted(variant, span));
     }
 

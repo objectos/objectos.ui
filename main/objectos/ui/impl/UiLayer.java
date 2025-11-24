@@ -67,7 +67,8 @@ public final class UiLayer extends UiComponent implements Layer, Layer.Options {
       layer = level;
     }
 
-    final Html.ClassName cn = switch (layer) {
+    final Html.ClassName cn;
+    cn = switch (layer) {
       case 0 -> LAYER_0;
       case 1 -> LAYER_1;
       default -> LAYER_2;

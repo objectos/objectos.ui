@@ -38,62 +38,58 @@ final class DevGrid extends AbstractDevUi {
             """);
 
             page.main(
-                Stack.of(
-                    Spacing.SPACING_04,
+                Grid.create(grid -> {
+                  grid.css("""
+                  layer-0
+                  background-color:var(--color-layer)
+                  min-block-size:80rx
+                  outline:1px_dashed_var(--color-border-strong)
+                  """);
 
-                    Grid.create(grid -> {
-                      grid.css("""
-                      layer-0
-                      background-color:var(--color-layer)
-                      min-block-size:80rx
-                      outline:1px_dashed_var(--color-border-strong)
-                      """);
+                  grid.column(col -> {
+                    col.css("""
+                    layer-1
+                    background-color:var(--color-layer)
+                    box-shadow:0_0_0_1px_var(--color-border-strong)
+                    min-block-size:80rx
+                    """);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  });
 
-                        col.span(4);
-                      });
+                  grid.column(col -> {
+                    col.css("""
+                    layer-1
+                    background-color:var(--color-layer)
+                    box-shadow:0_0_0_1px_var(--color-border-strong)
+                    min-block-size:80rx
+                    """);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  });
 
-                        col.span(4);
-                      });
+                  grid.column(col -> {
+                    col.css("""
+                    layer-1
+                    background-color:var(--color-layer)
+                    box-shadow:0_0_0_1px_var(--color-border-strong)
+                    min-block-size:80rx
+                    """);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
+                    col.span(4);
+                  });
 
-                        col.span(4);
-                      });
+                  grid.column(col -> {
+                    col.css("""
+                    layer-1
+                    background-color:var(--color-layer)
+                    box-shadow:0_0_0_1px_var(--color-border-strong)
+                    min-block-size:80rx
+                    """);
 
-                      grid.column(col -> {
-                        col.css("""
-                        layer-1
-                        background-color:var(--color-layer)
-                        box-shadow:0_0_0_1px_var(--color-border-strong)
-                        min-block-size:80rx
-                        """);
-
-                        col.span(4);
-                      });
-                    })
-                )
+                    col.span(4);
+                  });
+                })
             );
           })
       );
