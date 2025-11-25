@@ -34,16 +34,16 @@ public final class UiHeaderName extends UiComponent implements Header.Name {
   }
 
   @Override
-  public final void main(String value) {
+  public final void prefix(String value) {
+    prefix = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void set(String value) {
     final String t;
     t = Objects.requireNonNull(value, "value == null");
 
     main = m -> m.text(t);
-  }
-
-  @Override
-  public final void prefix(String value) {
-    prefix = Objects.requireNonNull(value, "value == null");
   }
 
   @Override

@@ -229,6 +229,8 @@ public final class Y implements ISuiteListener {
 
     void dev();
 
+    void keyPress(String key);
+
     void mouseDown();
 
     void mouseUp();

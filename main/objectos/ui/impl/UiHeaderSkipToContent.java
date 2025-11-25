@@ -34,7 +34,7 @@ public final class UiHeaderSkipToContent extends UiComponent implements Header.S
   }
 
   @Override
-  public final void main(String value) {
+  public final void set(String value) {
     final String t;
     t = Objects.requireNonNull(value, "value == null");
 

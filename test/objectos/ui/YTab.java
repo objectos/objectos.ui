@@ -105,6 +105,11 @@ final class YTab implements Y.Tab {
   }
 
   @Override
+  public final void keyPress(String key) {
+    page.keyboard().press(key);
+  }
+
+  @Override
   public final void mouseDown() {
     page.mouse().down();
   }

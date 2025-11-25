@@ -15,36 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.dev;
+package objectos.ui;
 
-import module objectos.ui;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 
-final class DevHeader extends AbstractDevUi {
+@Listeners(Y.class)
+public class HeaderTest extends UiTest {
 
-  DevHeader() {
-    super("header");
-  }
+  @Test(dataProvider = "themes")
+  public void defaultTest(Theme theme) {
+    try (Y.Tab tab = Y.tabDev()) {
+      tab.navigate("/header/default", theme);
 
-  @Override
-  final void handle(Http.Exchange http) {
-    switch (http.pathParam("id")) {
-      case "default" -> ok(
-          http,
+      tab.screenshot("normal");
 
-          "Header - Plain",
+      tab.keyPress("Tab");
 
-          Header.create(hd -> {
-            hd.skipToContent(skip -> {
-              skip.set("Skip to main content");
-            });
-
-            hd.name(name -> {
-              name.href("#");
-              name.prefix("Objectos");
-              name.set("[UI]");
-            });
-          })
-      );
+      tab.screenshot("skip-to-content");
     }
   }
 

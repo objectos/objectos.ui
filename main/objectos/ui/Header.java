@@ -29,21 +29,33 @@ public sealed interface Header extends Html.Component permits UiHeader {
   /// Configures the creation of a header name.
   sealed interface Name permits UiHeaderName {
 
+    /// Sets the `href` attribute to the specified value.
+    /// @param value the attribute value
     void href(String value);
 
-    void main(String value);
-
+    /// Sets the prefix of the header name.
+    /// @param value the header name prefix
     void prefix(String value);
+
+    /// Sets the link contents to the specified text value.
+    /// @param value the text value
+    void set(String value);
 
   }
 
   /// Configures the creation of a header "skip to content" link.
   sealed interface SkipToContent permits UiHeaderSkipToContent {
 
+    /// Sets the `href` attribute to the specified value.
+    /// @param value the attribute value
     void href(String value);
 
-    void main(String value);
+    /// Sets the link contents to the specified text value.
+    /// @param value the text value
+    void set(String value);
 
+    /// Sets the `tabindex` attribute to the specified value.
+    /// @param value the attribute value
     void tabindex(int value);
 
   }

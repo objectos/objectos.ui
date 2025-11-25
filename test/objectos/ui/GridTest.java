@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 public class GridTest extends UiTest {
 
   @Test(dataProvider = "all")
-  public void testCase01(Theme theme, Y.ScreenSize screen) {
+  public void defaultTest(Theme theme, Y.ScreenSize screen) {
     try (Y.Tab tab = Y.tabDev(screen)) {
       tab.navigate("/grid/default", theme);
 
