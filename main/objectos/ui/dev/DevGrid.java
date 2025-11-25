@@ -20,6 +20,7 @@ package objectos.ui.dev;
 import static objectos.ui.Breakpoint.LG;
 import static objectos.ui.Breakpoint.MD;
 
+import module java.base;
 import module objectos.ui;
 
 @Css.Source
@@ -48,153 +49,169 @@ final class DevGrid extends AbstractDevUi {
           page(http, page -> {
             page.title("Grid - Default");
 
-            page.css(Vertical.cssOf(Spacing.SPACING_07, "padding:32rx_0"));
+            grid(page, _ -> {});
+          })
+      );
 
-            page.add(Grid.create(grid -> {
-              grid.css(GRID_DEFAULT);
+      case "full-width" -> http.ok(
+          page(http, page -> {
+            page.title("Grid - Full Width");
 
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(props -> props.span(4));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(props -> props.span(4));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(props -> props.span(4));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(props -> props.span(4));
-              }));
-            }));
-
-            page.add(Grid.create(grid -> {
-              grid.css(GRID_DEFAULT);
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(p -> p.start(4).span(1));
-                col.props(MD, p -> p.start(7).span(2));
-                col.props(LG, p -> p.start(13).span(4));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(p -> p.start(3).span(2));
-                col.props(MD, p -> p.start(5).span(4));
-                col.props(LG, p -> p.start(9).span(8));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(p -> p.start(2).span(3));
-                col.props(MD, p -> p.start(3).span(6));
-                col.props(LG, p -> p.start(5).span(12));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(p -> p.span(4));
-                col.props(MD, p -> p.span(8));
-                col.props(LG, p -> p.span(16));
-              }));
-
-              grid.add(Column.create(col -> {
-                col.css(COLUMN);
-
-                col.props(p -> p.start(2).span(1));
-                col.props(MD, p -> p.start(3).span(4));
-                col.props(LG, p -> p.start(5).span(12));
-              }));
-            }));
-
-            page.add(
-                Grid.create(grid -> {
-                  grid.css(GRID_DEFAULT);
-
-                  grid.add(Column.create(col -> {
-                    col.css(COLUMN);
-
-                    col.props(props -> props.span(2));
-                    col.props(MD, props -> props.span(4));
-                    col.props(LG, props -> props.span(6));
-                    col.add(m -> {
-                      m.p("Small: Span 2 of 4");
-                      m.p("Medium: Span 4 of 8");
-                      m.p("Large: Span 6 of 16");
-                    });
-                  }));
-
-                  grid.add(Column.create(col -> {
-                    col.css(COLUMN);
-
-                    col.props(props -> props.span(2));
-                    col.props(MD, props -> props.span(2));
-                    col.props(LG, props -> props.span(3));
-                    col.add(m -> {
-                      m.p("Small: Span 2 of 4");
-                      m.p("Medium: Span 2 of 8");
-                      m.p("Large: Span 3 of 16");
-                    });
-                  }));
-
-                  grid.add(Column.create(col -> {
-                    col.css(COLUMN);
-
-                    col.props(props -> props.span(0));
-                    col.props(MD, props -> props.span(2));
-                    col.props(LG, props -> props.span(3));
-                    col.add(m -> {
-                      m.p("Small: Span 0 of 4");
-                      m.p("Medium: Span 2 of 8");
-                      m.p("Large: Span 3 of 16");
-                    });
-                  }));
-
-                  grid.add(Column.create(col -> {
-                    col.css(COLUMN);
-
-                    col.props(props -> props.span(0));
-                    col.props(MD, props -> props.span(0));
-                    col.props(LG, props -> props.span(4));
-                    col.add(m -> {
-                      m.p("Small: Span 0 of 4");
-                      m.p("Medium: Span 0 of 8");
-                      m.p("Large: Span 4 of 16");
-                    });
-                  }));
-
-                  grid.add(Column.create(col -> {
-                    col.css(COLUMN);
-
-                    col.props(props -> props.span(1));
-                    col.props(MD, props -> props.span(4));
-                    col.props(LG, props -> props.span(12));
-                    col.add(m -> {
-                      m.p("Small: Span 25%");
-                      m.p("Medium: Span 50%");
-                      m.p("Large: Span 75%");
-                    });
-                  }));
-                })
-            );
+            grid(page, g -> { g.fullWidth(); });
           })
       );
     }
+  }
+
+  private void grid(Page.Options page, Consumer<? super Grid.Options> more) {
+    page.css(Vertical.cssOf(Spacing.SPACING_07, "padding:32rx_0"));
+
+    page.add(Grid.create(grid -> {
+      more.accept(grid);
+
+      grid.css(GRID_DEFAULT);
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(4));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(4));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(4));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(4));
+      }));
+    }));
+
+    page.add(Grid.create(grid -> {
+      more.accept(grid);
+
+      grid.css(GRID_DEFAULT);
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(p -> p.start(4).span(1));
+        col.props(MD, p -> p.start(7).span(2));
+        col.props(LG, p -> p.start(13).span(4));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(p -> p.start(3).span(2));
+        col.props(MD, p -> p.start(5).span(4));
+        col.props(LG, p -> p.start(9).span(8));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(p -> p.start(2).span(3));
+        col.props(MD, p -> p.start(3).span(6));
+        col.props(LG, p -> p.start(5).span(12));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(p -> p.span(4));
+        col.props(MD, p -> p.span(8));
+        col.props(LG, p -> p.span(16));
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(p -> p.start(2).span(1));
+        col.props(MD, p -> p.start(3).span(4));
+        col.props(LG, p -> p.start(5).span(12));
+      }));
+    }));
+
+    page.add(Grid.create(grid -> {
+      more.accept(grid);
+
+      grid.css(GRID_DEFAULT);
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(2));
+        col.props(MD, props -> props.span(4));
+        col.props(LG, props -> props.span(6));
+        col.add(m -> {
+          m.p("Small: Span 2 of 4");
+          m.p("Medium: Span 4 of 8");
+          m.p("Large: Span 6 of 16");
+        });
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(2));
+        col.props(MD, props -> props.span(2));
+        col.props(LG, props -> props.span(3));
+        col.add(m -> {
+          m.p("Small: Span 2 of 4");
+          m.p("Medium: Span 2 of 8");
+          m.p("Large: Span 3 of 16");
+        });
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(0));
+        col.props(MD, props -> props.span(2));
+        col.props(LG, props -> props.span(3));
+        col.add(m -> {
+          m.p("Small: Span 0 of 4");
+          m.p("Medium: Span 2 of 8");
+          m.p("Large: Span 3 of 16");
+        });
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(0));
+        col.props(MD, props -> props.span(0));
+        col.props(LG, props -> props.span(4));
+        col.add(m -> {
+          m.p("Small: Span 0 of 4");
+          m.p("Medium: Span 0 of 8");
+          m.p("Large: Span 4 of 16");
+        });
+      }));
+
+      grid.add(Column.create(col -> {
+        col.css(COLUMN);
+
+        col.props(props -> props.span(1));
+        col.props(MD, props -> props.span(4));
+        col.props(LG, props -> props.span(12));
+        col.add(m -> {
+          m.p("Small: Span 25%");
+          m.p("Medium: Span 50%");
+          m.p("Large: Span 75%");
+        });
+      }));
+    }));
   }
 
 }

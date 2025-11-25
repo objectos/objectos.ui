@@ -35,6 +35,9 @@ public sealed interface Grid extends Html.Component permits UiGrid {
     /// @param value the Objectos CSS to apply
     void css(String value);
 
+    /// Causes the grid to span the full width of its container.
+    void fullWidth();
+
   }
 
   /// Creates a new grid with the specified options.

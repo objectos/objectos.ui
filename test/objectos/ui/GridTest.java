@@ -32,4 +32,13 @@ public class GridTest extends UiTest {
     }
   }
 
+  @Test(dataProvider = "all")
+  public void fullWidth(Theme theme, Y.ScreenSize screen) {
+    try (Y.Tab tab = Y.tabDev(screen)) {
+      tab.navigate("/grid/full-width", theme);
+
+      tab.screenshot(screen.name());
+    }
+  }
+
 }

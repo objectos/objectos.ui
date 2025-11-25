@@ -26,6 +26,8 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
 
   private String css;
 
+  private boolean fullWidth;
+
   private List<Html.Component> main = EMPTY_MAIN;
 
   @Override
@@ -36,6 +38,11 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
   @Override
   public final void css(String value) {
     css = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void fullWidth() {
+    fullWidth = true;
   }
 
   @Override
@@ -51,9 +58,10 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
         grid-template-columns:repeat(var(--grid-columns),minmax(0,1fr))
         inline-size:100%
         margin-inline:auto
-        max-inline-size:96rem
         padding-inline:var(--grid-margin)
         """),
+
+        !fullWidth ? m.css("max-inline-size:96rem") : m.css("max-inline-size:100%"),
 
         css != null ? m.css(css) : m.noop(),
 
