@@ -20,9 +20,25 @@ package objectos.ui;
 import module java.base;
 import module objectos.way;
 import objectos.ui.impl.UiColumn;
+import objectos.ui.impl.UiColumnProps;
 
 /// A column in a grid component.
 public sealed interface Column extends Html.Component permits UiColumn {
+
+  /// Configures the column properties at a given breakpoint.
+  sealed interface Props permits UiColumnProps {
+
+    /// Causes the column to span the specified value.
+    /// @param value the number of grid columns to span
+    /// @return this instance
+    Props span(int value);
+
+    /// Causes the column to start at the specified column number (1-based).
+    /// @param value the column number where this column should start
+    /// @return this instance
+    Props start(int value);
+
+  }
 
   /// Configures the creation of a column.
   sealed interface Options permits UiColumn {
@@ -35,9 +51,14 @@ public sealed interface Column extends Html.Component permits UiColumn {
     /// @param value the Objectos CSS to apply
     void css(String value);
 
-    void span(int value);
+    /// Sets the column properties which will apply to all screen sizes.
+    /// @param props allows for setting the properties
+    void props(Consumer<? super Props> props);
 
-    void span(Breakpoint breakpoint, int value);
+    /// Sets the column properties which will apply to screen sizes greater than the specified breakpoint.
+    /// @param breakpoint the breakpoint
+    /// @parma props allows for setting the properties
+    void props(Breakpoint breakpoint, Consumer<? super Props> props);
 
   }
 

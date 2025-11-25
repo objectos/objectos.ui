@@ -32,7 +32,6 @@ public final class DevUi implements Http.Routing.Module {
   public final void configure(Http.Routing routing) {
     routing.path("/formgroup/{id}/{theme}", GET, this::formGroup);
     routing.path("/layer/{id}/{theme}", GET, this::layer);
-    routing.path("/page/{theme}", GET, this::page);
     routing.path("/tearsheet/{id}/{theme}", GET, this::tearsheet);
     routing.path("/textinput/{id}/{theme}", GET, this::textInput);
   }
@@ -98,19 +97,6 @@ public final class DevUi implements Http.Routing.Module {
         ));
       }));
     }
-  }
-
-  private void page(Http.Exchange http) {
-    http.ok(Page.create(page -> {
-      page.theme(theme(http));
-
-      page.head(m -> {
-        m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/styles.css"));
-        m.script(m.src("/script.js"));
-      });
-
-      page.title("Objectos Carbon");
-    }));
   }
 
   private Html.Component page(Http.Exchange http, Consumer<? super Page.Options> more) {

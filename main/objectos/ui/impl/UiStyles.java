@@ -31,6 +31,7 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
         UiButtonKind.class,
         UiButtonSize.class,
         UiColumn.class,
+        UiColumnProps.class,
         UiFormGroup.class,
         UiGrid.class,
         UiHeader.class,

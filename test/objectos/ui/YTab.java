@@ -22,7 +22,6 @@ import static org.testng.Assert.assertEquals;
 import com.microsoft.playwright.Keyboard;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Page.ScreenshotOptions;
 import com.microsoft.playwright.Page.WaitForURLOptions;
 import com.microsoft.playwright.options.ScreenshotAnimations;
 import java.nio.file.Files;
@@ -199,14 +198,17 @@ final class YTab implements Y.Tab {
   }
 
   private void screenshot(Path file) {
-    final ScreenshotOptions options;
-    options = new ScreenshotOptions();
+    final Locator.ScreenshotOptions options;
+    options = new Locator.ScreenshotOptions();
 
     options.setAnimations(ScreenshotAnimations.DISABLED);
 
     options.setPath(file);
 
-    page.screenshot(options);
+    final Locator body;
+    body = page.locator("body");
+
+    body.screenshot(options);
   }
 
   private void compare(Path test, Path shot) {

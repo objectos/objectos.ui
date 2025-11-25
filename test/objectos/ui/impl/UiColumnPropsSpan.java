@@ -17,12 +17,12 @@
  */
 package objectos.ui.impl;
 
-public class UiColumnGen {
+public class UiColumnPropsSpan {
 
   private final StringBuilder code = new StringBuilder();
 
   public static void main(String[] args) {
-    System.out.println(new UiColumnGen());
+    System.out.println(new UiColumnPropsSpan());
   }
 
   @Override
@@ -41,30 +41,31 @@ public class UiColumnGen {
   }
 
   private void prepare(String enumName, String variant, int max) {
+    if (!variant.isEmpty()) {
+      code.append(",\n");
+    }
+
     code.append("""
-    spans.put(
-        UiBreakpoint.%s,
-        List.of(
-            cn(\"""
-            %sdisplay:none
-            \""")\
+              UiBreakpoint.%s, List.of(
+              \"""
+              %sdisplay:none
+              \"""\
     """.formatted(enumName, variant));
 
     for (int span = 1; span <= max; span++) {
       code.append("""
     ,
-            cn(\"""
-            %1$s--grid-columns:%2$d
-            %1$sdisplay:block
-            %1$sgrid-column:span_%2$d/span_%2$d
-            \""")\
+              \"""
+              %1$s--grid-columns:%2$d
+              %1$sdisplay:block
+              %1$sgrid-column:span_%2$d/span_%2$d
+              \"""\
     """.formatted(variant, span));
     }
 
     code.append("""
 
-        )
-    );
+              )\
     """);
   }
 

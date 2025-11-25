@@ -25,13 +25,20 @@ abstract class AbstractDevUi implements Http.Routing.Module {
 
   private final String name;
 
+  private final String suffix;
+
   AbstractDevUi(String name) {
+    this(name, "/{id}/{theme}");
+  }
+
+  AbstractDevUi(String name, String suffix) {
     this.name = name;
+    this.suffix = suffix;
   }
 
   @Override
-  public final void configure(Http.Routing routing) {
-    routing.path("/" + name + "/{id}/{theme}", Http.Method.GET, this::handle);
+  public void configure(Http.Routing routing) {
+    routing.path("/" + name + suffix, Http.Method.GET, this::handle);
   }
 
   abstract void handle(Http.Exchange http);
@@ -74,7 +81,7 @@ abstract class AbstractDevUi implements Http.Routing.Module {
     });
   }
 
-  private Theme theme(Http.Exchange http) {
+  final Theme theme(Http.Exchange http) {
     final String themeName;
     themeName = http.pathParam("theme");
 
