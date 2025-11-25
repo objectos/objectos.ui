@@ -30,6 +30,11 @@ public enum UiTheme implements Theme {
 
   G100;
 
-  public final String className = "theme-" + name().toLowerCase(Locale.US);
+  private final String css = "theme-" + name().toLowerCase(Locale.US);
+
+  @Override
+  public final String css() {
+    return css;
+  }
 
 }

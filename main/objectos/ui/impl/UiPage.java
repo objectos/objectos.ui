@@ -25,6 +25,10 @@ public final class UiPage extends UiComponent implements Page, Page.Options {
 
   private String css;
 
+  private String dataFrame;
+
+  private String dataFrameValue;
+
   private Html.Component head;
 
   private List<Html.Component> main = EMPTY_MAIN;
@@ -41,6 +45,12 @@ public final class UiPage extends UiComponent implements Page, Page.Options {
   @Override
   public final void css(String value) {
     css = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void dataFrame(String name, String value) {
+    dataFrame = Objects.requireNonNull(name, "name == null");
+    dataFrameValue = Objects.requireNonNull(value, "value == null");
   }
 
   @Override
@@ -72,11 +82,11 @@ public final class UiPage extends UiComponent implements Page, Page.Options {
         ),
 
         m.body(
-            m.className(theme.className),
+            m.css(theme.css()),
 
             css != null ? m.css(css) : m.noop(),
 
-            m.dataFrame("theme", theme.className),
+            dataFrame != null ? m.dataFrame(dataFrame, dataFrameValue) : m.noop(),
 
             m.c(main)
         )

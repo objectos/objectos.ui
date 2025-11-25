@@ -36,4 +36,17 @@ public class HeaderTest extends UiTest {
     }
   }
 
+  @Test
+  public void cssTest() {
+    try (Y.Tab tab = Y.tabDev()) {
+      tab.navigate("/header/css/WHITE");
+
+      tab.screenshot("normal");
+
+      tab.keyPress("Tab");
+
+      tab.screenshot("skip-to-content");
+    }
+  }
+
 }

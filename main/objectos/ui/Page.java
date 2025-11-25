@@ -35,6 +35,11 @@ public sealed interface Page extends Html.Component permits UiPage {
     /// @param value the Objectos CSS to apply
     void css(String value);
 
+    /// Sets the `data-frame` attribute of the `<body>` element to the specified name and value.
+    /// @param name the frame name
+    /// @param value the frame value
+    void dataFrame(String name, String value);
+
     /// Sets the component that will be applied to the end of the `<head>` section of this page.
     /// @param value the component to apply
     void head(Html.Component value);

@@ -101,7 +101,12 @@ public final class DevUi implements Http.Routing.Module {
 
   private Html.Component page(Http.Exchange http, Consumer<? super Page.Options> more) {
     return Page.create(page -> {
-      page.theme(theme(http));
+      final Theme theme;
+      theme = theme(http);
+
+      page.theme(theme);
+
+      page.dataFrame("theme", theme.toString());
 
       page.head(m -> {
         m.link(m.rel("stylesheet"), m.type("text/css"), m.href("/styles.css"));
@@ -251,7 +256,12 @@ public final class DevUi implements Http.Routing.Module {
 
   static void ok(Http.Exchange http, String title, Html.Component... elements) {
     http.ok(Page.create(page -> {
-      page.theme(theme(http));
+      final Theme theme;
+      theme = theme(http);
+
+      page.theme(theme);
+
+      page.dataFrame("theme", theme.toString());
 
       page.title(title);
 

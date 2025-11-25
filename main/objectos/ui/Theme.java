@@ -48,4 +48,6 @@ public sealed interface Theme permits UiTheme {
     return UiTheme.valueOf(upper);
   }
 
+  String css();
+
 }

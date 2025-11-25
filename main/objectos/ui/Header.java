@@ -63,6 +63,10 @@ public sealed interface Header extends Html.Component permits UiHeader {
   /// Configures the creation of a header component.
   sealed interface Options permits UiHeader {
 
+    /// Applies the specified Objectos CSS to the top-level HTML element of the header.
+    /// @param value the Objectos CSS to apply
+    void css(String value);
+
     /// Renders the header name with the specified options.
     /// @param name allows for setting the options
     void name(Consumer<? super Name> name);

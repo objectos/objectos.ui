@@ -19,6 +19,7 @@ package objectos.ui.dev;
 
 import module objectos.ui;
 
+@Css.Source
 final class DevHeader extends AbstractDevUi {
 
   DevHeader() {
@@ -34,6 +35,28 @@ final class DevHeader extends AbstractDevUi {
           "Header - Plain",
 
           Header.create(hd -> {
+            hd.skipToContent(skip -> {
+              skip.set("Skip to main content");
+            });
+
+            hd.name(name -> {
+              name.href("#");
+              name.prefix("Objectos");
+              name.set("[UI]");
+            });
+          })
+      );
+
+      case "css" -> ok(
+          http,
+
+          "Header - CSS",
+
+          Header.create(hd -> {
+            hd.css("""
+            --color-background:var(--color-amber-500)
+            """);
+
             hd.skipToContent(skip -> {
               skip.set("Skip to main content");
             });

@@ -22,9 +22,16 @@ import module objectos.ui;
 
 public final class UiHeader extends UiComponent implements Header, Header.Options {
 
+  private String css;
+
   private UiHeaderName name;
 
   private UiHeaderSkipToContent skipToContent;
+
+  @Override
+  public final void css(String value) {
+    css = Objects.requireNonNull(value, "value == null");
+  }
 
   @Override
   public final void name(Consumer<? super Header.Name> name) {
@@ -61,6 +68,8 @@ public final class UiHeader extends UiComponent implements Header, Header.Option
         position:fixed
         z-index:8000
         """),
+
+        css != null ? m.css(css) : m.noop(),
 
         skipToContent != null ? m.c(skipToContent) : m.noop(),
 
