@@ -60,6 +60,14 @@ final class DevGrid extends AbstractDevUi {
             grid(page, g -> { g.fullWidth(); });
           })
       );
+
+      case "narrow" -> http.ok(
+          page(http, page -> {
+            page.title("Grid - Narrow");
+
+            grid(page, g -> { g.gutter(GridGutter.NARROW); });
+          })
+      );
     }
   }
 

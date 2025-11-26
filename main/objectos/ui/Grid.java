@@ -38,6 +38,10 @@ public sealed interface Grid extends Html.Component permits UiGrid {
     /// Causes the grid to span the full width of its container.
     void fullWidth();
 
+    /// Sets the gutter mode to the specified value.
+    /// @param value the gutter mode to use
+    void gutter(GridGutter value);
+
   }
 
   /// Creates a new grid with the specified options.

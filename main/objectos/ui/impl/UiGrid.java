@@ -19,6 +19,7 @@ package objectos.ui.impl;
 
 import module java.base;
 import module objectos.ui;
+import objectos.ui.GridGutter;
 
 public final class UiGrid extends UiComponent implements Grid, Grid.Options {
 
@@ -27,6 +28,8 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
   private String css;
 
   private boolean fullWidth;
+
+  private UiGridGutter gutter = UiGridGutter.WIDE;
 
   private List<Html.Component> main = EMPTY_MAIN;
 
@@ -46,14 +49,22 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
   }
 
   @Override
+  public final void gutter(GridGutter value) {
+    final GridGutter v;
+    v = Objects.requireNonNull(value, "value == null");
+
+    gutter = (UiGridGutter) v;
+  }
+
+  @Override
   public final void renderHtml(Html.Markup m) {
     m.elem(
         as,
 
+        m.css(gutter.css),
+
         m.css("""
-        --grid-gutter-start:calc(var(--grid-gutter)_/_2)
         --grid-gutter-end:calc(var(--grid-gutter)_/_2)
-        --grid-column-hang:calc(var(--grid-gutter)_/_2)
         display:grid
         grid-template-columns:repeat(var(--grid-columns),minmax(0,1fr))
         inline-size:100%

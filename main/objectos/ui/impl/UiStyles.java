@@ -34,6 +34,7 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
         UiColumnProps.class,
         UiFormGroup.class,
         UiGrid.class,
+        UiGridGutter.class,
         UiHeader.class,
         UiHeaderName.class,
         UiHeaderSkipToContent.class,

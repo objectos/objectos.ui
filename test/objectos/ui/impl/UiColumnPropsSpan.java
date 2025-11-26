@@ -47,19 +47,13 @@ public class UiColumnPropsSpan {
 
     code.append("""
               UiBreakpoint.%s, List.of(
-              \"""
-              %sdisplay:none
-              \"""\
+              "%sdisplay:none"\
     """.formatted(enumName, variant));
 
     for (int span = 1; span <= max; span++) {
       code.append("""
     ,
-              \"""
-              %1$s--grid-columns:%2$d
-              %1$sdisplay:block
-              %1$sgrid-column:span_%2$d/span_%2$d
-              \"""\
+              "%1$s--grid-columns:%2$d %1$sdisplay:block %1$sgrid-column:span_%2$d/span_%2$d"\
     """.formatted(variant, span));
     }
 

@@ -41,4 +41,13 @@ public class GridTest extends UiTest {
     }
   }
 
+  @Test(dataProvider = "all")
+  public void narrwo(Theme theme, Y.ScreenSize screen) {
+    try (Y.Tab tab = Y.tabDev(screen)) {
+      tab.navigate("/grid/narrow", theme);
+
+      tab.screenshot(screen.name());
+    }
+  }
+
 }
