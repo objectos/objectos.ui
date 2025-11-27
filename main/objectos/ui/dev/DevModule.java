@@ -35,6 +35,7 @@ public class DevModule implements Http.Routing.Module {
   @Override
   public final void configure(Http.Routing routing) {
     routing.install(new DevButton());
+    routing.install(new DevContainedList());
     routing.install(new DevGrid());
     routing.install(new DevHeader());
     routing.install(new DevPage());
