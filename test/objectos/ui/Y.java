@@ -224,6 +224,8 @@ public final class Y implements ISuiteListener {
 
     TabElem byId(Html.Id id);
 
+    TabElem bySelector(String selector);
+
     @Override
     void close();
 

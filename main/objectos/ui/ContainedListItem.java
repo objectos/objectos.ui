@@ -27,6 +27,14 @@ public sealed interface ContainedListItem extends Html.Component permits UiConta
   /// Configures the creation of a contained list item.
   sealed interface Options permits UiContainedListItem {
 
+    /// Renders this item as an `<a>` element with the specified `href` attribute value.
+    /// @param value the `href` attribute value
+    void href(String value);
+
+    /// Sets the `id` attribute value of the outermost HTML element.
+    /// @param value the `id` attribute value
+    void id(Html.Id value);
+
     /// Sets the child component to be rendered in this list item.
     /// @param value the child component
     void set(Html.Component value);

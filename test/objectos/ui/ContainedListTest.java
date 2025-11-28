@@ -17,6 +17,7 @@
  */
 package objectos.ui;
 
+import objectos.ui.Y.TabElem;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -29,6 +30,36 @@ public class ContainedListTest extends UiTest {
       tab.navigate("/contained-list/default", theme);
 
       tab.screenshot();
+    }
+  }
+
+  @Test(dataProvider = "themes")
+  public void href(Theme theme) {
+    try (Y.Tab tab = Y.tabDev()) {
+      tab.navigate("/contained-list/href", theme);
+
+      tab.screenshot();
+
+      final TabElem anchor;
+      anchor = tab.bySelector("#id-1 a");
+
+      anchor.focus();
+
+      tab.screenshot("focus");
+
+      anchor.blur();
+
+      anchor.hover();
+
+      tab.screenshot("hover");
+
+      tab.mouseDown();
+
+      tab.screenshot("active");
+
+      tab.mouseUp();
+
+      tab.mouseTo(0, 0);
     }
   }
 

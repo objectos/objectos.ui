@@ -40,8 +40,43 @@ public final class DevContainedList extends AbstractDevUi {
             final List<String> data;
             data = List.of("Item 1", "Item 2", "Item 3");
 
+            int counter = 1;
+
             for (String v : data) {
+              final Html.Id id;
+              id = Html.Id.of("id-" + counter++);
+
               list.add(ContainedListItem.create(item -> {
+                item.id(id);
+
+                item.set(m -> m.text(v));
+              }));
+            }
+          })
+      );
+
+      case "href" -> ok(
+          http,
+
+          "Contained list - Interactive",
+
+          ContainedList.create(list -> {
+            list.label("List title");
+
+            final List<String> data;
+            data = List.of("Item 1", "Item 2", "Item 3");
+
+            int counter = 1;
+
+            for (String v : data) {
+              final Html.Id id;
+              id = Html.Id.of("id-" + counter++);
+
+              list.add(ContainedListItem.create(item -> {
+                item.id(id);
+
+                item.href("#");
+
                 item.set(m -> m.text(v));
               }));
             }
