@@ -27,6 +27,8 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
     super.configure(opts);
 
     opts.scanClasses(
+        UiBreadcrumb.class,
+        UiBreadcrumbItem.class,
         UiButton.class,
         UiButtonKind.class,
         UiButtonSize.class,

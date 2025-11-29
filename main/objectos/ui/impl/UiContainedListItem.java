@@ -68,6 +68,8 @@ public final class UiContainedListItem extends UiComponent
   @Override
   public final void renderHtml(Html.Markup m) {
     m.li(
+        id,
+
         m.css("""
         display:list-item
         list-style:none
@@ -82,8 +84,6 @@ public final class UiContainedListItem extends UiComponent
         &:not(:last-of-type)::before/inset-inline:0
         &:not(:last-of-type)::before/position:absolute
         """),
-
-        id,
 
         m.elem(
             href != null ? Html.ElementName.A : Html.ElementName.DIV,
