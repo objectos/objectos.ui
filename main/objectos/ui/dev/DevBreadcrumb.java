@@ -55,6 +55,36 @@ public final class DevBreadcrumb extends AbstractDevUi {
             }));
           })
       );
+
+      case "sm" -> ok(
+          http,
+
+          "Breadcrumb - Small",
+
+          Breadcrumb.create(bc -> {
+            bc.ariaLabel("Breadcrumb");
+
+            bc.size(BreadcrumbSize.SM);
+
+            bc.add(BreadcrumbItem.create(item -> {
+              item.id(Html.Id.of("id-1"));
+              item.href("#");
+              item.set("Breadcrumb 1");
+            }));
+
+            bc.add(BreadcrumbItem.create(item -> {
+              item.id(Html.Id.of("id-2"));
+              item.href("#");
+              item.set("Breadcrumb 2");
+            }));
+
+            bc.add(BreadcrumbItem.create(item -> {
+              item.id(Html.Id.of("id-3"));
+              item.href("#");
+              item.set("Breadcrumb 3");
+            }));
+          })
+      );
     }
   }
 

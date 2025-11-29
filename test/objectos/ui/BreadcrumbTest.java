@@ -54,4 +54,34 @@ public class BreadcrumbTest extends UiTest {
     }
   }
 
+  @Test(dataProvider = "themes")
+  public void small(Theme theme) {
+    try (Y.Tab tab = Y.tabDev()) {
+      tab.navigate("/breadcrumb/sm", theme);
+
+      tab.screenshot();
+
+      final TabElem anchor;
+      anchor = tab.bySelector("#id-1 a");
+
+      anchor.focus();
+
+      tab.screenshot("focus");
+
+      anchor.blur();
+
+      anchor.hover();
+
+      tab.screenshot("hover");
+
+      tab.mouseDown();
+
+      tab.screenshot("active");
+
+      tab.mouseUp();
+
+      tab.mouseTo(0, 0);
+    }
+  }
+
 }

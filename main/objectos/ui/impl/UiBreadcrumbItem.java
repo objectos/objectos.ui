@@ -65,6 +65,12 @@ public final class UiBreadcrumbItem extends UiComponent implements BreadcrumbIte
         """),
 
         switch (size) {
+          case SM -> m.css("""
+          margin-inline-end:var(--spacing-02)
+
+          after/margin-inline-start:var(--spacing-02)
+          """);
+
           case MD -> m.css("""
           margin-inline-end:var(--spacing-03)
 

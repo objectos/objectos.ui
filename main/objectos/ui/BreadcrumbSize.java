@@ -15,14 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Objectos UI.  If not, see <https://www.gnu.org/licenses/>.
  */
-package objectos.ui.impl;
+package objectos.ui;
 
-import module objectos.ui;
+import objectos.ui.impl.UiBreadcrumbSize;
 
-public enum UiBreadcrumbSize implements BreadcrumbSize {
+/// Represents the size of a breadcrumb.
+public sealed interface BreadcrumbSize permits UiBreadcrumbSize {
 
-  SM,
+  /// The Small (`sm`) size.
+  BreadcrumbSize SM = UiBreadcrumbSize.SM;
 
-  MD;
+  /// The Medium (`md`) size.
+  BreadcrumbSize MD = UiBreadcrumbSize.MD;
 
 }

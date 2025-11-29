@@ -36,6 +36,10 @@ public sealed interface Breadcrumb extends Html.Component permits UiBreadcrumb {
     /// @param value the label
     void ariaLabel(String value);
 
+    /// Sets the size of this breadcrumb, defaults to `[MD][BreadcrumbSize#MD]` when not specified.
+    /// @param value the size of this breadcrumb
+    void size(BreadcrumbSize value);
+
   }
 
   /// Creates a new breadcrumb with the specified options.

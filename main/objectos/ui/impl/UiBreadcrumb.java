@@ -26,7 +26,7 @@ public final class UiBreadcrumb extends UiComponent implements Breadcrumb, Bread
 
   private List<Html.Component> main = EMPTY_MAIN;
 
-  private final UiBreadcrumbSize size = UiBreadcrumbSize.MD;
+  private UiBreadcrumbSize size = UiBreadcrumbSize.MD;
 
   @Override
   public final void add(Html.Component value) {
@@ -36,6 +36,14 @@ public final class UiBreadcrumb extends UiComponent implements Breadcrumb, Bread
   @Override
   public final void ariaLabel(String value) {
     ariaLabel = Objects.requireNonNull(value, "value == null");
+  }
+
+  @Override
+  public final void size(BreadcrumbSize value) {
+    final BreadcrumbSize s;
+    s = Objects.requireNonNull(value, "value");
+
+    size = (UiBreadcrumbSize) s;
   }
 
   @Override
@@ -52,6 +60,13 @@ public final class UiBreadcrumb extends UiComponent implements Breadcrumb, Bread
             """),
 
             switch (size) {
+              case SM -> m.css("""
+              font-size:var(--type-label-01-font-size)
+              font-weight:var(--type-label-01-font-weight)
+              letter-spacing:var(--type-label-01-letter-spacing)
+              line-height:var(--type-label-01-line-height)
+              """);
+
               case MD -> m.css("""
               font-size:var(--type-body-compact-01-font-size)
               font-weight:var(--type-body-compact-01-font-weight)
