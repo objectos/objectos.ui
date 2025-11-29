@@ -1,0 +1,58 @@
+/* version=1.96.0 */
+.cds--skip-to-content {
+  position: absolute;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  block-size: 1px;
+  clip: rect(0, 0, 0, 0);
+  inline-size: 1px;
+  visibility: inherit;
+  white-space: nowrap;
+}
+
+.cds--skip-to-content:focus {
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  border: 4px solid var(--cds-focus, #0f62fe);
+  background-color: var(--cds-background, #ffffff);
+  block-size: 3rem;
+  clip: auto;
+  color: var(--cds-text-secondary, #525252);
+  inline-size: auto;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  outline: none;
+}
+
+.cds--skip-to-content {
+  position: absolute;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  block-size: 1px;
+  clip: rect(0, 0, 0, 0);
+  inline-size: 1px;
+  visibility: inherit;
+  white-space: nowrap;
+}
+
+.cds--skip-to-content:focus {
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  border: 4px solid var(--cds-focus, #0f62fe);
+  background-color: var(--cds-background, #ffffff);
+  block-size: 3rem;
+  clip: auto;
+  color: var(--cds-text-secondary, #525252);
+  inline-size: auto;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  outline: none;
+}

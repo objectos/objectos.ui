@@ -1,0 +1,131 @@
+/* version=[object Int8Array] */
+.c4p--action-set {
+  align-items: stretch;
+  justify-content: flex-end;
+  background-color: var(--cds-layer-01, #f4f4f4);
+}
+
+.c4p--action-set .c4p--action-set__action-button {
+  font-size: var(--cds-body-short-01-font-size, .875rem);
+  font-weight: var(--cds-body-short-01-font-weight, 400);
+  line-height: var(--cds-body-short-01-line-height, 1.28572);
+  letter-spacing: var(--cds-body-short-01-letter-spacing, .16px);
+  align-items: center;
+  margin: 0;
+}
+
+.c4p--action-set .c4p--action-set__action-button.c4p--action-set__action-button--expressive {
+  block-size: 4rem;
+  padding-block: 1rem 2rem;
+}
+
+.c4p--action-set.cds--btn-set .c4p--action-set__action-button.cds--btn.cds--btn--expressive,.c4p--action-set.cds--btn-set .c4p--action-set__action-button.cds--btn {
+  max-inline-size: none;
+}
+
+.c4p--action-set:not(.c4p--action-set--stacking) .c4p--action-set__action-button--ghost {
+  padding-inline-start: 2rem;
+}
+
+.c4p--action-set.c4p--action-set--row-single.c4p--action-set--md .c4p--action-set__action-button,.c4p--action-set.c4p--action-set--row-single .c4p--action-set__action-button--ghost {
+  flex: 0 0 100%;
+}
+
+.c4p--action-set.c4p--action-set--row-double .c4p--action-set__action-button--ghost {
+  flex: 1 1 75%;
+}
+
+.c4p--action-set.c4p--action-set--row-single.c4p--action-set--lg .c4p--action-set__action-button:not(.c4p--action-set__action-button--ghost),.c4p--action-set.c4p--action-set--row-double.c4p--action-set--md .c4p--action-set__action-button,.c4p--action-set.c4p--action-set--row-double.c4p--action-set--lg .c4p--action-set__action-button,.c4p--action-set.c4p--action-set--row-triple .c4p--action-set__action-button--ghost {
+  flex: 0 1 50%;
+}
+
+.c4p--action-set.c4p--action-set--row-triple .c4p--action-set__action-button--ghost {
+  flex: 1 1 50%;
+}
+
+.c4p--action-set.cds--btn-set.c4p--action-set--row-triple.c4p--action-set--lg .c4p--action-set__action-button:not(.c4p--action-set__action-button--ghost),.c4p--action-set.cds--btn-set.c4p--action-set--xl .c4p--action-set__action-button:not(.c4p--action-set__action-button--ghost),.c4p--action-set.cds--btn-set.c4p--action-set--2xl .c4p--action-set__action-button:not(.c4p--action-set__action-button--ghost),.c4p--action-set.cds--btn-set.c4p--action-set--row-quadruple .c4p--action-set__action-button:not(.c4p--action-set__action-button--ghost) {
+  flex: 0 1 25%;
+  max-inline-size: 14.5rem;
+}
+
+.c4p--action-set.cds--btn-set.c4p--action-set--row-quadruple .c4p--action-set__action-button--ghost {
+  flex: 1 1 25%;
+}
+
+.c4p--action-set .c4p--action-set__action-button .cds--inline-loading {
+  position: absolute;
+  inline-size: 2rem;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+}
+
+.c4p--side-panel .c4p--side-panel__actions-container.c4p--action-set--2xl .c4p--action-set__action-button {
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+
+@media (min-width: 42rem) {
+  .c4p--side-panel .c4p--side-panel__actions-container.c4p--action-set--2xl {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 42rem) {
+  .c4p--side-panel .c4p--side-panel__actions-container.c4p--action-set--2xl .c4p--action-set__action-button {
+    inline-size: 25%;
+  }
+}
+
+.c4p--side-panel .c4p--side-panel__actions-container.c4p--action-set--2xl {
+  flex-direction: column;
+}
+
+.c4p--side-panel .c4p--side-panel__actions-container .c4p--action-set__action-button.c4p--action-set__action-button {
+  block-size: var(--c4p--side-panel--actions-height);
+}
+
+.c4p--tearsheet.c4p--tearsheet--wide .c4p--action-set .c4p--action-set__action-button.c4p--action-set__action-button--expressive {
+  block-size: 5rem;
+}
+
+.c4p--add-select.c4p--add-select__multi .c4p--action-set.cds--btn-set.c4p--action-set--max .c4p--action-set__action-button {
+  max-inline-size: 11.25rem;
+}
+
+.c4p--action-bar.c4p--action-bar {
+  display: block;
+}
+
+.c4p--action-bar .c4p--action-bar__displayed-items {
+  display: inline-flex;
+  inline-size: 100%;
+  white-space: nowrap;
+}
+
+.c4p--action-bar .c4p--action-bar__displayed-items--right {
+  justify-content: flex-end;
+}
+
+.c4p--action-bar .c4p--action-bar__hidden-sizing-items {
+  position: absolute;
+  overflow: hidden;
+  inset-block-start: -100vh;
+  inset-inline-start: -100vw;
+  max-inline-size: 100vw;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.c4p--action-bar-overflow-items__options .c4p--action-bar-overflow-items__item {
+  padding: 0 .5rem;
+}
+
+.c4p--action-bar-overflow-items__options .c4p--action-bar-overflow-items__item-content {
+  display: flex;
+  justify-content: space-between;
+  inline-size: 100%;
+}
+
+.c4p--action-bar-overflow-items__options .c4p--action-bar-overflow-items__item svg {
+  margin: 0 .25rem;
+}

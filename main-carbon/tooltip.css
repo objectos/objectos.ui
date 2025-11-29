@@ -1,0 +1,106 @@
+/* version=1.96.0 */
+.cds--tooltip {
+  --cds-popover-offset: 12px;
+}
+
+.cds--tooltip-content {
+  font-size: var(--cds-body-01-font-size, 0.875rem);
+  font-weight: var(--cds-body-01-font-weight, 400);
+  line-height: var(--cds-body-01-line-height, 1.42857);
+  letter-spacing: var(--cds-body-01-letter-spacing, 0.16px);
+  padding: var(--cds-tooltip-padding-block, 1rem) var(--cds-tooltip-padding-inline, 1rem);
+  max-inline-size: 18rem;
+  overflow-wrap: break-word;
+}
+
+.cds--icon-tooltip .cds--tooltip-content {
+  font-size: var(--cds-body-compact-01-font-size, 0.875rem);
+  font-weight: var(--cds-body-compact-01-font-weight, 400);
+  line-height: var(--cds-body-compact-01-line-height, 1.28572);
+  letter-spacing: var(--cds-body-compact-01-letter-spacing, 0.16px);
+}
+
+.cds--icon-tooltip--disabled .cds--tooltip-trigger__wrapper {
+  cursor: not-allowed;
+}
+
+.cds--overflow-menu__trigger.cds--tooltip--a11y.cds--tooltip__trigger:focus {
+  outline: 2px solid var(--cds-focus, #0f62fe);
+  outline-offset: -2px;
+}
+
+@media screen and (prefers-contrast) {
+  .cds--overflow-menu__trigger.cds--tooltip--a11y.cds--tooltip__trigger:focus {
+    outline-style: dotted;
+  }
+}
+
+.cds--overflow-menu__trigger.cds--tooltip--a11y.cds--tooltip__trigger:focus svg {
+  outline: none;
+}
+
+.cds--progress-step .cds--tooltip__label {
+  display: block;
+}
+
+.cds--progress-label-overflow:hover~.cds--tooltip,.cds--progress-label-overflow:focus~.cds--tooltip {
+  visibility: inherit;
+}
+
+.cds--progress-step .cds--tooltip .cds--tooltip__caret {
+  -webkit-margin-start: .625rem;
+  margin-inline-start: .625rem;
+}
+
+.cds--tooltip__text {
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
+
+.cds--progress-step .cds--tooltip {
+  font-size: var(--cds-body-01-font-size, 0.875rem);
+  font-weight: var(--cds-body-01-font-weight, 400);
+  line-height: var(--cds-body-01-line-height, 1.42857);
+  letter-spacing: var(--cds-body-01-letter-spacing, 0.16px);
+  display: block;
+  padding: .5rem 1rem;
+  color: var(--cds-text-inverse, #ffffff);
+  inline-size: 7.8125rem;
+  -webkit-margin-before: 2.5rem;
+  margin-block-start: 2.5rem;
+  -webkit-margin-start: 1.375rem;
+  margin-inline-start: 1.375rem;
+  min-block-size: 1.5rem;
+  min-inline-size: 7.1875rem;
+  visibility: hidden;
+}
+
+.cds--progress-step .cds--tooltip_multi {
+  font-size: var(--cds-body-01-font-size, 0.875rem);
+  font-weight: var(--cds-body-01-font-weight, 400);
+  line-height: var(--cds-body-01-line-height, 1.42857);
+  letter-spacing: var(--cds-body-01-letter-spacing, 0.16px);
+  block-size: auto;
+  color: var(--cds-text-inverse, #ffffff);
+  inline-size: 9.375rem;
+}
+
+.cds--progress-step-button--unclickable .cds--tooltip__label:hover {
+  box-shadow: 0 .0625rem var(--cds-link-primary, #0f62fe);
+  color: var(--cds-link-primary, #0f62fe);
+  cursor: pointer;
+}
+
+.cds--progress-step--disabled .cds--progress-label-overflow:hover~.cds--tooltip--definition .cds--tooltip--definition__bottom {
+  display: none;
+}
+
+.cds--progress--vertical .cds--progress-step .cds--tooltip {
+  -webkit-margin-before: .5rem;
+  margin-block-start: .5rem;
+}
+
+.cds--tree-node__label .cds--tooltip-content {
+  padding: 1rem;
+}
