@@ -480,23 +480,23 @@ final class XUiGen {
         css(CFG_COMPONENTS, CssMatcher.exact(".cds--layer-two"), ".layer-1"),
         css(CFG_COMPONENTS, CssMatcher.exact(".cds--layer-three"), ".layer-2"),
 
-        css(COMPONENT, CssMatcher.contains(".cds--breadcrumb"), "breadcrumb"),
-        css(COMPONENT, CssMatcher.contains(".cds--btn"), "button"),
-        css(COMPONENT, CssMatcher.contains(".cds--contained-list"), "containedlist"),
-        css(COMPONENT, CssMatcher.contains(".cds--fieldset"), "formgroup"),
-        css(COMPONENT, CssMatcher.contains(".cds--form"), "form"),
-        css(COMPONENT, CssMatcher.contains(".cds--css-grid", ".cds--subgrid", "--col-"), "grid"),
-        css(COMPONENT, CssMatcher.contains(".cds--header"), "header"),
-        css(COMPONENT, CssMatcher.contains(".cds--label"), "label"),
-        css(COMPONENT, CssMatcher.contains(".cds--layer"), "layer"),
-        css(COMPONENT, CssMatcher.contains(".cds--layout"), "layout"),
-        css(COMPONENT, CssMatcher.contains(".cds--link"), "link"),
-        css(COMPONENT, CssMatcher.contains(".cds--modal"), "modal"),
-        css(COMPONENT, CssMatcher.contains(".cds--popover"), "popover"),
-        css(COMPONENT, CssMatcher.contains(".cds--skip-to-content"), "skip-to-content"),
-        css(COMPONENT, CssMatcher.contains(".cds--stack"), "stack"),
-        css(COMPONENT, CssMatcher.contains(".cds--text-input"), "textinput"),
-        css(COMPONENT, CssMatcher.contains(".cds--tooltip"), "tooltip")
+        css(COMPONENT, CssMatcher.contains("cds--breadcrumb"), "breadcrumb"),
+        css(COMPONENT, CssMatcher.contains("cds--btn"), "button"),
+        css(COMPONENT, CssMatcher.contains("cds--contained-list"), "containedlist"),
+        css(COMPONENT, CssMatcher.contains("cds--fieldset"), "formgroup"),
+        css(COMPONENT, CssMatcher.contains("cds--form"), "form"),
+        css(COMPONENT, CssMatcher.contains("cds--css-grid", ".cds--subgrid", "--col-"), "grid"),
+        css(COMPONENT, CssMatcher.contains("cds--header"), "header"),
+        css(COMPONENT, CssMatcher.contains("cds--label"), "label"),
+        css(COMPONENT, CssMatcher.contains("cds--layer"), "layer"),
+        css(COMPONENT, CssMatcher.contains("cds--layout"), "layout"),
+        css(COMPONENT, CssMatcher.contains("cds--link"), "link"),
+        css(COMPONENT, CssMatcher.contains("cds--modal"), "modal"),
+        css(COMPONENT, CssMatcher.contains("cds--popover"), "popover"),
+        css(COMPONENT, CssMatcher.contains("cds--skip-to-content"), "skip-to-content"),
+        css(COMPONENT, CssMatcher.contains("cds--stack"), "stack"),
+        css(COMPONENT, CssMatcher.contains("cds--text-input"), "textinput"),
+        css(COMPONENT, CssMatcher.contains("cds--tooltip"), "tooltip")
     );
 
     final String jsPath;
@@ -979,6 +979,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     cssResult = css(
         cssSource,
         css(COMPONENT, CssMatcher.contains(".c4p--action"), "action"),
+        css(COMPONENT, CssMatcher.contains(".c4p--page-header"), "page-header"),
         css(COMPONENT, CssMatcher.contains(".c4p--tearsheet"), "tearsheet")
     );
 
@@ -987,6 +988,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     html(
         iframe,
         options.c4pHtmlFilter,
+        html("components-pageheader--with-title", "#storybook-root"),
         html("components-tearsheet--tearsheet", "[data-carbon-devtools-id='c4p--Tearsheet']")
     );
   }
