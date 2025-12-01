@@ -23,6 +23,19 @@ import objectos.ui.GridGutter;
 
 public final class UiGrid extends UiComponent implements Grid, Grid.Options {
 
+  static final String CSS = """
+  --grid-gutter-end:calc(var(--grid-gutter)_/_2)
+  display:grid
+  grid-template-columns:repeat(var(--grid-columns),minmax(0,1fr))
+  inline-size:100%
+  margin-inline:auto
+  padding-inline:var(--grid-margin)
+  """;
+
+  static final String CSS_FULL_WIDTH = "max-inline-size:100%";
+
+  static final String CSS_REGULAR_WIDTH = "max-inline-size:96rem";
+
   private final Html.ElementName as = Html.ElementName.DIV;
 
   private String css;
@@ -63,16 +76,9 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
 
         m.css(gutter.css),
 
-        m.css("""
-        --grid-gutter-end:calc(var(--grid-gutter)_/_2)
-        display:grid
-        grid-template-columns:repeat(var(--grid-columns),minmax(0,1fr))
-        inline-size:100%
-        margin-inline:auto
-        padding-inline:var(--grid-margin)
-        """),
+        m.css(CSS),
 
-        !fullWidth ? m.css("max-inline-size:96rem") : m.css("max-inline-size:100%"),
+        !fullWidth ? m.css(CSS_REGULAR_WIDTH) : m.css(CSS_FULL_WIDTH),
 
         css != null ? m.css(css) : m.noop(),
 

@@ -33,6 +33,11 @@ public sealed interface PageHeader extends Html.Component permits UiPageHeader {
 
   }
 
+  /// Creates a new page header with the specified options.
+  ///
+  /// @param header allows for setting the options
+  ///
+  /// @return a newly created page header with the specified options
   static PageHeader create(Consumer<? super Options> header) {
     final UiPageHeader pojo;
     pojo = new UiPageHeader();

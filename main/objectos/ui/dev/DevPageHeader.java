@@ -28,13 +28,29 @@ public final class DevPageHeader extends AbstractDevUi {
   @Override
   final void handle(Http.Exchange http) {
     switch (http.pathParam("id")) {
-      case "default" -> ok(
-          http,
+      case "default" -> http.ok(
+          page(http, page -> {
+            page.title("Page Header - Default");
 
-          "Page Header - Default",
+            page.add(PageHeader.create(header -> {
+              header.add(PageHeaderBreadcrumbBar.create(bar -> {
+                bar.border(true);
 
-          PageHeader.create(header -> {
-            header.add(m -> m.text("Page Header"));
+                bar.add(Breadcrumb.create(bc -> {
+                  bc.ariaLabel("Breadcrumb");
+
+                  bc.add(BreadcrumbItem.create(item -> {
+                    item.href("#");
+                    item.set("Breadcrumb 1");
+                  }));
+
+                  bc.add(BreadcrumbItem.create(item -> {
+                    item.href("#");
+                    item.set("Breadcrumb 2");
+                  }));
+                }));
+              }));
+            }));
           })
       );
     }

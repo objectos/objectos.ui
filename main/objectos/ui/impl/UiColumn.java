@@ -22,6 +22,12 @@ import module objectos.ui;
 
 public final class UiColumn extends UiComponent implements Column, Column.Options {
 
+  static final String CSS = """
+  --grid-mode-start:var(--grid-gutter-start)
+  --grid-mode-end:var(--grid-gutter-end)
+  margin-inline:var(--grid-gutter-start)_var(--grid-gutter-end)
+  """;
+
   private final Html.ElementName as = Html.ElementName.DIV;
 
   private String css;
@@ -71,11 +77,7 @@ public final class UiColumn extends UiComponent implements Column, Column.Option
     m.elem(
         as,
 
-        m.css("""
-        --grid-mode-start:var(--grid-gutter-start)
-        --grid-mode-end:var(--grid-gutter-end)
-        margin-inline:var(--grid-gutter-start)_var(--grid-gutter-end)
-        """),
+        m.css(CSS),
 
         css != null ? m.css(css) : m.noop(),
 

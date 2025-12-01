@@ -18,6 +18,7 @@
 package objectos.ui.impl;
 
 import module java.base;
+import java.util.List;
 import module objectos.ui;
 
 public final class UiColumnProps implements Column.Props, Html.AttributeObject {
@@ -30,6 +31,13 @@ public final class UiColumnProps implements Column.Props, Html.AttributeObject {
 
   UiColumnProps(UiBreakpoint breakpoint) {
     this.breakpoint = breakpoint;
+  }
+
+  public static String cssOfSpan(UiBreakpoint breakpoint, int value) {
+    final List<String> list;
+    list = SPAN.get(breakpoint);
+
+    return list.get(value);
   }
 
   @Override

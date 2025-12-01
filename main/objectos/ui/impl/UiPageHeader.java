@@ -33,7 +33,8 @@ public final class UiPageHeader extends UiComponent implements PageHeader, PageH
   public final void renderHtml(Html.Markup m) {
     m.div(
         m.css("""
-
+        background-color:var(--color-layer-01)
+        border-block-end:1px_solid_var(--color-border-subtle-01)
         """),
 
         m.c(main)

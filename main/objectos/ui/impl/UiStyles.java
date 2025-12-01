@@ -45,6 +45,7 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
         UiLayer.class,
         UiPage.class,
         UiPageHeader.class,
+        UiPageHeaderBreadcrumbBar.class,
         UiVertical.class,
         UiTearsheet.class,
         UiTextInput.class

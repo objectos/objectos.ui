@@ -492,6 +492,7 @@ final class XUiGen {
         css(COMPONENT, CssMatcher.contains("cds--layout"), "layout"),
         css(COMPONENT, CssMatcher.contains("cds--link"), "link"),
         css(COMPONENT, CssMatcher.contains("cds--modal"), "modal"),
+        css(COMPONENT, CssMatcher.contains("cds--page-header"), "page-header"),
         css(COMPONENT, CssMatcher.contains("cds--popover"), "popover"),
         css(COMPONENT, CssMatcher.contains("cds--skip-to-content"), "skip-to-content"),
         css(COMPONENT, CssMatcher.contains("cds--stack"), "stack"),
@@ -526,7 +527,8 @@ final class XUiGen {
         html("components-popover--default", "#storybook-root"),
         html("components-textinput--default", "#storybook-root"),
         html("components-tooltip--default", "#storybook-root"),
-        html("elements-grid--default", "#storybook-root")
+        html("elements-grid--default", "#storybook-root"),
+        html("patterns-preview-pageheader--default", "#storybook-root")
     );
   }
 
@@ -979,7 +981,7 @@ sealed abstract class UiStylesGenerated implements Css.Library permits UiStyles 
     cssResult = css(
         cssSource,
         css(COMPONENT, CssMatcher.contains(".c4p--action"), "action"),
-        css(COMPONENT, CssMatcher.contains(".c4p--page-header"), "page-header"),
+        css(COMPONENT, CssMatcher.contains(".c4p--page-header"), "page-header-c4p"),
         css(COMPONENT, CssMatcher.contains(".c4p--tearsheet"), "tearsheet")
     );
 
