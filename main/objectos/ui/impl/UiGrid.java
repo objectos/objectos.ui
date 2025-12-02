@@ -34,7 +34,7 @@ public final class UiGrid extends UiComponent implements Grid, Grid.Options {
 
   static final String CSS_FULL_WIDTH = "max-inline-size:100%";
 
-  static final String CSS_REGULAR_WIDTH = "max-inline-size:96rem";
+  static final String CSS_REGULAR_WIDTH = "max-inline-size:var(--breakpoint-x2)";
 
   private final Html.ElementName as = Html.ElementName.DIV;
 

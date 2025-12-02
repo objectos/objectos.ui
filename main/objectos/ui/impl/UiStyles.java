@@ -26,6 +26,10 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
   public final void configure(Css.Library.Options opts) {
     super.configure(opts);
 
+    opts.cssPropertyNames(
+        "-webkit-box-orient"
+    );
+
     opts.scanClasses(
         UiBreadcrumb.class,
         UiBreadcrumbItem.class,
@@ -45,7 +49,8 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
         UiLayer.class,
         UiPage.class,
         UiPageHeader.class,
-        UiPageHeaderBreadcrumbBar.class,
+        UiPageHeaderBreadcrumbRow.class,
+        UiPageHeaderTitleRow.class,
         UiVertical.class,
         UiTearsheet.class,
         UiTextInput.class

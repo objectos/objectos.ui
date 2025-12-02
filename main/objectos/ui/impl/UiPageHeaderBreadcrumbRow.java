@@ -20,12 +20,10 @@ package objectos.ui.impl;
 import module java.base;
 import module objectos.ui;
 
-public final class UiPageHeaderBreadcrumbBar extends UiComponent
-    implements PageHeaderBreadcrumbBar, PageHeaderBreadcrumbBar.Options {
+public final class UiPageHeaderBreadcrumbRow extends UiPageHeader.Row
+    implements PageHeaderBreadcrumbRow, PageHeaderBreadcrumbRow.Options {
 
-  private boolean border;
-
-  private final UiGridGutter gridGutter = UiGridGutter.WIDE;
+  private boolean border = true;
 
   private List<Html.Component> main = EMPTY_MAIN;
 
@@ -52,30 +50,27 @@ public final class UiPageHeaderBreadcrumbBar extends UiComponent
 
         // grid
         m.div(
-            m.css("block-size:100%"),
-
             m.css(gridGutter.css),
-
             m.css(UiGrid.CSS),
+            !fullWidth ? m.css(UiGrid.CSS_REGULAR_WIDTH) : m.css(UiGrid.CSS_FULL_WIDTH),
+
+            m.css("block-size:100%"),
 
             // column
             m.div(
-                m.css("block-size:100%"),
-
                 m.css(UiColumn.CSS),
-
                 m.css(UiColumnProps.cssOfSpan(UiBreakpoint.XS, 4)),
-
                 m.css(UiColumnProps.cssOfSpan(UiBreakpoint.MD, 8)),
-
                 m.css(UiColumnProps.cssOfSpan(UiBreakpoint.LG, 16)),
+
+                m.css("block-size:100%"),
 
                 // container
                 m.div(
                     m.css("""
                     align-items:center
                     block-size:100%
-                    display:inline-flex
+                    display:flex
                     inline-size:100%
                     justify-content:space-between
                     """),
@@ -83,7 +78,6 @@ public final class UiPageHeaderBreadcrumbBar extends UiComponent
                     m.c(main)
                 )
             )
-
         )
     );
   }

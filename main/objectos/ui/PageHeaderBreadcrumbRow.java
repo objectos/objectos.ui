@@ -19,35 +19,35 @@ package objectos.ui;
 
 import module java.base;
 import module objectos.ui;
-import objectos.ui.impl.UiPageHeaderBreadcrumbBar;
+import objectos.ui.impl.UiPageHeaderBreadcrumbRow;
 
-/// Renders a `PageHeader` breadcrumb bar.
-public sealed interface PageHeaderBreadcrumbBar extends Html.Component permits UiPageHeaderBreadcrumbBar {
+/// Renders a `PageHeader` breadcrumb row.
+public sealed interface PageHeaderBreadcrumbRow extends Html.Component permits UiPageHeaderBreadcrumbRow {
 
   /// Configures the creation of a page header breadcrumb.
-  sealed interface Options permits UiPageHeaderBreadcrumbBar {
+  sealed interface Options permits UiPageHeaderBreadcrumbRow {
 
     /// Adds a child component to this page header breadcrumb.
     /// @param value the child component
     void add(Html.Component value);
 
-    /// Configures whether the breadcrumb bar is rendered with a bottom border or not.
+    /// Configures whether the breadcrumb row is rendered with a bottom border or not.
     /// Defaults to `true`.
-    /// @param value `true` to render the bar with a bottom border; `false` otherwise
+    /// @param value `true` to render the row with a bottom border; `false` otherwise
     void border(boolean value);
 
   }
 
-  /// Creates a new page header breadcrumb bar with the specified options.
+  /// Creates a new page header breadcrumb row with the specified options.
   ///
-  /// @param bar allows for setting the options
+  /// @param row allows for setting the options
   ///
-  /// @return a newly created page header breadcrumb bar with the specified options
-  static PageHeaderBreadcrumbBar create(Consumer<? super Options> bar) {
-    final UiPageHeaderBreadcrumbBar pojo;
-    pojo = new UiPageHeaderBreadcrumbBar();
+  /// @return a newly created page header breadcrumb row with the specified options
+  static PageHeaderBreadcrumbRow create(Consumer<? super Options> row) {
+    final UiPageHeaderBreadcrumbRow pojo;
+    pojo = new UiPageHeaderBreadcrumbRow();
 
-    bar.accept(pojo);
+    row.accept(pojo);
 
     return pojo;
   }

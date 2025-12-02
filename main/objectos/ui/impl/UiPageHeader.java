@@ -22,6 +22,18 @@ import module objectos.ui;
 
 public final class UiPageHeader extends UiComponent implements PageHeader, PageHeader.Options {
 
+  public static abstract class Row extends UiComponent {
+
+    boolean fullWidth;
+
+    UiGridGutter gridGutter;
+
+  }
+
+  private boolean fullWidth;
+
+  private final UiGridGutter gridGutter = UiGridGutter.WIDE;
+
   private List<Html.Component> main = EMPTY_MAIN;
 
   @Override
@@ -37,8 +49,20 @@ public final class UiPageHeader extends UiComponent implements PageHeader, PageH
         border-block-end:1px_solid_var(--color-border-subtle-01)
         """),
 
-        m.c(main)
+        m.f(this::rows, m)
     );
+  }
+
+  private void rows(Html.Markup m) {
+    for (Html.Component c : main) {
+      if (c instanceof Row row) {
+        row.fullWidth = fullWidth;
+
+        row.gridGutter = gridGutter;
+      }
+
+      m.c(c);
+    }
   }
 
 }

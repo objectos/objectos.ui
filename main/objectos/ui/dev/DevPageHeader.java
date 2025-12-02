@@ -33,9 +33,7 @@ public final class DevPageHeader extends AbstractDevUi {
             page.title("Page Header - Default");
 
             page.add(PageHeader.create(header -> {
-              header.add(PageHeaderBreadcrumbBar.create(bar -> {
-                bar.border(true);
-
+              header.add(PageHeaderBreadcrumbRow.create(bar -> {
                 bar.add(Breadcrumb.create(bc -> {
                   bc.ariaLabel("Breadcrumb");
 
@@ -49,6 +47,13 @@ public final class DevPageHeader extends AbstractDevUi {
                     item.set("Breadcrumb 2");
                   }));
                 }));
+              }));
+
+              header.add(PageHeaderTitleRow.create(row -> {
+                row.title("""
+                A very long page title with a short version in breadcrumbs; \
+                this will almost certainly be truncated at some point
+                """);
               }));
             }));
           })
