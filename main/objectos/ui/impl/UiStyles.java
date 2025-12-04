@@ -52,9 +52,17 @@ public final class UiStyles extends UiStylesGenerated implements Styles {
         UiPageHeaderBreadcrumbRow.class,
         UiPageHeaderTitleRow.class,
         UiVertical.class,
+        UiTabs.class,
+        UiTabsTab.class,
         UiTearsheet.class,
         UiTextInput.class
     );
+
+    opts.theme("""
+    :root {
+      --motion-fast-01: 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+    }
+    """);
 
     opts.theme("""
     @keyframes opacity-fade-in {

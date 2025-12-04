@@ -41,6 +41,7 @@ public class DevModule implements Http.Routing.Module {
     routing.install(new DevHeader());
     routing.install(new DevPage());
     routing.install(new DevPageHeader());
+    routing.install(new DevTabs());
     routing.install(new DevUi());
     routing.install(new DevVertical());
 

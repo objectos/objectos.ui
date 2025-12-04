@@ -45,9 +45,7 @@ public sealed interface Grid extends Html.Component permits UiGrid {
   }
 
   /// Creates a new grid with the specified options.
-  ///
   /// @param grid allows for setting the options
-  ///
   /// @return a newly created grid with the specified options
   static Grid create(Consumer<? super Options> grid) {
     final UiGrid pojo;

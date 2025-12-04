@@ -495,6 +495,7 @@ final class XUiGen {
         css(COMPONENT, CssMatcher.contains("cds--popover"), "popover"),
         css(COMPONENT, CssMatcher.contains("cds--skip-to-content"), "skip-to-content"),
         css(COMPONENT, CssMatcher.contains("cds--stack"), "stack"),
+        css(COMPONENT, CssMatcher.contains("cds--tabs", "cds--tab-"), "tabs"),
         css(COMPONENT, CssMatcher.contains("cds--text-input"), "textinput"),
         css(COMPONENT, CssMatcher.contains("cds--tooltip"), "tooltip")
     );
@@ -524,6 +525,7 @@ final class XUiGen {
         html("components-link--default", "#storybook-root"),
         html("components-modal--default", "#storybook-root"),
         html("components-popover--default", "#storybook-root"),
+        html("components-tabs--default", "#storybook-root"),
         html("components-textinput--default", "#storybook-root"),
         html("components-tooltip--default", "#storybook-root"),
         html("elements-grid--default", "#storybook-root"),
